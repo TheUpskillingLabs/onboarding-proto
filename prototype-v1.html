@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Upskilling Labs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Plus+Jakarta+Sans:wght@300..700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['Lora', 'serif'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            cream: '#FDFBF7',
+                            navy: '#1A2E3B',
+                            charcoal: '#2C2C2C',
+                            terracotta: '#D97A62',
+                            sage: '#8F9B8A'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #FDFBF7;
+            color: #2C2C2C;
+            -webkit-font-smoothing: antialiased;
+        }
+        .step { display: none; opacity: 0; transition: opacity 0.4s ease-in-out; }
+        .step.active { display: flex; opacity: 1; }
+        
+        /* Custom Checkbox Styling for a softer UI */
+        input[type="checkbox"], input[type="radio"] {
+            accent-color: #1A2E3B;
+            width: 1.2rem;
+            height: 1.2rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="font-sans min-h-screen flex flex-col">
+
+    <main id="onboarding-container" class="flex-grow flex items-center justify-center p-6">
+        <div class="max-w-2xl w-full bg-white shadow-sm border border-stone-200 rounded-2xl p-10 md:p-16">
+            
+            <div id="step-1" class="step active flex-col space-y-6 text-center">
+                <h1 class="font-serif text-4xl text-brand-navy mb-4">Welcome to The Upskilling Labs</h1>
+                <p class="text-lg leading-relaxed text-stone-600">The world of work is changing quickly. AI is reshaping nearly every profession, but technology is only part of the story. The Upskilling Labs exists to help people learn, adapt, build, and contribute alongside others.</p>
+                <div class="pt-8">
+                    <button onclick="nextStep(2)" class="bg-brand-navy text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 transition font-medium tracking-wide">Begin onboarding</button>
+                </div>
+            </div>
+
+            <div id="step-2" class="step flex-col space-y-6 text-center">
+                <span class="text-brand-sage font-semibold tracking-wider text-sm uppercase">Our Philosophy</span>
+                <h2 class="font-serif text-3xl text-brand-navy mb-4">What Is The Upskilling Labs?</h2>
+                <p class="text-lg leading-relaxed text-stone-600">The Labs is not a course, bootcamp, or traditional workforce program. It is a civic learning institution where people practice using new tools, solving real problems, and strengthening their communities together.</p>
+                <div class="pt-8 flex justify-center space-x-4">
+                    <button onclick="nextStep(1)" class="text-stone-500 px-6 py-3 hover:text-stone-800 transition">Back</button>
+                    <button onclick="nextStep(3)" class="bg-brand-navy text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 transition">Continue</button>
+                </div>
+            </div>
+
+            <div id="step-3" class="step flex-col space-y-6">
+                <h2 class="font-serif text-3xl text-brand-navy mb-4 text-center">What is an Upskiller?</h2>
+                <div class="bg-brand-cream p-6 rounded-xl border border-stone-200 italic text-stone-700 text-lg leading-relaxed">
+                    "Everyone who joins The Upskilling Labs begins as an Upskiller. The only prerequisite is a willingness to grow. Whether you’re a student or CEO, public servant or entrepreneur, artist or engineer, retired or just getting started, your background matters less than your curiosity, your generosity, and your willingness to learn. If you’re willing to grow, you belong here."
+                </div>
+                <div class="pt-8 flex justify-center space-x-4">
+                    <button onclick="nextStep(2)" class="text-stone-500 px-6 py-3 hover:text-stone-800 transition">Back</button>
+                    <button onclick="nextStep(4)" class="bg-brand-navy text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 transition">I'm ready</button>
+                </div>
+            </div>
+
+            <div id="step-4" class="step flex-col space-y-6">
+                <h2 class="font-serif text-3xl text-brand-navy mb-2">Who are you?</h2>
+                <p class="text-stone-600 mb-6">Let's set up your civic portfolio.</p>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-stone-700 mb-1">Full Name</label>
+                        <input type="text" id="user-name" class="w-full border border-stone-300 p-3 rounded-lg focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy" placeholder="Jane Doe">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-stone-700 mb-1">Location / Metro</label>
+                        <input type="text" class="w-full border border-stone-300 p-3 rounded-lg focus:outline-none focus:border-brand-navy" placeholder="Chicago, IL">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-stone-700 mb-1">Professional Background</label>
+                        <input type="text" id="user-title" class="w-full border border-stone-300 p-3 rounded-lg focus:outline-none focus:border-brand-navy" placeholder="e.g. Public Policy Analyst">
+                    </div>
+                </div>
+                <div class="pt-8 flex justify-between">
+                    <button onclick="nextStep(3)" class="text-stone-500 px-4 py-2 hover:text-stone-800 transition">Back</button>
+                    <button onclick="nextStep(5)" class="bg-brand-navy text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 transition">Next</button>
+                </div>
+            </div>
+
+            <div id="step-5" class="step flex-col space-y-6">
+                <span class="text-brand-sage font-semibold tracking-wider text-sm uppercase">Our Framework</span>
+                <h2 class="font-serif text-3xl text-brand-navy mb-4">The Stages of Practice</h2>
+                <p class="text-stone-600">The Stages of Practice help us understand how capability develops. They do not rank people. They describe where someone is in a specific capability. A person might be an Expert facilitator and a Novice in AI workflows at the same time.</p>
+                
+                <div class="grid gap-3 mt-4 text-sm">
+                    <div class="p-3 border border-stone-200 rounded flex justify-between items-center"><strong class="text-brand-navy">Naive</strong> <span class="text-stone-500">Result-Focused</span></div>
+                    <div class="p-3 border border-stone-200 rounded flex justify-between items-center"><strong class="text-brand-navy">Novice</strong> <span class="text-stone-500">Convention-Based</span></div>
+                    <div class="p-3 border border-stone-200 rounded flex justify-between items-center"><strong class="text-brand-navy">Advanced Beginner</strong> <span class="text-stone-500">Situation-Based</span></div>
+                    <div class="p-3 border border-stone-200 rounded flex justify-between items-center"><strong class="text-brand-navy">Competent</strong> <span class="text-stone-500">Strategy-Based</span></div>
+                    <div class="p-3 border border-stone-200 rounded bg-brand-cream flex justify-between items-center"><strong class="text-brand-navy">Expert</strong> <span class="text-stone-500">Experience-Based</span></div>
+                    <div class="p-3 border border-stone-200 rounded flex justify-between items-center"><strong class="text-brand-navy">Master</strong> <span class="text-stone-500">Developing New Schemata</span></div>
+                    <div class="p-3 border border-stone-200 rounded flex justify-between items-center"><strong class="text-brand-navy">Visionary</strong> <span class="text-stone-500">Redefining the Field</span></div>
+                </div>
+
+                <div class="pt-8 flex justify-between">
+                    <button onclick="nextStep(4)" class="text-stone-500 px-4 py-2 hover:text-stone-800 transition">Back</button>
+                    <button onclick="nextStep(6)" class="bg-brand-navy text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 transition">Continue</button>
+                </div>
+            </div>
+
+            <div id="step-6" class="step flex-col space-y-6">
+                <h2 class="font-serif text-3xl text-brand-navy mb-2">How would you like to participate?</h2>
+                <p class="text-stone-600 mb-6">Choose any that interest you right now. You can always activate more pathways later.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <label class="flex items-center space-x-3 p-4 border border-stone-200 rounded-lg cursor-pointer hover:bg-stone-50">
+                        <input type="checkbox" checked> <span>Join a Build Cycle</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-4 border border-stone-200 rounded-lg cursor-pointer hover:bg-stone-50">
+                        <input type="checkbox" checked> <span>Attend Workshops</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-4 border border-stone-200 rounded-lg cursor-pointer hover:bg-stone-50">
+                        <input type="checkbox"> <span>Volunteer</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-4 border border-stone-200 rounded-lg cursor-pointer hover:bg-stone-50">
+                        <input type="checkbox"> <span>Become a Mentor</span>
+                    </label>
+                </div>
+                <div class="pt-8 flex justify-between">
+                    <button onclick="nextStep(5)" class="text-stone-500 px-4 py-2 hover:text-stone-800 transition">Back</button>
+                    <button onclick="nextStep(7)" class="bg-brand-navy text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 transition">Next</button>
+                </div>
+            </div>
+
+            <div id="step-7" class="step flex-col space-y-6 text-center">
+                <div class="inline-block p-4 bg-brand-cream rounded-full mb-4 mx-auto">
+                    <svg class="w-10 h-10 text-brand-terracotta" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                <h2 class="font-serif text-4xl text-brand-navy mb-2">Welcome, Upskiller.</h2>
+                <p class="text-lg text-stone-600">You are now part of The Upskilling Labs.</p>
+                <p class="text-stone-500 text-sm mt-4">Grow your skill set. [cite: 10] Build your network. [cite: 11] Launch your next chapter. [cite: 12]</p>
+                
+                <div class="pt-8">
+                    <button onclick="finishOnboarding()" class="bg-brand-navy text-white px-8 py-3 rounded-full text-lg hover:bg-opacity-90 transition shadow-lg">Go to my Dashboard</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+
+    <div id="dashboard-container" class="hidden w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row gap-8">
+        
+        <aside class="w-full md:w-80 flex-shrink-0 space-y-8">
+            
+            <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm">
+                <h3 id="dash-name" class="font-serif text-2xl text-brand-navy mb-1">Jane Doe</h3>
+                <p id="dash-title" class="text-stone-500 text-sm mb-4">Upskiller</p>
+                <div class="flex items-center space-x-2 text-sm">
+                    <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                    <span class="text-stone-700 font-medium">Upskiller (Active)</span>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm space-y-4">
+                <h4 class="font-bold text-stone-800 uppercase tracking-wide text-xs">My Participation</h4>
+                <ul class="space-y-3 text-sm">
+                    <li class="flex justify-between items-center">
+                        <span class="text-stone-600">Build Cycle</span>
+                        <span class="text-xs bg-stone-100 text-stone-500 px-2 py-1 rounded">Not Active</span>
+                    </li>
+                    <li class="flex justify-between items-center">
+                        <span class="text-stone-600">Mentor</span>
+                        <span class="text-xs bg-brand-cream text-brand-terracotta border border-brand-terracotta/30 px-2 py-1 rounded">Available</span>
+                    </li>
+                    <li class="flex justify-between items-center">
+                        <span class="text-stone-600">Volunteer</span>
+                        <span class="text-xs bg-stone-100 text-stone-500 px-2 py-1 rounded">Available</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm space-y-4">
+                <h4 class="font-bold text-stone-800 uppercase tracking-wide text-xs">My Growth Profile</h4>
+                <div>
+                    <span class="block text-xs text-stone-500 mb-1">Top Strengths</span>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-2 py-1 bg-stone-100 text-stone-700 text-xs rounded">Strategy</span>
+                        <span class="px-2 py-1 bg-stone-100 text-stone-700 text-xs rounded">Facilitation</span>
+                    </div>
+                </div>
+                <div class="pt-2">
+                    <span class="block text-xs text-stone-500 mb-1">Developing</span>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-2 py-1 bg-brand-cream border border-stone-200 text-stone-700 text-xs rounded">AI Workflows</span>
+                        <span class="px-2 py-1 bg-brand-cream border border-stone-200 text-stone-700 text-xs rounded">Systems Thinking</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <div class="flex-grow space-y-10">
+            
+            <header class="flex justify-between items-end pb-6 border-b border-stone-200">
+                <div>
+                    <h1 class="font-serif text-4xl text-brand-navy mb-2">Home Dashboard</h1>
+                    <p class="text-stone-600">Investigate problems, test ideas, build prototypes.</p>
+                </div>
+                <button class="bg-brand-navy text-white px-6 py-2 rounded-full text-sm hover:bg-opacity-90 transition">Continue Growing</button>
+            </header>
+
+            <section>
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="font-serif text-2xl text-brand-navy">Stages of Practice</h2>
+                    <a href="#" class="text-sm text-stone-500 hover:text-brand-navy underline">View Framework</a>
+                </div>
+                
+                <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm mb-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-lg">AI Workflows</h3>
+                        <span class="text-sm text-brand-terracotta font-medium">Next: Competent</span>
+                    </div>
+                    <div class="flex items-center w-full text-xs text-stone-400 font-medium">
+                        <div class="flex-1 border-t-2 border-brand-sage relative">
+                            <span class="absolute -top-3 left-0 w-3 h-3 bg-brand-sage rounded-full"></span>
+                        </div>
+                        <div class="flex-1 border-t-2 border-brand-sage relative">
+                            <span class="absolute -top-3 left-0 w-3 h-3 bg-brand-sage rounded-full"></span>
+                        </div>
+                        <div class="flex-1 border-t-2 border-stone-200 relative">
+                            <span class="absolute -top-4 left-0 bg-brand-sage text-white px-2 py-1 rounded shadow-sm text-[10px] uppercase">Adv. Beginner</span>
+                        </div>
+                        <div class="flex-1 border-t-2 border-stone-200 relative"></div>
+                        <div class="flex-1 border-t-2 border-stone-200 relative"></div>
+                        <div class="flex-1 border-t-2 border-stone-200 relative"></div>
+                        <div class="flex-1 relative"></div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-lg">Facilitation</h3>
+                        <span class="text-sm text-brand-terracotta font-medium">Next: Master</span>
+                    </div>
+                    <div class="flex items-center w-full text-xs text-stone-400 font-medium">
+                        <div class="flex-1 border-t-2 border-brand-navy relative"><span class="absolute -top-3 left-0 w-3 h-3 bg-brand-navy rounded-full"></span></div>
+                        <div class="flex-1 border-t-2 border-brand-navy relative"><span class="absolute -top-3 left-0 w-3 h-3 bg-brand-navy rounded-full"></span></div>
+                        <div class="flex-1 border-t-2 border-brand-navy relative"><span class="absolute -top-3 left-0 w-3 h-3 bg-brand-navy rounded-full"></span></div>
+                        <div class="flex-1 border-t-2 border-brand-navy relative"><span class="absolute -top-3 left-0 w-3 h-3 bg-brand-navy rounded-full"></span></div>
+                        <div class="flex-1 border-t-2 border-stone-200 relative">
+                            <span class="absolute -top-4 left-0 bg-brand-navy text-white px-2 py-1 rounded shadow-sm text-[10px] uppercase">Expert</span>
+                        </div>
+                        <div class="flex-1 border-t-2 border-stone-200 relative"></div>
+                        <div class="flex-1 relative"></div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                <section>
+                    <h2 class="font-serif text-2xl text-brand-navy mb-6">Upcoming Events</h2>
+                    <div class="space-y-4">
+                        <div class="p-5 bg-white border border-stone-200 rounded-xl hover:shadow-md transition cursor-pointer">
+                            <div class="text-xs font-bold text-stone-400 mb-1">OCT 12 • 2:00 PM</div>
+                            <h4 class="font-bold text-stone-800">Earth Day Workshop </h4>
+                            <p class="text-sm text-stone-500 mt-1">Collaborative problem-solving around local climate initiatives.</p>
+                        </div>
+                        <div class="p-5 bg-white border border-stone-200 rounded-xl hover:shadow-md transition cursor-pointer">
+                            <div class="text-xs font-bold text-stone-400 mb-1">OCT 15 • 12:00 PM</div>
+                            <h4 class="font-bold text-stone-800">Power Hour </h4>
+                            <p class="text-sm text-stone-500 mt-1">Open office hours to showcase unfinished work and get feedback.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h2 class="font-serif text-2xl text-brand-navy mb-6">Learning Library</h2>
+                    <div class="space-y-4">
+                        <div class="p-5 bg-brand-cream border border-stone-200 rounded-xl hover:shadow-md transition cursor-pointer flex gap-4 items-center">
+                            <div class="w-10 h-10 bg-brand-sage/20 rounded flex items-center justify-center text-brand-sage font-serif">AI</div>
+                            <div>
+                                <h4 class="font-bold text-stone-800">AI Prompt Library </h4>
+                                <p class="text-sm text-stone-500 mt-1">Templates and workflows for community building.</p>
+                            </div>
+                        </div>
+                        <div class="p-5 bg-brand-cream border border-stone-200 rounded-xl hover:shadow-md transition cursor-pointer flex gap-4 items-center">
+                            <div class="w-10 h-10 bg-brand-terracotta/20 rounded flex items-center justify-center text-brand-terracotta font-serif">SD</div>
+                            <div>
+                                <h4 class="font-bold text-stone-800">Problem Discovery Slide Deck [cite: 22, 36]</h4>
+                                <p class="text-sm text-stone-500 mt-1">Frameworks for defining civic challenges.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple state management for the prototype
+        let currentStep = 1;
+        const totalSteps = 7; // Condensed 14 down to 7 functional UI screens for prototype speed
+
+        function nextStep(stepNumber) {
+            // Hide all steps
+            document.querySelectorAll('.step').forEach(el => {
+                el.classList.remove('active');
+                setTimeout(() => el.style.display = 'none', 400); // Wait for fade out
+            });
+
+            // Show target step
+            setTimeout(() => {
+                const target = document.getElementById(`step-${stepNumber}`);
+                if(target) {
+                    target.style.display = 'flex';
+                    // Trigger reflow to ensure transition happens
+                    void target.offsetWidth;
+                    target.classList.add('active');
+                }
+            }, 400);
+            
+            currentStep = stepNumber;
+        }
+
+        function finishOnboarding() {
+            // Capture user data (if entered)
+            const nameInput = document.getElementById('user-name').value;
+            const titleInput = document.getElementById('user-title').value;
+            
+            if(nameInput) document.getElementById('dash-name').innerText = nameInput;
+            if(titleInput) document.getElementById('dash-title').innerText = titleInput;
+
+            // Transition UI
+            document.getElementById('onboarding-container').style.display = 'none';
+            
+            const dash = document.getElementById('dashboard-container');
+            dash.classList.remove('hidden');
+            // Trigger reflow for smooth reveal if needed
+            void dash.offsetWidth; 
+            dash.classList.add('flex');
+            
+            // Scroll to top
+            window.scrollTo(0,0);
+        }
+    </script>
+</body>
+</html>
