@@ -187,27 +187,49 @@
                     <!-- Slide 5 — Two ways to take part (final, carries CTA) -->
                     <div id="slide-5" class="slide">
                         <div class="text-center">
-                            <p class="mb-2 text-sm font-medium uppercase tracking-widest text-cloud/40">How it works</p>
-                            <h2 class="text-2xl font-bold tracking-tight text-white sm:text-3xl">Two ways to take part</h2>
+                            <p class="mb-2 text-sm font-medium uppercase tracking-widest text-cloud/40">Ways to take part</p>
+                            <h2 class="text-2xl font-bold tracking-tight text-white sm:text-3xl">How do you want to participate in the Labs?</h2>
+                            <p class="mx-auto mt-2 max-w-md text-sm text-cloud/60">Pick anything that interests you — you can change this later.</p>
                         </div>
-                        <div class="mt-7 space-y-4">
-                            <!-- Primary: Build Cycles -->
-                            <div class="rounded-lg border border-teal/30 bg-teal/[0.06] p-6">
-                                <div class="mb-2 flex items-center gap-2">
-                                    <span class="inline-flex items-center gap-1.5 rounded-full bg-teal/20 px-2.5 py-0.5 text-xs font-medium text-aqua">Primary</span>
-                                </div>
-                                <h3 class="text-lg font-semibold text-white">Build Cycles — the heart of the Labs</h3>
-                                <p class="mt-2 text-sm leading-relaxed text-cloud/70">
-                                    Join a pod (a small team), take on a real problem, and ship something over a multi-week cycle. This is where the experience runs deepest — and it asks for a real weekly commitment.
-                                </p>
-                            </div>
-                            <!-- Secondary: Workshops & events -->
-                            <div class="rounded-md border border-whisper bg-white/[0.02] p-5">
-                                <h3 class="text-base font-semibold text-cloud">Workshops &amp; events</h3>
-                                <p class="mt-1.5 text-sm leading-relaxed text-cloud/60">
-                                    Prefer to start lighter? Join hands-on sessions and community events to sharpen specific skills. Come when it suits you; no long-term commitment required.
-                                </p>
-                            </div>
+                        <div class="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                            <!-- Build Cycle (the heart of the Labs) -->
+                            <label class="flex h-full cursor-pointer items-start gap-3 rounded-lg border border-whisper bg-white/[0.02] p-5 transition-colors duration-150 hover:border-white/[0.12] hover:bg-white/[0.04] has-[:checked]:border-teal/40 has-[:checked]:bg-teal/[0.06] has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-teal">
+                                <input type="checkbox" checked class="mt-0.5 h-5 w-5 shrink-0 rounded border-white/[0.20] bg-white/[0.04] accent-teal focus-visible:outline-none">
+                                <span class="min-w-0">
+                                    <span class="flex flex-wrap items-center gap-2">
+                                        <span class="text-base font-semibold text-white">Build Cycle</span>
+                                        <span class="rounded-full bg-teal/20 px-2 py-0.5 text-[10px] font-medium text-aqua">The heart of the Labs</span>
+                                    </span>
+                                    <span class="mt-1.5 block text-sm leading-relaxed text-cloud/60">Join a pod (a small team), take on a real problem, and ship something over a multi-week cycle. Asks for a real weekly commitment.</span>
+                                </span>
+                            </label>
+
+                            <!-- Workshops & events -->
+                            <label class="flex h-full cursor-pointer items-start gap-3 rounded-lg border border-whisper bg-white/[0.02] p-5 transition-colors duration-150 hover:border-white/[0.12] hover:bg-white/[0.04] has-[:checked]:border-teal/40 has-[:checked]:bg-teal/[0.06] has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-teal">
+                                <input type="checkbox" checked class="mt-0.5 h-5 w-5 shrink-0 rounded border-white/[0.20] bg-white/[0.04] accent-teal focus-visible:outline-none">
+                                <span class="min-w-0">
+                                    <span class="text-base font-semibold text-white">Workshops &amp; events</span>
+                                    <span class="mt-1.5 block text-sm leading-relaxed text-cloud/60">Join hands-on sessions and community events to sharpen specific skills. Come when it suits you; no long-term commitment required.</span>
+                                </span>
+                            </label>
+
+                            <!-- Volunteer -->
+                            <label class="flex h-full cursor-pointer items-start gap-3 rounded-lg border border-whisper bg-white/[0.02] p-5 transition-colors duration-150 hover:border-white/[0.12] hover:bg-white/[0.04] has-[:checked]:border-teal/40 has-[:checked]:bg-teal/[0.06] has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-teal">
+                                <input type="checkbox" class="mt-0.5 h-5 w-5 shrink-0 rounded border-white/[0.20] bg-white/[0.04] accent-teal focus-visible:outline-none">
+                                <span class="min-w-0">
+                                    <span class="text-base font-semibold text-white">Volunteer</span>
+                                    <span class="mt-1.5 block text-sm leading-relaxed text-cloud/60">Pitch in at events or behind the scenes to help run the Labs.</span>
+                                </span>
+                            </label>
+
+                            <!-- Mentor -->
+                            <label class="flex h-full cursor-pointer items-start gap-3 rounded-lg border border-whisper bg-white/[0.02] p-5 transition-colors duration-150 hover:border-white/[0.12] hover:bg-white/[0.04] has-[:checked]:border-teal/40 has-[:checked]:bg-teal/[0.06] has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-teal">
+                                <input type="checkbox" class="mt-0.5 h-5 w-5 shrink-0 rounded border-white/[0.20] bg-white/[0.04] accent-teal focus-visible:outline-none">
+                                <span class="min-w-0">
+                                    <span class="text-base font-semibold text-white">Mentor</span>
+                                    <span class="mt-1.5 block text-sm leading-relaxed text-cloud/60">Offer workshops and office hours — anything from AI skills, to design thinking and user research, to presentation and communication.</span>
+                                </span>
+                            </label>
                         </div>
                         <button onclick="showView('form')"
                             class="mt-7 w-full rounded-md bg-teal px-6 py-3 text-base font-semibold tracking-tight text-white shadow-[0_1px_4px_rgba(0,148,160,0.2)] transition-all duration-150 ease-spring hover:bg-teal/80 active:scale-[0.985] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-midnight">
