@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  background-color: theme("colors.midnight");
+  color: theme("colors.cloud");
+}
+
+/* Eyebrow label: uppercase, tracked — mirrors the OLOS /register + /login pattern */
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Subtle radial glow used behind hero/auth screens, echoing the OLOS aesthetic */
+.aurora {
+  background:
+    radial-gradient(60rem 60rem at 50% -20%, rgba(45, 212, 191, 0.10), transparent 60%),
+    radial-gradient(40rem 40rem at 80% 10%, rgba(20, 184, 166, 0.08), transparent 55%);
+}
+
+/* Custom control accents to match teal primary */
+input[type="checkbox"] {
+  accent-color: theme("colors.teal");
+}
+
+::selection {
+  background: rgba(45, 212, 191, 0.3);
+}
