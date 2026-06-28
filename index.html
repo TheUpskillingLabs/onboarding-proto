@@ -102,6 +102,9 @@
                     See how it works
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
                 </button>
+                <button onclick="signinReturning()" class="text-sm text-cloud/40 transition-colors duration-150 hover:text-aqua focus-visible:outline-none focus-visible:text-aqua">
+                    Already a member? Sign in &rarr;
+                </button>
             </div>
         </div>
 
@@ -178,55 +181,18 @@
                         </p>
                     </div>
 
-                    <!-- Slide 5 — Two ways to take part (final, carries CTA) -->
-                    <div id="slide-5" class="slide">
-                        <div class="text-center">
-                            <p class="mb-2 text-sm font-medium uppercase tracking-widest text-cloud/40">Ways to take part</p>
-                            <h2 class="text-2xl font-bold tracking-tight text-white sm:text-3xl">How do you want to participate in the Labs?</h2>
-                            <p class="mx-auto mt-2 max-w-md text-sm text-cloud/60">Pick anything that interests you — you can change this later.</p>
+                    <!-- Slide 5 — You're almost in (final, carries CTA) -->
+                    <div id="slide-5" class="slide text-center">
+                        <div class="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-teal/15 text-aqua">
+                            <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 22V12"/><path d="m5 12 7-10 7 10"/></svg>
                         </div>
-                        <div class="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                            <!-- Build Cycle (the heart of the Labs) -->
-                            <label class="flex h-full cursor-pointer items-start gap-3 rounded-lg border border-whisper bg-white/[0.02] p-5 transition-colors duration-150 hover:border-white/[0.12] hover:bg-white/[0.04] has-[:checked]:border-teal/40 has-[:checked]:bg-teal/[0.06] has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-teal">
-                                <input type="checkbox" checked class="mt-0.5 h-5 w-5 shrink-0 rounded border-white/[0.20] bg-white/[0.04] accent-teal focus-visible:outline-none">
-                                <span class="min-w-0">
-                                    <span class="flex flex-wrap items-center gap-2">
-                                        <span class="text-base font-semibold text-white">Build Cycle</span>
-                                        <span class="rounded-full bg-teal/20 px-2 py-0.5 text-[10px] font-medium text-aqua">The heart of the Labs</span>
-                                    </span>
-                                    <span class="mt-1.5 block text-sm leading-relaxed text-cloud/60">Join a pod (a small team), take on a real problem, and ship something over a multi-week cycle. Asks for a real weekly commitment.</span>
-                                </span>
-                            </label>
-
-                            <!-- Workshops & events -->
-                            <label class="flex h-full cursor-pointer items-start gap-3 rounded-lg border border-whisper bg-white/[0.02] p-5 transition-colors duration-150 hover:border-white/[0.12] hover:bg-white/[0.04] has-[:checked]:border-teal/40 has-[:checked]:bg-teal/[0.06] has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-teal">
-                                <input type="checkbox" checked class="mt-0.5 h-5 w-5 shrink-0 rounded border-white/[0.20] bg-white/[0.04] accent-teal focus-visible:outline-none">
-                                <span class="min-w-0">
-                                    <span class="text-base font-semibold text-white">Workshops &amp; events</span>
-                                    <span class="mt-1.5 block text-sm leading-relaxed text-cloud/60">Join hands-on sessions and community events to sharpen specific skills. Come when it suits you; no long-term commitment required.</span>
-                                </span>
-                            </label>
-
-                            <!-- Volunteer -->
-                            <label class="flex h-full cursor-pointer items-start gap-3 rounded-lg border border-whisper bg-white/[0.02] p-5 transition-colors duration-150 hover:border-white/[0.12] hover:bg-white/[0.04] has-[:checked]:border-teal/40 has-[:checked]:bg-teal/[0.06] has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-teal">
-                                <input type="checkbox" class="mt-0.5 h-5 w-5 shrink-0 rounded border-white/[0.20] bg-white/[0.04] accent-teal focus-visible:outline-none">
-                                <span class="min-w-0">
-                                    <span class="text-base font-semibold text-white">Volunteer</span>
-                                    <span class="mt-1.5 block text-sm leading-relaxed text-cloud/60">Pitch in at events or behind the scenes to help run the Labs.</span>
-                                </span>
-                            </label>
-
-                            <!-- Mentor -->
-                            <label class="flex h-full cursor-pointer items-start gap-3 rounded-lg border border-whisper bg-white/[0.02] p-5 transition-colors duration-150 hover:border-white/[0.12] hover:bg-white/[0.04] has-[:checked]:border-teal/40 has-[:checked]:bg-teal/[0.06] has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-teal">
-                                <input type="checkbox" class="mt-0.5 h-5 w-5 shrink-0 rounded border-white/[0.20] bg-white/[0.04] accent-teal focus-visible:outline-none">
-                                <span class="min-w-0">
-                                    <span class="text-base font-semibold text-white">Mentor</span>
-                                    <span class="mt-1.5 block text-sm leading-relaxed text-cloud/60">Offer workshops and office hours — anything from AI skills, to design thinking and user research, to presentation and communication.</span>
-                                </span>
-                            </label>
-                        </div>
+                        <p class="mb-2 text-sm font-medium uppercase tracking-widest text-cloud/40">Almost there</p>
+                        <h2 class="text-2xl font-bold tracking-tight text-white sm:text-3xl">You're almost in</h2>
+                        <p class="mx-auto mt-5 max-w-sm text-base leading-relaxed text-cloud/70">
+                            Create your account and you'll tell us how you want to participate — Build Cycles, workshops, mentoring, volunteering, or all of the above.
+                        </p>
                         <button onclick="showView('google-auth')"
-                            class="mt-7 w-full rounded-md bg-teal px-6 py-3 text-base font-semibold tracking-tight text-white shadow-[0_1px_4px_rgba(0,148,160,0.2)] transition-all duration-150 ease-spring hover:bg-teal/80 active:scale-[0.985] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-midnight">
+                            class="mt-8 w-full rounded-md bg-teal px-6 py-3 text-base font-semibold tracking-tight text-white shadow-[0_1px_4px_rgba(0,148,160,0.2)] transition-all duration-150 ease-spring hover:bg-teal/80 active:scale-[0.985] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-midnight">
                             Create Account
                         </button>
                     </div>
@@ -292,7 +258,7 @@
                 </li>
             </ul>
 
-            <button onclick="showView('form')"
+            <button onclick="continueWithGoogle()"
                 class="mt-8 inline-flex w-full items-center justify-center gap-3 rounded-full border border-white/[0.12] bg-white/[0.04] px-8 py-4 text-base font-medium text-white transition-all duration-300 ease-spring hover:border-aqua/40 hover:bg-white/[0.07] hover:shadow-[0_0_24px_rgba(77,187,194,0.18)] active:scale-[0.985] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-midnight">
                 <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
@@ -304,6 +270,66 @@
             </button>
 
             <p class="mt-5 text-center text-xs text-cloud/30">We only access your name and email. Nothing else.</p>
+        </div>
+
+        <p class="text-xs tracking-wide text-cloud/20">
+            Real problems&ensp;·&ensp;Real collaboration&ensp;·&ensp;Real output
+        </p>
+    </div>
+</section>
+
+<!-- ============================================================= -->
+<!-- SCREEN 1c — Role intent capture (post-auth, first time only)  -->
+<!-- ============================================================= -->
+<section id="view-role-intent" class="view">
+    <div class="flex min-h-svh flex-col justify-between px-6 pb-10 pt-12 lg:px-16 lg:pb-14 lg:pt-16">
+        <p class="text-xs font-semibold uppercase tracking-[0.25em] text-teal">The Upskilling Labs</p>
+
+        <div class="mx-auto w-full max-w-lg py-12">
+            <h1 class="text-2xl font-bold tracking-tight text-white sm:text-3xl">How do you want to participate?</h1>
+            <p class="mt-3 text-base text-cloud/60">Pick at least one — you can change this any time from your profile.</p>
+
+            <div class="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2" id="role-intent-options">
+                <label class="flex h-full cursor-pointer items-start gap-3 rounded-lg border border-whisper bg-white/[0.02] p-5 transition-colors duration-150 hover:border-white/[0.12] hover:bg-white/[0.04] has-[:checked]:border-teal/40 has-[:checked]:bg-teal/[0.06] has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-teal">
+                    <input type="checkbox" id="role-cycle" value="cycle" onchange="updateRoleIntentButton()" class="mt-0.5 h-5 w-5 shrink-0 rounded border-white/[0.20] bg-white/[0.04] accent-teal focus-visible:outline-none">
+                    <span class="min-w-0">
+                        <span class="flex flex-wrap items-center gap-2">
+                            <span class="text-base font-semibold text-white">Join a Cycle</span>
+                            <span class="rounded-full bg-teal/20 px-2 py-0.5 text-[10px] font-medium text-aqua">The heart of the Labs</span>
+                        </span>
+                        <span class="mt-1.5 block text-sm leading-relaxed text-cloud/60">Join a pod, take on a real problem, and ship something over a multi-week cycle.</span>
+                    </span>
+                </label>
+
+                <label class="flex h-full cursor-pointer items-start gap-3 rounded-lg border border-whisper bg-white/[0.02] p-5 transition-colors duration-150 hover:border-white/[0.12] hover:bg-white/[0.04] has-[:checked]:border-teal/40 has-[:checked]:bg-teal/[0.06] has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-teal">
+                    <input type="checkbox" id="role-events" value="events" onchange="updateRoleIntentButton()" class="mt-0.5 h-5 w-5 shrink-0 rounded border-white/[0.20] bg-white/[0.04] accent-teal focus-visible:outline-none">
+                    <span class="min-w-0">
+                        <span class="text-base font-semibold text-white">Attend events &amp; workshops</span>
+                        <span class="mt-1.5 block text-sm leading-relaxed text-cloud/60">Join hands-on sessions and community events. Come when it suits you.</span>
+                    </span>
+                </label>
+
+                <label class="flex h-full cursor-pointer items-start gap-3 rounded-lg border border-whisper bg-white/[0.02] p-5 transition-colors duration-150 hover:border-white/[0.12] hover:bg-white/[0.04] has-[:checked]:border-teal/40 has-[:checked]:bg-teal/[0.06] has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-teal">
+                    <input type="checkbox" id="role-volunteer" value="volunteer" onchange="updateRoleIntentButton()" class="mt-0.5 h-5 w-5 shrink-0 rounded border-white/[0.20] bg-white/[0.04] accent-teal focus-visible:outline-none">
+                    <span class="min-w-0">
+                        <span class="text-base font-semibold text-white">Volunteer</span>
+                        <span class="mt-1.5 block text-sm leading-relaxed text-cloud/60">Pitch in at events or behind the scenes to help run the Labs.</span>
+                    </span>
+                </label>
+
+                <label class="flex h-full cursor-pointer items-start gap-3 rounded-lg border border-whisper bg-white/[0.02] p-5 transition-colors duration-150 hover:border-white/[0.12] hover:bg-white/[0.04] has-[:checked]:border-teal/40 has-[:checked]:bg-teal/[0.06] has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-teal">
+                    <input type="checkbox" id="role-mentor" value="mentor" onchange="updateRoleIntentButton()" class="mt-0.5 h-5 w-5 shrink-0 rounded border-white/[0.20] bg-white/[0.04] accent-teal focus-visible:outline-none">
+                    <span class="min-w-0">
+                        <span class="text-base font-semibold text-white">Mentor</span>
+                        <span class="mt-1.5 block text-sm leading-relaxed text-cloud/60">Offer workshops and office hours to support Upskillers and pods.</span>
+                    </span>
+                </label>
+            </div>
+
+            <button id="role-intent-btn" disabled onclick="submitRoleIntent()"
+                class="mt-7 w-full rounded-md bg-teal px-6 py-3 text-base font-semibold tracking-tight text-white shadow-[0_1px_4px_rgba(0,148,160,0.2)] transition-all duration-150 ease-spring hover:bg-teal/80 active:scale-[0.985] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-midnight disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-teal disabled:active:scale-100">
+                Continue
+            </button>
         </div>
 
         <p class="text-xs tracking-wide text-cloud/20">
@@ -405,6 +431,226 @@
 </section>
 
 <!-- ============================================================= -->
+<!-- SCREEN 2b — Mentor explainer (2 slides)                       -->
+<!-- ============================================================= -->
+<section id="view-mentor-explainer" class="view">
+    <main class="mx-auto w-full max-w-2xl px-4 py-8 sm:px-6">
+        <button onclick="showView('dashboard')" class="mb-6 inline-flex items-center gap-1.5 text-sm text-cloud/60 transition-colors duration-150 hover:text-aqua focus-visible:outline-none focus-visible:text-aqua">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+            Back to dashboard
+        </button>
+        <div class="rounded-lg border border-whisper bg-white/[0.02] p-8 sm:p-12">
+
+            <!-- Slide 1 — How you fit in -->
+            <div id="mentor-slide-1" class="slide active">
+                <div class="text-center">
+                    <p class="mb-2 text-sm font-medium uppercase tracking-widest text-cloud/40">Mentoring at the Labs</p>
+                    <h2 class="text-2xl font-bold tracking-tight text-white sm:text-3xl">Two ways to plug in as a mentor</h2>
+                </div>
+                <div class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div class="rounded-lg border border-whisper bg-white/[0.02] p-5">
+                        <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-teal/15 text-aqua">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        </div>
+                        <h3 class="text-base font-semibold text-white">Cycle workshops</h3>
+                        <p class="mt-2 text-sm leading-relaxed text-cloud/60">Run structured sessions that support the current Build Cycle — workshops, deep-dives, skill sprints.</p>
+                    </div>
+                    <div class="rounded-lg border border-whisper bg-white/[0.02] p-5">
+                        <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-teal/15 text-aqua">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z"/></svg>
+                        </div>
+                        <h3 class="text-base font-semibold text-white">Pod support</h3>
+                        <p class="mt-2 text-sm leading-relaxed text-cloud/60">Step in on-demand when pods raise their hand — advice, feedback, unblocking when they're stuck.</p>
+                    </div>
+                </div>
+                <div class="mt-5 rounded-md border border-whisper bg-white/[0.01] px-4 py-3">
+                    <p class="text-xs font-medium uppercase tracking-wider text-cloud/40">Room for all kinds of expertise</p>
+                    <p class="mt-1.5 text-sm text-cloud/60">Subject matter expert &ensp;·&ensp; Technical expert &ensp;·&ensp; Softer skills expert</p>
+                </div>
+                <button onclick="mentorSlideNext()"
+                    class="mt-8 w-full rounded-md bg-teal px-6 py-3 text-base font-semibold tracking-tight text-white shadow-[0_1px_4px_rgba(0,148,160,0.2)] transition-all duration-150 ease-spring hover:bg-teal/80 active:scale-[0.985] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal">
+                    Next
+                </button>
+            </div>
+
+            <!-- Slide 2 — What upskilling means here -->
+            <div id="mentor-slide-2" class="slide">
+                <div class="text-center">
+                    <p class="mb-2 text-sm font-medium uppercase tracking-widest text-cloud/40">Our definition</p>
+                    <h2 class="text-2xl font-bold tracking-tight text-white sm:text-3xl">What "upskilling" means at the Labs</h2>
+                </div>
+                <p class="mt-6 text-base leading-relaxed text-cloud/70">
+                    We're not a course platform. Upskilling here means learning through real, collaborative work. Upskillers take on genuine problems, form small teams (pods), and ship something — from research to prototype — over a multi-week cycle.
+                </p>
+                <p class="mt-4 text-base leading-relaxed text-cloud/70">
+                    As a mentor, you're supporting that process, not teaching a curriculum. Your real-world judgment is the asset. Upskillers bring the problems; you help them think better.
+                </p>
+                <div class="mt-8 flex gap-3">
+                    <button onclick="mentorSlideBack()"
+                        class="flex-1 rounded-md border border-whisper px-5 py-3 text-sm font-medium text-cloud/70 transition-colors duration-150 hover:border-white/[0.12] hover:text-cloud focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal">
+                        Back
+                    </button>
+                    <button onclick="showView('mentor-form')"
+                        class="flex-[3] rounded-md bg-teal px-6 py-3 text-base font-semibold tracking-tight text-white shadow-[0_1px_4px_rgba(0,148,160,0.2)] transition-all duration-150 ease-spring hover:bg-teal/80 active:scale-[0.985] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal">
+                        Set up my mentor profile
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</section>
+
+<!-- ============================================================= -->
+<!-- SCREEN 2c — Mentor profile form                               -->
+<!-- ============================================================= -->
+<section id="view-mentor-form" class="view">
+    <main class="mx-auto w-full max-w-xl px-4 py-8 sm:px-6">
+        <button onclick="showView('mentor-explainer')" class="mb-6 inline-flex items-center gap-1.5 text-sm text-cloud/60 transition-colors duration-150 hover:text-aqua focus-visible:outline-none focus-visible:text-aqua">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+            Back
+        </button>
+        <div class="rounded-lg border border-whisper bg-white/[0.02] p-8">
+            <div class="mb-6">
+                <p class="text-sm font-medium uppercase tracking-widest text-cloud/40">Mentor profile</p>
+                <h1 class="mt-1 text-2xl font-bold tracking-tight text-white">Set up your profile</h1>
+                <p class="mt-2 text-sm text-cloud/60">This helps us match you with cycles and pods that fit your expertise.</p>
+            </div>
+
+            <form onsubmit="submitMentorForm(event)" class="space-y-6">
+                <!-- Expertise tag picker -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-cloud">Expertise <span class="ml-0.5 text-red">*</span></label>
+                    <p class="text-xs text-cloud/50">Select all that apply.</p>
+                    <div class="flex flex-wrap gap-2" id="expertise-tags"></div>
+                </div>
+
+                <!-- Engagement modes -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-cloud">How you'd like to engage <span class="ml-0.5 text-red">*</span></label>
+                    <div class="space-y-2.5">
+                        <label class="flex items-center gap-3"><input type="checkbox" class="h-4 w-4 rounded accent-teal"><span class="text-sm text-cloud">Workshops</span></label>
+                        <label class="flex items-center gap-3"><input type="checkbox" class="h-4 w-4 rounded accent-teal"><span class="text-sm text-cloud">Office hours</span></label>
+                        <label class="flex items-center gap-3"><input type="checkbox" class="h-4 w-4 rounded accent-teal"><span class="text-sm text-cloud">Slack support</span></label>
+                        <label class="flex items-center gap-3"><input type="checkbox" class="h-4 w-4 rounded accent-teal"><span class="text-sm text-cloud">Pod coaching</span></label>
+                    </div>
+                </div>
+
+                <!-- Time zone -->
+                <div class="space-y-1.5">
+                    <label class="block text-sm font-medium text-cloud">Time zone <span class="ml-0.5 text-red">*</span></label>
+                    <div class="relative">
+                        <select class="block w-full appearance-none rounded-md border border-white/[0.10] bg-white/[0.04] px-3 py-2 pr-9 text-sm text-white focus:border-teal focus:outline-none focus:ring-1 focus:ring-teal transition-colors duration-150">
+                            <option class="bg-ink" value="">Select…</option>
+                            <option class="bg-ink">ET (UTC−5/−4)</option>
+                            <option class="bg-ink">CT (UTC−6/−5)</option>
+                            <option class="bg-ink">MT (UTC−7/−6)</option>
+                            <option class="bg-ink">PT (UTC−8/−7)</option>
+                            <option class="bg-ink">GMT (UTC+0)</option>
+                            <option class="bg-ink">CET (UTC+1)</option>
+                            <option class="bg-ink">IST (UTC+5:30)</option>
+                            <option class="bg-ink">AEST (UTC+10)</option>
+                        </select>
+                        <svg class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-cloud/60" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M6 8l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                </div>
+
+                <!-- Booking link -->
+                <div class="space-y-1.5">
+                    <label class="block text-sm font-medium text-cloud">Booking link <span class="ml-1 text-xs font-normal text-cloud/40">(optional)</span></label>
+                    <input type="url" placeholder="calendly.com/your-link"
+                        class="block w-full rounded-md border border-white/[0.10] bg-white/[0.04] px-3 py-2 text-sm text-white placeholder:text-cloud/40 focus:border-teal focus:outline-none focus:ring-1 focus:ring-teal transition-colors duration-150">
+                </div>
+
+                <!-- Referral -->
+                <div class="space-y-1.5">
+                    <label class="block text-sm font-medium text-cloud">Who referred you? <span class="ml-1 text-xs font-normal text-cloud/40">(optional)</span></label>
+                    <input type="text" placeholder="Name or handle"
+                        class="block w-full rounded-md border border-white/[0.10] bg-white/[0.04] px-3 py-2 text-sm text-white placeholder:text-cloud/40 focus:border-teal focus:outline-none focus:ring-1 focus:ring-teal transition-colors duration-150">
+                    <p class="text-xs text-cloud/40">Referred mentors carry more context — this helps us get to know you.</p>
+                </div>
+
+                <button type="submit"
+                    class="w-full rounded-md bg-teal px-6 py-3 text-base font-semibold tracking-tight text-white shadow-[0_1px_4px_rgba(0,148,160,0.2)] transition-all duration-150 ease-spring hover:bg-teal/80 active:scale-[0.985] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal">
+                    Save profile
+                </button>
+            </form>
+        </div>
+    </main>
+</section>
+
+<!-- ============================================================= -->
+<!-- SCREEN 2d — Cycle registration intake                         -->
+<!-- ============================================================= -->
+<section id="view-cycle-intake" class="view">
+    <main class="mx-auto w-full max-w-xl px-4 py-8 sm:px-6">
+        <button onclick="showView('dashboard')" class="mb-6 inline-flex items-center gap-1.5 text-sm text-cloud/60 transition-colors duration-150 hover:text-aqua focus-visible:outline-none focus-visible:text-aqua">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+            Back to dashboard
+        </button>
+        <div class="rounded-lg border border-whisper bg-white/[0.02] p-8">
+            <div class="mb-6">
+                <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-teal/20 px-3 py-1 text-xs font-semibold text-aqua">
+                    <span class="relative flex h-2 w-2"><span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-aqua opacity-75"></span><span class="relative inline-flex h-2 w-2 rounded-full bg-aqua"></span></span>
+                    Spring 2026 · Pod Formation
+                </div>
+                <h1 class="text-2xl font-bold tracking-tight text-white">Join Spring 2026</h1>
+                <p class="mt-2 text-sm text-cloud/60">A few questions to help us match you with the right pod.</p>
+            </div>
+
+            <form onsubmit="submitCycleIntake(event)" class="space-y-6">
+                <div class="space-y-1.5">
+                    <label class="block text-sm font-medium text-cloud">What problem area excites you most right now? <span class="ml-0.5 text-red">*</span></label>
+                    <textarea rows="3" placeholder="e.g. Making sense of AI tools in the workplace, how small teams collaborate more effectively…"
+                        class="block w-full resize-none rounded-md border border-white/[0.10] bg-white/[0.04] px-3 py-2 text-sm text-white placeholder:text-cloud/40 focus:border-teal focus:outline-none focus:ring-1 focus:ring-teal transition-colors duration-150"></textarea>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-cloud">Your current level in your primary area <span class="ml-0.5 text-red">*</span></label>
+                    <div class="flex gap-1.5">
+                        <label class="flex flex-1 cursor-pointer items-center justify-center rounded-md border border-whisper bg-white/[0.02] px-1 py-2.5 text-center text-xs font-medium text-cloud/60 transition-colors hover:border-teal/40 has-[:checked]:border-teal/40 has-[:checked]:bg-teal/[0.06] has-[:checked]:text-aqua"><input type="radio" name="skill-level" value="beginner" class="sr-only">Beginner</label>
+                        <label class="flex flex-1 cursor-pointer items-center justify-center rounded-md border border-whisper bg-white/[0.02] px-1 py-2.5 text-center text-xs font-medium text-cloud/60 transition-colors hover:border-teal/40 has-[:checked]:border-teal/40 has-[:checked]:bg-teal/[0.06] has-[:checked]:text-aqua"><input type="radio" name="skill-level" value="developing" class="sr-only">Developing</label>
+                        <label class="flex flex-1 cursor-pointer items-center justify-center rounded-md border border-whisper bg-white/[0.02] px-1 py-2.5 text-center text-xs font-medium text-cloud/60 transition-colors hover:border-teal/40 has-[:checked]:border-teal/40 has-[:checked]:bg-teal/[0.06] has-[:checked]:text-aqua"><input type="radio" name="skill-level" value="proficient" class="sr-only">Proficient</label>
+                        <label class="flex flex-1 cursor-pointer items-center justify-center rounded-md border border-whisper bg-white/[0.02] px-1 py-2.5 text-center text-xs font-medium text-cloud/60 transition-colors hover:border-teal/40 has-[:checked]:border-teal/40 has-[:checked]:bg-teal/[0.06] has-[:checked]:text-aqua"><input type="radio" name="skill-level" value="advanced" class="sr-only">Advanced</label>
+                        <label class="flex flex-1 cursor-pointer items-center justify-center rounded-md border border-whisper bg-white/[0.02] px-1 py-2.5 text-center text-xs font-medium text-cloud/60 transition-colors hover:border-teal/40 has-[:checked]:border-teal/40 has-[:checked]:bg-teal/[0.06] has-[:checked]:text-aqua"><input type="radio" name="skill-level" value="expert" class="sr-only">Expert</label>
+                    </div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="block text-sm font-medium text-cloud">What do you most want to get out of this cycle? <span class="ml-0.5 text-red">*</span></label>
+                    <textarea rows="3" placeholder="e.g. Build something real for my portfolio, learn to work with AI tools on a genuine problem…"
+                        class="block w-full resize-none rounded-md border border-white/[0.10] bg-white/[0.04] px-3 py-2 text-sm text-white placeholder:text-cloud/40 focus:border-teal focus:outline-none focus:ring-1 focus:ring-teal transition-colors duration-150"></textarea>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="block text-sm font-medium text-cloud">Hours per week you can commit <span class="ml-0.5 text-red">*</span></label>
+                    <div class="relative">
+                        <select class="block w-full appearance-none rounded-md border border-white/[0.10] bg-white/[0.04] px-3 py-2 pr-9 text-sm text-white focus:border-teal focus:outline-none focus:ring-1 focus:ring-teal transition-colors duration-150">
+                            <option class="bg-ink" value="">Select…</option>
+                            <option class="bg-ink">2–4 hrs / week</option>
+                            <option class="bg-ink">5–8 hrs / week</option>
+                            <option class="bg-ink">8+ hrs / week</option>
+                        </select>
+                        <svg class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-cloud/60" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M6 8l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="block text-sm font-medium text-cloud">Anything else we should know? <span class="ml-1 text-xs font-normal text-cloud/40">(optional)</span></label>
+                    <textarea rows="2" placeholder="Constraints, availability notes, anything that would help us match you well…"
+                        class="block w-full resize-none rounded-md border border-white/[0.10] bg-white/[0.04] px-3 py-2 text-sm text-white placeholder:text-cloud/40 focus:border-teal focus:outline-none focus:ring-1 focus:ring-teal transition-colors duration-150"></textarea>
+                </div>
+
+                <button type="submit"
+                    class="w-full rounded-md bg-teal px-6 py-3 text-base font-semibold tracking-tight text-white shadow-[0_1px_4px_rgba(0,148,160,0.2)] transition-all duration-150 ease-spring hover:bg-teal/80 active:scale-[0.985] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal">
+                    Submit registration
+                </button>
+            </form>
+        </div>
+    </main>
+</section>
+
+<!-- ============================================================= -->
 <!-- App chrome (top bar) — shown on dashboard / cycles / stubs    -->
 <!-- ============================================================= -->
 <header id="app-header" class="sticky top-0 z-50 hidden border-b border-whisper bg-[rgba(42,49,66,0.97)] backdrop-blur-sm backdrop-saturate-150">
@@ -434,153 +680,65 @@
             <p class="mt-1 text-sm text-cloud/60">Here's what's happening in the Labs right now.</p>
         </div>
 
-        <!-- Section A — Cycles (primary) -->
-        <section class="mb-12">
-            <div class="mb-4 flex items-end justify-between">
-                <div>
-                    <p class="text-sm font-medium uppercase tracking-widest text-cloud/40">Cycles</p>
-                    <h2 class="mt-0.5 text-lg font-semibold text-white">The heart of the Labs</h2>
+        <!-- Section A — Onboarding checklist (disappears when done) -->
+        <section id="onboarding-checklist" class="mb-8">
+            <div class="rounded-lg border border-teal/20 bg-teal/[0.03] p-6">
+                <div class="mb-5 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-teal">Setup</p>
+                        <h2 class="mt-1 text-lg font-semibold text-white">Get set up</h2>
+                    </div>
+                    <span id="checklist-count" class="rounded-full bg-teal/20 px-2.5 py-1 text-xs font-semibold text-aqua">2 left</span>
                 </div>
-                <button onclick="showView('cycles')" class="text-sm text-cloud/60 transition-colors duration-150 hover:text-aqua">Explore cycles &rarr;</button>
-            </div>
-
-            <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                <!-- Current cycle -->
-                <button onclick="showView('cycles')" class="group block rounded-lg border border-whisper bg-white/[0.02] p-6 text-left transition-colors duration-150 hover:border-white/[0.12] hover:bg-white/[0.04]">
-                    <div class="mb-3 flex items-center justify-between">
-                        <span class="inline-flex items-center gap-2 rounded-full bg-teal/20 px-3 py-1 text-xs font-semibold text-aqua">
-                            <span class="relative flex h-2 w-2"><span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-aqua opacity-75"></span><span class="relative inline-flex h-2 w-2 rounded-full bg-aqua"></span></span>
-                            Live now · Week 3
-                        </span>
-                        <span class="text-cloud/40 transition-colors group-hover:text-aqua">&rarr;</span>
-                    </div>
-                    <h3 class="text-lg font-semibold text-white">Spring 2026 Build Cycle</h3>
-                    <p class="mt-1 text-sm text-cloud/60 tabular-nums">Mar 2 – May 29, 2026</p>
-
-                    <!-- Slim phase indicator -->
-                    <div class="mt-4">
-                        <div class="mb-1.5 flex items-center justify-between text-[11px] font-medium uppercase tracking-wider text-cloud/40">
-                            <span class="text-aqua">Month 1 · Discovery</span>
-                            <span>Week 3 of 13</span>
-                        </div>
-                        <div class="flex gap-1">
-                            <!-- 13 mini week boxes -->
-                            <span class="h-1.5 flex-1 rounded-full bg-teal/40"></span>
-                            <span class="h-1.5 flex-1 rounded-full bg-teal/40"></span>
-                            <span class="h-1.5 flex-1 rounded-full bg-aqua shadow-[0_0_10px_rgba(77,187,194,0.5)]"></span>
-                            <span class="h-1.5 flex-1 rounded-full bg-white/[0.06]"></span>
-                            <span class="h-1.5 flex-1 rounded-full bg-white/[0.06]"></span>
-                            <span class="h-1.5 flex-1 rounded-full bg-white/[0.06]"></span>
-                            <span class="h-1.5 flex-1 rounded-full bg-white/[0.06]"></span>
-                            <span class="h-1.5 flex-1 rounded-full bg-white/[0.06]"></span>
-                            <span class="h-1.5 flex-1 rounded-full bg-white/[0.06]"></span>
-                            <span class="h-1.5 flex-1 rounded-full bg-white/[0.06]"></span>
-                            <span class="h-1.5 flex-1 rounded-full bg-white/[0.06]"></span>
-                            <span class="h-1.5 flex-1 rounded-full bg-white/[0.06]"></span>
-                            <span class="h-1.5 flex-1 rounded-full bg-white/[0.06]"></span>
-                        </div>
-                    </div>
-
-                    <!-- Next chance to join -->
-                    <div class="mt-4 flex items-center gap-2 rounded-md border border-teal/20 bg-teal/[0.04] px-3 py-2">
-                        <svg class="h-4 w-4 shrink-0 text-aqua" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>
-                        <span class="text-xs text-cloud/80">Next chance to join: <span class="font-medium text-aqua">Pod Registration · Mar 30</span></span>
-                    </div>
-                </button>
-
-                <!-- Next cycle -->
-                <div class="flex flex-col rounded-lg border border-whisper bg-white/[0.02] p-6">
-                    <span class="inline-flex w-fit items-center rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-cloud/60">Upcoming</span>
-                    <h3 class="mt-3 text-lg font-semibold text-white">Summer 2026 Build Cycle</h3>
-                    <p class="mt-1 text-sm text-cloud/60 tabular-nums">Projected: Jun 15 – Sep 11, 2026</p>
-                    <p class="mt-3 text-sm leading-relaxed text-cloud/60">
-                        The next full cycle. Register your interest now and we'll let you know the moment registration opens.
-                    </p>
-                    <div class="mt-auto pt-5">
-                        <button onclick="showView('cycles')"
-                            class="w-full rounded-md text-sm font-semibold tracking-tight text-cloud/60 ring-1 ring-whisper px-4 py-2 transition-all duration-150 ease-spring hover:bg-white/[0.04] hover:text-cloud hover:ring-white/[0.12] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal">
-                            Register interest
-                        </button>
-                    </div>
-                </div>
+                <ul class="space-y-4">
+                    <li class="flex items-start gap-3">
+                        <input type="checkbox" id="cl-email" onchange="tickChecklist('email')" class="mt-0.5 h-4 w-4 shrink-0 rounded accent-teal">
+                        <label for="cl-email" class="cursor-pointer text-sm text-cloud">
+                            Allowlist our email domain so our messages don't go to spam
+                            <span class="ml-1 text-xs text-aqua underline-offset-2 hover:underline">instructions &rarr;</span>
+                        </label>
+                    </li>
+                    <li class="flex items-start gap-3 opacity-50">
+                        <input type="checkbox" checked disabled class="mt-0.5 h-4 w-4 shrink-0 cursor-not-allowed rounded accent-teal">
+                        <span class="text-sm text-cloud/70">Slack invite sent — check your email to accept</span>
+                    </li>
+                    <li class="flex items-start gap-3 opacity-50">
+                        <input type="checkbox" checked disabled class="mt-0.5 h-4 w-4 shrink-0 cursor-not-allowed rounded accent-teal">
+                        <span class="text-sm text-cloud/70">You've been added to the Luma community calendar</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <input type="checkbox" id="cl-intro" onchange="tickChecklist('intro')" class="mt-0.5 h-4 w-4 shrink-0 rounded accent-teal">
+                        <label for="cl-intro" class="cursor-pointer text-sm text-cloud">
+                            Introduce yourself in <span class="text-aqua">#introductions</span> on Slack
+                        </label>
+                    </li>
+                </ul>
             </div>
         </section>
 
-        <!-- Section B — Upcoming workshops & events (secondary) -->
-        <section class="mb-12">
-            <div class="mb-4 flex items-end justify-between">
-                <h2 class="text-lg font-semibold text-white">Upcoming workshops &amp; events</h2>
-                <button onclick="showView('events')" class="text-sm text-cloud/60 transition-colors duration-150 hover:text-aqua">See all events &rarr;</button>
+        <!-- Section B — To-dos (role-based, dynamic) -->
+        <section class="mb-8">
+            <div class="mb-4">
+                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-cloud/40">Up next</p>
+                <h2 class="mt-1 text-lg font-semibold text-white">Up next for you</h2>
             </div>
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                <!-- event card -->
-                <button onclick="showView('event')" class="group block rounded-md border border-whisper bg-white/[0.02] p-5 text-left transition-colors duration-150 hover:border-white/[0.12] hover:bg-white/[0.04]">
-                    <div class="mb-2 flex items-center gap-2">
-                        <span class="text-xs font-medium uppercase tracking-wider text-cloud/40 tabular-nums">Jul 9 · 6:00 PM</span>
-                        <span class="rounded bg-teal/15 px-1.5 py-0.5 text-[10px] font-medium text-aqua">In person</span>
-                    </div>
-                    <h3 class="text-sm font-semibold text-cloud group-hover:text-white">Prompting for real work</h3>
-                    <p class="mt-1 text-sm text-cloud/60">A hands-on session on turning judgment into better AI output.</p>
-                </button>
-                <button onclick="showView('event')" class="group block rounded-md border border-whisper bg-white/[0.02] p-5 text-left transition-colors duration-150 hover:border-white/[0.12] hover:bg-white/[0.04]">
-                    <div class="mb-2 flex items-center gap-2">
-                        <span class="text-xs font-medium uppercase tracking-wider text-cloud/40 tabular-nums">Jul 14 · 12:00 PM</span>
-                        <span class="rounded bg-white/10 px-1.5 py-0.5 text-[10px] font-medium text-cloud/60">Virtual</span>
-                    </div>
-                    <h3 class="text-sm font-semibold text-cloud group-hover:text-white">Open office hours</h3>
-                    <p class="mt-1 text-sm text-cloud/60">Bring unfinished work and get feedback from mentors.</p>
-                </button>
-                <button onclick="showView('event')" class="group block rounded-md border border-whisper bg-white/[0.02] p-5 text-left transition-colors duration-150 hover:border-white/[0.12] hover:bg-white/[0.04]">
-                    <div class="mb-2 flex items-center gap-2">
-                        <span class="text-xs font-medium uppercase tracking-wider text-cloud/40 tabular-nums">Jul 22 · 6:30 PM</span>
-                        <span class="rounded bg-teal/15 px-1.5 py-0.5 text-[10px] font-medium text-aqua">In person</span>
-                    </div>
-                    <h3 class="text-sm font-semibold text-cloud group-hover:text-white">Community showcase</h3>
-                    <p class="mt-1 text-sm text-cloud/60">See what pods shipped this cycle and meet the community.</p>
-                </button>
+            <div id="todos-container">
+                <!-- populated by renderTodos() on form submit -->
             </div>
         </section>
 
-        <!-- Section C — My learning journey (below the fold) -->
+        <!-- Section C — Calendar (always visible) -->
         <section>
             <div class="mb-4">
-                <p class="text-sm font-medium uppercase tracking-widest text-cloud/40">My learning journey</p>
-                <h2 class="mt-0.5 text-lg font-semibold text-white">Your progress so far</h2>
+                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-cloud/40">Calendar</p>
+                <h2 class="mt-1 text-lg font-semibold text-white">What's coming up</h2>
             </div>
-            <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-                <!-- Past workshops attended (empty) -->
-                <div class="rounded-md border border-whisper bg-white/[0.02] p-6">
-                    <h3 class="text-sm font-semibold text-cloud">Past workshops</h3>
-                    <div class="mt-3 flex flex-col items-center justify-center rounded-md border border-dashed border-whisper bg-white/[0.01] p-6 text-center">
-                        <p class="text-sm text-cloud/60">You haven't attended any workshops yet — browse upcoming events above.</p>
-                    </div>
+            <div class="rounded-lg border border-dashed border-white/[0.10] bg-white/[0.01] p-10 text-center">
+                <div class="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-teal/15 text-aqua">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>
                 </div>
-
-                <!-- Pulse check & summary -->
-                <div class="rounded-md border border-whisper bg-white/[0.02] p-6">
-                    <h3 class="text-sm font-semibold text-cloud">Pulse check &amp; summary</h3>
-                    <div class="mt-3 flex flex-col items-center justify-center rounded-md border border-dashed border-whisper bg-white/[0.01] p-6 text-center">
-                        <p class="text-sm text-cloud/60">No pulse checks yet. They start once you join a cycle.</p>
-                    </div>
-                </div>
-
-                <!-- Resource library (preview → click-out) -->
-                <div class="rounded-md border border-whisper bg-white/[0.02] p-6">
-                    <div class="flex items-center justify-between">
-                        <h3 class="text-sm font-semibold text-cloud">Resource library</h3>
-                        <button onclick="showView('resources')" class="text-xs text-cloud/60 transition-colors hover:text-aqua">Browse the library &rarr;</button>
-                    </div>
-                    <ul class="mt-3 space-y-2">
-                        <li class="flex items-center gap-3 rounded-md border border-whisper bg-white/[0.02] px-3 py-2">
-                            <span class="flex h-7 w-7 items-center justify-center rounded bg-teal/15 text-[10px] font-semibold text-aqua">AI</span>
-                            <span class="text-sm text-cloud/80">AI prompt library</span>
-                        </li>
-                        <li class="flex items-center gap-3 rounded-md border border-whisper bg-white/[0.02] px-3 py-2">
-                            <span class="flex h-7 w-7 items-center justify-center rounded bg-teal/15 text-[10px] font-semibold text-aqua">PD</span>
-                            <span class="text-sm text-cloud/80">Problem discovery deck</span>
-                        </li>
-                    </ul>
-                </div>
+                <p class="text-sm font-medium text-cloud/60">Luma calendar</p>
+                <p class="mt-1 text-xs text-cloud/40">Live events and workshops will appear here.</p>
             </div>
         </section>
     </main>
@@ -782,14 +940,18 @@
 
 <script>
     /* ── View switching ───────────────────────────────────────── */
-    const CHROME_VIEWS = ['dashboard', 'cycles', 'events', 'event', 'resources', 'stub'];
+    const CHROME_VIEWS = ['dashboard', 'cycles', 'events', 'event', 'resources', 'stub', 'mentor-explainer', 'mentor-form', 'cycle-intake'];
 
     function showView(id) {
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
         const target = document.getElementById('view-' + id);
         if (target) target.classList.add('active');
-        // App chrome only on the post-signup screens
         document.getElementById('app-header').classList.toggle('hidden', !CHROME_VIEWS.includes(id));
+        // Reset mentor slides on re-entry
+        if (id === 'mentor-explainer') {
+            document.getElementById('mentor-slide-1').classList.add('active');
+            document.getElementById('mentor-slide-2').classList.remove('active');
+        }
         window.scrollTo(0, 0);
     }
 
@@ -828,16 +990,146 @@
     function tourBack() { if (tourSlide > 1) tourGoto(tourSlide - 1); }
     function tourSkip() { tourGoto(TOUR_SLIDES); }
 
-    /* ── Form → dashboard ─────────────────────────────────────── */
+    /* ── User state ──────────────────────────────────────────────── */
+    const userState = {
+        roles: [],
+        returning: false,
+        checklistDone: { email: false, intro: false },
+        mentorDone: false,
+        cycleRegistered: false,
+    };
+
+    /* ── Google auth routing ─────────────────────────────────────── */
+    function signinReturning() {
+        userState.returning = true;
+        showView('google-auth');
+    }
+
+    function continueWithGoogle() {
+        if (userState.returning) {
+            renderTodos();
+            showView('dashboard');
+        } else {
+            showView('role-intent');
+        }
+    }
+
+    /* ── Role intent ─────────────────────────────────────────────── */
+    function updateRoleIntentButton() {
+        const anyChecked = document.querySelectorAll('#role-intent-options input[type="checkbox"]:checked').length > 0;
+        document.getElementById('role-intent-btn').disabled = !anyChecked;
+    }
+
+    function submitRoleIntent() {
+        userState.roles = [];
+        document.querySelectorAll('#role-intent-options input[type="checkbox"]:checked').forEach(cb => {
+            userState.roles.push(cb.value);
+        });
+        showView('form');
+    }
+
+    /* ── Form → dashboard ────────────────────────────────────────── */
     function submitForm(e) {
         e.preventDefault();
         const first = (document.getElementById('f-first').value || '').trim();
         document.getElementById('dash-greeting').textContent =
             'Welcome, ' + (first || 'Alex') + '.';
+        renderTodos();
         showView('dashboard');
     }
 
     function logout() { showView('login'); }
+
+    /* ── Onboarding checklist ────────────────────────────────────── */
+    function tickChecklist(key) {
+        userState.checklistDone[key] = document.getElementById('cl-' + key).checked;
+        const remaining = Object.values(userState.checklistDone).filter(v => !v).length;
+        const countEl = document.getElementById('checklist-count');
+        if (countEl) countEl.textContent = remaining + ' left';
+        if (remaining === 0) {
+            const section = document.getElementById('onboarding-checklist');
+            if (section) section.style.display = 'none';
+        }
+    }
+
+    /* ── To-dos ──────────────────────────────────────────────────── */
+    function renderTodos() {
+        const container = document.getElementById('todos-container');
+        if (!container) return;
+        container.innerHTML = '';
+
+        const hasCycle = userState.roles.includes('cycle') && !userState.cycleRegistered;
+        const hasMentor = userState.roles.includes('mentor') && !userState.mentorDone;
+
+        if (!hasCycle && !hasMentor) {
+            container.innerHTML = '<p class="text-sm text-cloud/40">Nothing to action right now — check back after the next cycle opens.</p>';
+            return;
+        }
+
+        if (hasCycle) {
+            const div = document.createElement('div');
+            div.className = 'mb-4 rounded-lg border border-whisper bg-white/[0.02] p-5';
+            div.innerHTML = `
+                <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                        <div class="mb-1.5 inline-flex items-center gap-2 rounded-full bg-teal/20 px-2.5 py-0.5 text-xs font-semibold text-aqua">
+                            <span class="relative flex h-1.5 w-1.5"><span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-aqua opacity-75"></span><span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-aqua"></span></span>
+                            Live now
+                        </div>
+                        <h3 class="text-base font-semibold text-white">Join Spring 2026 at Pod Formation</h3>
+                        <p class="mt-1 text-sm text-cloud/60">Opens Mar 30 · Weeks 4–5. Join a pod and ship something real over the rest of the cycle.</p>
+                    </div>
+                    <button onclick="showView('cycle-intake')"
+                        class="shrink-0 rounded-md bg-teal px-4 py-2 text-sm font-semibold tracking-tight text-white shadow-[0_1px_4px_rgba(0,148,160,0.2)] transition-all duration-150 ease-spring hover:bg-teal/80 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal">
+                        Join now
+                    </button>
+                </div>`;
+            container.appendChild(div);
+        }
+
+        if (hasMentor) {
+            const div = document.createElement('div');
+            div.className = 'mb-4 rounded-lg border border-whisper bg-white/[0.02] p-5';
+            div.innerHTML = `
+                <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                        <h3 class="text-base font-semibold text-white">Complete your mentor profile</h3>
+                        <p class="mt-1 text-sm text-cloud/60">Tell us about your expertise so we can match you with cycles and pods.</p>
+                    </div>
+                    <button onclick="showView('mentor-explainer')"
+                        class="shrink-0 rounded-md border border-whisper px-4 py-2 text-sm font-semibold tracking-tight text-cloud transition-all duration-150 ease-spring hover:border-white/[0.12] hover:bg-white/[0.04] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal">
+                        Get started &rarr;
+                    </button>
+                </div>`;
+            container.appendChild(div);
+        }
+    }
+
+    /* ── Mentor explainer slides ─────────────────────────────────── */
+    function mentorSlideNext() {
+        document.getElementById('mentor-slide-1').classList.remove('active');
+        document.getElementById('mentor-slide-2').classList.add('active');
+    }
+    function mentorSlideBack() {
+        document.getElementById('mentor-slide-2').classList.remove('active');
+        document.getElementById('mentor-slide-1').classList.add('active');
+    }
+
+    /* ── Mentor form submit ──────────────────────────────────────── */
+    function submitMentorForm(e) {
+        e.preventDefault();
+        userState.mentorDone = true;
+        renderTodos();
+        showView('dashboard');
+    }
+
+    /* ── Cycle intake submit ─────────────────────────────────────── */
+    function submitCycleIntake(e) {
+        e.preventDefault();
+        userState.cycleRegistered = true;
+        renderTodos();
+        showView('dashboard');
+    }
 
     /* ── Build the 13-week timeline (Screen 4) ────────────────── */
     (function buildTimeline() {
@@ -882,6 +1174,19 @@
                 '<div class="my-1 flex h-8 w-8 items-center justify-center rounded-md border-2 text-xs font-bold tabular-nums ' + box + '">' + w.n + '</div>' +
                 '<div class="h-9 ' + (above ? 'invisible' : '') + '">' + labelBlock + '</div>';
             wrap.appendChild(col);
+        });
+    })();
+
+    /* ── Expertise tag picker ────────────────────────────────────── */
+    (function initExpertiseTags() {
+        const TAGS = ['Product', 'Design', 'Engineering', 'Data', 'AI / ML', 'Research', 'Strategy', 'Communication', 'Leadership', 'Finance', 'Operations', 'Other'];
+        const wrap = document.getElementById('expertise-tags');
+        if (!wrap) return;
+        TAGS.forEach(tag => {
+            const label = document.createElement('label');
+            label.className = 'inline-flex cursor-pointer items-center rounded-full border border-whisper bg-white/[0.02] px-3 py-1.5 text-sm text-cloud/70 transition-colors duration-150 has-[:checked]:border-teal/40 has-[:checked]:bg-teal/[0.06] has-[:checked]:text-aqua hover:border-white/[0.12]';
+            label.innerHTML = '<input type="checkbox" class="sr-only"><span>' + tag + '</span>';
+            wrap.appendChild(label);
         });
     })();
 
