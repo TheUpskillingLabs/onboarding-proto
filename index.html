@@ -29,7 +29,7 @@ button,input,select,textarea { font-family:inherit; }
 #screens { position:relative; min-height:100svh; }
 
 /* ════ View system ════ */
-.view { display:none; min-height:100svh; flex-direction:column; }
+.view { display:none; min-height:100svh; flex-direction:column; position:relative; }
 .view.active { display:flex; animation:viewIn .34s cubic-bezier(.2,.7,.1,1); }
 @keyframes viewIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
 .vscroll { flex:1 1 auto; overflow-y:auto; -webkit-overflow-scrolling:touch; }
@@ -274,7 +274,7 @@ button,input,select,textarea { font-family:inherit; }
 /* ════════ v8 — public browse, labs, profile, open-source ════════ */
 
 /* public sticky nav (over landing/about) */
-.pubnav { background:linear-gradient(to bottom, var(--ink) 0%, transparent 100%); flex-shrink:0; }
+.pubnav { position:absolute; top:0; left:0; right:0; z-index:60; background:linear-gradient(to bottom, var(--ink) 0%, transparent 100%); }
 .pubnav-inner { max-width:var(--maxw); margin:0 auto; padding:12px var(--pad); display:flex; align-items:center; gap:20px; }
 .pubnav .nav-links { display:none; margin-left:auto; gap:2px; }
 .pubnav .pub-cta { display:flex; align-items:center; gap:8px; }
@@ -283,7 +283,7 @@ button,input,select,textarea { font-family:inherit; }
 
 /* landing hero band (dark cover, not full-screen) */
 .hero-band { position:relative; z-index:2; overflow:hidden; border-radius:0 0 calc(var(--r)*3) calc(var(--r)*3); margin-bottom:calc(-3*var(--r)); }
-.hero-inner { max-width:var(--maxw); margin:0 auto; padding:64px var(--pad) 72px; }
+.hero-inner { max-width:var(--maxw); margin:0 auto; padding:124px var(--pad) 72px; }
 
 /* generic content section */
 .section { padding:56px 0; }
@@ -342,7 +342,7 @@ button,input,select,textarea { font-family:inherit; }
   .pubnav .nav-links { display:flex; }
   .pub-signin { display:inline-flex; }
   .pubnav .title { display:none; }
-  .hero-inner { padding:88px var(--pad) 104px; }
+  .hero-inner { padding:148px var(--pad) 104px; }
   .section { padding:72px 0; }
   #sec-cycles { padding-top:72px; }
   .prof-head { gap:32px; }
@@ -350,7 +350,7 @@ button,input,select,textarea { font-family:inherit; }
 }
 
 /* dark nav — the logo only ever sits on dark navy */
-.pubnav { background:linear-gradient(to bottom, var(--ink) 0%, transparent 100%); }
+.pubnav { position:absolute; top:0; left:0; right:0; z-index:60; background:linear-gradient(to bottom, var(--ink) 0%, transparent 100%); }
 .topnav { background:var(--ink); border-bottom:1px solid rgba(255,255,255,.08); }
 .pubnav-inner, .topnav-inner { color:var(--od1); }
 .nav-link { color:var(--od3); }
