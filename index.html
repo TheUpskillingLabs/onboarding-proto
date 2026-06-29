@@ -231,6 +231,10 @@ button,input,select,textarea { font-family:inherit; }
 
 @media (prefers-reduced-motion: reduce) { .view.active, .panel.active { animation:none; } .seg-fill { transition:none; } }
 
+/* ════ Onboarding mobile — full-height, no-scroll forms ════ */
+.onboard { height:100svh; overflow:hidden; }
+.onboard .sheet { flex:1; display:flex; flex-direction:column; overflow:hidden; background:var(--white); }
+
 /* ════ DESKTOP ════ */
 @media (min-width:1024px) {
   :root { --pad:40px; }
@@ -244,7 +248,7 @@ button,input,select,textarea { font-family:inherit; }
   /* onboarding light screens => centered Airbnb-style sheet */
   .onboard { align-items:center; justify-content:center; padding:48px;
     background:radial-gradient(120% 80% at 50% 0%, #FCFBF8 0%, var(--paper) 55%); }
-  .onboard .sheet { width:min(560px,100%); max-height:min(880px, 88vh); background:var(--white); border-radius:24px; box-shadow:var(--shadow-lg); overflow:hidden; display:flex; flex-direction:column; }
+  .onboard .sheet { flex:none; width:min(560px,100%); max-height:min(880px, 88vh); background:var(--white); border-radius:24px; box-shadow:var(--shadow-lg); overflow:hidden; display:flex; flex-direction:column; }
   .onboard .light-bar { background:var(--white); }
 
   /* cover screens center content */
@@ -284,7 +288,8 @@ button,input,select,textarea { font-family:inherit; }
 
 /* landing hero band (dark cover, not full-screen) */
 .hero-band { position:relative; z-index:2; overflow:hidden; border-radius:0 0 calc(var(--r)*3) calc(var(--r)*3); margin-bottom:calc(-3*var(--r)); }
-.hero-inner { max-width:var(--maxw); margin:0 auto; padding:124px var(--pad) 72px; }
+#view-landing .hero-band { min-height:100svh; display:flex; flex-direction:column; justify-content:center; }
+.hero-inner { max-width:var(--maxw); margin:0 auto; padding:80px var(--pad) 64px; }
 
 /* generic content section */
 .section { padding:56px 0; }
@@ -343,7 +348,7 @@ button,input,select,textarea { font-family:inherit; }
   .pubnav .nav-links { display:flex; }
   .pub-signin { display:inline-flex; }
   .pubnav .title { display:none; }
-  .hero-inner { padding:148px var(--pad) 104px; }
+  .hero-inner { padding:80px var(--pad) 80px; }
   .section { padding:72px 0; }
   #sec-cycles { padding-top:72px; }
   .prof-head { gap:32px; }
