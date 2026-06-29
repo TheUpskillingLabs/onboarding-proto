@@ -274,7 +274,7 @@ button,input,select,textarea { font-family:inherit; }
 /* ════════ v8 — public browse, labs, profile, open-source ════════ */
 
 /* public sticky nav (over landing/about) */
-.pubnav { position:sticky; top:0; z-index:60; background:var(--ink); border-bottom:1px solid rgba(255,255,255,.08); flex-shrink:0; }
+.pubnav { background:linear-gradient(135deg, var(--ink) 0%, var(--navy) 100%); border-bottom:1px solid rgba(255,255,255,.08); flex-shrink:0; }
 .pubnav-inner { max-width:var(--maxw); margin:0 auto; padding:12px var(--pad); display:flex; align-items:center; gap:20px; }
 .pubnav .nav-links { display:none; margin-left:auto; gap:2px; }
 .pubnav .pub-cta { display:flex; align-items:center; gap:8px; }
@@ -344,12 +344,14 @@ button,input,select,textarea { font-family:inherit; }
   .pubnav .title { display:none; }
   .hero-inner { padding:88px var(--pad) 104px; }
   .section { padding:72px 0; }
+  #sec-cycles { padding-top:72px; }
   .prof-head { gap:32px; }
   .avatar-lg { width:104px; height:104px; font-size:38px; }
 }
 
 /* dark nav — the logo only ever sits on dark navy */
-.pubnav, .topnav { background:var(--ink); border-bottom:1px solid rgba(255,255,255,.08); }
+.pubnav { background:linear-gradient(135deg, var(--ink) 0%, var(--navy) 100%); border-bottom:1px solid rgba(255,255,255,.08); }
+.topnav { background:var(--ink); border-bottom:1px solid rgba(255,255,255,.08); }
 .pubnav-inner, .topnav-inner { color:var(--od1); }
 .nav-link { color:var(--od3); }
 .nav-link:hover { color:var(--od1); background:rgba(255,255,255,.06); }
@@ -392,8 +394,7 @@ button,input,select,textarea { font-family:inherit; }
           <a class="nav-link" onclick="showView('about')">About</a>
         </nav>
         <div class="pub-cta" style="margin-left:auto;">
-          <button class="btn-link pub-signin" onclick="signinReturning()">Log in</button>
-          <button class="btn btn-red" onclick="startCreateAccount()">Create account</button>
+          <button class="btn btn-ghost" onclick="signinReturning()">Log in</button>
         </div>
       </div>
     </header>
@@ -407,7 +408,6 @@ button,input,select,textarea { font-family:inherit; }
           <button class="btn btn-red btn-lg" onclick="startCreateAccount()">Create account</button>
           <button class="btn btn-ghost btn-lg" onclick="showView('about')">How it works</button>
         </div>
-        <p class="t-small" style="color:var(--od3);margin-top:24px;">Free · public · anyone can join — already a member? <a onclick="signinReturning()" style="color:var(--od1);cursor:pointer;text-decoration:underline;">Sign in</a></p>
       </div>
     </div>
 
@@ -441,7 +441,7 @@ button,input,select,textarea { font-family:inherit; }
       </section>
 
       <!-- Cycles -->
-      <section class="section s-white" id="sec-cycles"><div class="container">
+      <section class="section s-white" id="sec-cycles" style="padding-top:56px;"><div class="container">
         <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Build Cycles · 4 a year</div><h2 class="t-h2">Join a cohort, ship something real</h2></div><span class="see" onclick="startCreateAccount()">See all →</span></div>
         <div class="cards two">
           <div class="card expandable tappable" onclick="toggleExpand(this,event)">
@@ -644,7 +644,7 @@ button,input,select,textarea { font-family:inherit; }
     <header class="pubnav">
       <div class="pubnav-inner">
         <div style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="showView('landing')"><img src="assets/logo-lockup-light.png" alt="The Upskilling Labs" style="height:36px;width:auto;display:block;"></div>
-        <div class="pub-cta" style="margin-left:auto;"><button class="btn-link pub-signin" onclick="signinReturning()">Log in</button><button class="btn btn-red" onclick="startCreateAccount()">Create account</button></div>
+        <div class="pub-cta" style="margin-left:auto;"><button class="btn btn-ghost" onclick="signinReturning()">Log in</button></div>
       </div>
     </header>
     <div class="vscroll">
