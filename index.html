@@ -274,7 +274,7 @@ button,input,select,textarea { font-family:inherit; }
 /* ════════ v8 — public browse, labs, profile, open-source ════════ */
 
 /* public sticky nav (over landing/about) */
-.pubnav { background:linear-gradient(135deg, var(--ink) 0%, var(--navy) 100%); border-bottom:1px solid rgba(255,255,255,.08); flex-shrink:0; }
+.pubnav { background:linear-gradient(to bottom, var(--ink) 0%, transparent 100%); flex-shrink:0; }
 .pubnav-inner { max-width:var(--maxw); margin:0 auto; padding:12px var(--pad); display:flex; align-items:center; gap:20px; }
 .pubnav .nav-links { display:none; margin-left:auto; gap:2px; }
 .pubnav .pub-cta { display:flex; align-items:center; gap:8px; }
@@ -350,13 +350,14 @@ button,input,select,textarea { font-family:inherit; }
 }
 
 /* dark nav — the logo only ever sits on dark navy */
-.pubnav { background:linear-gradient(135deg, var(--ink) 0%, var(--navy) 100%); border-bottom:1px solid rgba(255,255,255,.08); }
+.pubnav { background:linear-gradient(to bottom, var(--ink) 0%, transparent 100%); }
 .topnav { background:var(--ink); border-bottom:1px solid rgba(255,255,255,.08); }
 .pubnav-inner, .topnav-inner { color:var(--od1); }
 .nav-link { color:var(--od3); }
 .nav-link:hover { color:var(--od1); background:rgba(255,255,255,.06); }
 .nav-link.active { color:var(--od1); background:rgba(255,255,255,.12); box-shadow:none; }
 .pub-signin { color:var(--od2); }
+.pubnav .btn-ghost { color:var(--od1); border-color:rgba(255,255,255,.42); }
 
 /* dense experiences grid (workshops / events) — many columns, compact tiles */
 .cards.dense { grid-template-columns:repeat(2,1fr); gap:14px; align-items:start; }
@@ -866,11 +867,10 @@ button,input,select,textarea { font-family:inherit; }
               <div style="display:flex;align-items:flex-end;justify-content:space-between;border-bottom:2px solid var(--ink);padding-bottom:12px;"><div class="lbl lbl-teal">Your profile</div><span id="checklist-count" class="lbl">2 left</span></div>
               <h3 class="t-h3" style="margin:18px 0 4px;">Complete your profile</h3>
               <div id="checklist-items">
+                <div class="check-row"><input type="checkbox" onchange="tickChecklist(this)"><div><div class="t-h4" style="margin-bottom:2px;">Confirm your email</div><div class="t-small">Click the link we sent to your inbox</div></div></div>
+                <div class="check-row"><input type="checkbox" onchange="tickChecklist(this)"><div><div class="t-h4" style="margin-bottom:2px;">Join our Slack workspace</div><div class="t-small">Accept the invite — that's where the community lives</div></div></div>
+                <div class="check-row"><input type="checkbox" onchange="tickChecklist(this)"><div><div class="t-h4" style="margin-bottom:2px;">Complete your public profile</div><div class="t-small">Add a bio so pods can find you</div></div></div>
                 <div id="role-items"></div>
-                <div class="check-row"><input type="checkbox" onchange="tickChecklist(this)"><div><div class="t-h4" style="margin-bottom:2px;">Allowlist our email domain</div><div class="t-small">So our messages don't go to spam</div></div></div>
-                <div class="check-row"><input type="checkbox" checked disabled><div><div class="t-h4" style="color:var(--meta);text-decoration:line-through;">Slack invite sent</div></div></div>
-                <div class="check-row"><input type="checkbox" checked disabled><div><div class="t-h4" style="color:var(--meta);text-decoration:line-through;">Added to community calendar</div></div></div>
-                <div class="check-row"><input type="checkbox" onchange="tickChecklist(this)"><div><div class="t-h4" style="margin-bottom:2px;">Set up your public profile</div><div class="t-small">Add a bio so pods can find you</div></div></div>
               </div>
               <div style="border-bottom:2px solid var(--ink);padding-bottom:12px;margin-top:40px;"><div class="lbl lbl-teal">Up next</div></div>
               <h3 class="t-h3" style="margin:18px 0 16px;">Up next for you</h3>
@@ -1131,11 +1131,11 @@ button,input,select,textarea { font-family:inherit; }
 
 <script>
 const userState = {name:'Alex', initials:'AR', roles:[], isMentor:false, completed:{}};
-const FLOW_ROLES=['cycle','volunteer','mentor']; // roles with a deferrable setup flow ('events' is passive)
+const FLOW_ROLES=['mentor','volunteer','cycle']; // roles with a deferrable setup flow ('events' is passive)
 const ROLE_ITEMS={
-  cycle:{title:'Register for the Spring 2026 Build Cycle', sub:'Pick a problem area and your commitment.'},
-  mentor:{title:'Complete your mentor profile', sub:'Tell pods what you bring and how to reach you.'},
-  volunteer:{title:'Complete your volunteer profile', sub:'Tell us where and how you want to help.'}
+  mentor:{title:'Complete the mentor section of your profile', sub:'Tell pods what you bring and how to reach you.'},
+  volunteer:{title:'Complete the volunteer section of your profile', sub:'Tell us where and how you want to help.'},
+  cycle:{title:'Register for the Spring 2026 Build Cycle', sub:'Pick a problem area and your commitment.'}
 };
 let mentorStep = 1; let gateContext = ''; let mentorBack=()=>showView('role-intent');
 
