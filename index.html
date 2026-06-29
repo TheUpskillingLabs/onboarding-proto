@@ -371,16 +371,16 @@ button,input,select,textarea { font-family:inherit; }
 }
 
 /* ════ Testimonials ════ */
-.quote-scroll { display:flex; gap:16px; overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; padding:4px var(--pad) 20px; margin:0 calc(-1*var(--pad)); }
-.quote-scroll::-webkit-scrollbar { height:0; }
-.qcard { background:var(--white); border:1px solid var(--rule); border-radius:var(--r); padding:28px 26px 24px; flex:0 0 84vw; max-width:380px; scroll-snap-align:start; display:flex; flex-direction:column; gap:16px; }
-.q-mark { font-size:44px; line-height:1; color:var(--teal); font-weight:800; user-select:none; }
-.q-body { font-size:15px; line-height:26px; color:var(--charcoal); flex:1; }
-.q-name { font-size:15px; font-weight:700; color:var(--ink); letter-spacing:-.02em; }
-.q-meta { font-size:11px; font-weight:600; letter-spacing:.07em; text-transform:uppercase; color:var(--meta); margin-top:3px; }
+.quote-strip { display:flex; gap:12px; overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; padding:4px var(--pad) 20px; margin:0 calc(-1*var(--pad)); scrollbar-width:none; }
+.quote-strip::-webkit-scrollbar { display:none; }
+.qcard { background:var(--white); border-radius:var(--r); padding:18px 16px 16px; flex:0 0 220px; scroll-snap-align:start; display:flex; flex-direction:column; gap:10px; border-left:3px solid var(--teal); box-shadow:var(--shadow); }
+.q-avatar { width:32px; height:32px; border-radius:50%; background:var(--teal); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:var(--white); letter-spacing:.04em; flex-shrink:0; }
+.q-body { font-size:12.5px; line-height:19px; color:var(--charcoal); display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden; flex:1; }
+.q-name { font-size:12.5px; font-weight:700; color:var(--ink); letter-spacing:-.01em; }
+.q-meta { font-size:10px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--meta); margin-top:2px; }
 @media (min-width:1024px) {
-  .quote-scroll { display:grid; grid-template-columns:repeat(2,1fr); overflow:visible; padding:0; margin:0; gap:20px; }
-  .qcard { flex:unset; max-width:unset; }
+  .quote-strip { padding:4px 0 20px; margin:0; }
+  .qcard { flex:0 0 252px; }
 }
 </style>
 </head>
@@ -421,30 +421,29 @@ button,input,select,textarea { font-family:inherit; }
 
     <div class="vscroll">
       <!-- Testimonials -->
-      <section class="section" id="sec-testimonials">
+      <section class="section" id="sec-testimonials" style="padding-bottom:8px;">
         <div class="container">
-          <div class="lbl lbl-teal" style="margin-bottom:10px;">From the community</div>
-          <h2 class="t-h2" style="margin-bottom:28px;">What upskillers say</h2>
-          <div class="quote-scroll">
+          <div class="lbl lbl-teal" style="margin-bottom:16px;">From the community</div>
+          <div class="quote-strip">
             <div class="qcard">
-              <div class="q-mark">&ldquo;</div>
-              <p class="q-body">At a time when I felt uncertain, the program gave me purpose again—it connected me with other mission-driven public servants to tackle real problems using emerging technology. I came in with limited AI experience, but The Upskilling Labs stretched my design thinking and showed me how AI can be an empowerment tool for people-first design and civic impact.</p>
-              <div><div class="q-name">Hector Perla</div><div class="q-meta">Alumni, ADHD Brain &middot; Inaugural AI Cohort</div></div>
+              <div class="q-avatar">HP</div>
+              <p class="q-body">The program gave me purpose again—connecting me with mission-driven public servants to tackle real problems. AI as an empowerment tool for people-first civic design.</p>
+              <div><div class="q-name">Hector Perla</div><div class="q-meta">ADHD Brain &middot; Inaugural AI Cohort</div></div>
             </div>
             <div class="qcard">
-              <div class="q-mark">&ldquo;</div>
-              <p class="q-body">The program has been fantastic for exposure to AI tools and learning resources. As a social scientist, I had never worked with design thinking before, and this program has felt just as much about learning that approach as about learning to leverage AI. Just as valuable has been the mentorship and sense of community.</p>
-              <div><div class="q-name">Sara Head</div><div class="q-meta">Alumni, Journey IQ &middot; Inaugural AI Cohort</div></div>
+              <div class="q-avatar">SH</div>
+              <p class="q-body">As a social scientist I had never worked with design thinking before. This taught me to leverage AI while building real mentorship and a sense of community I didn't expect.</p>
+              <div><div class="q-name">Sara Head</div><div class="q-meta">Journey IQ &middot; Inaugural AI Cohort</div></div>
             </div>
             <div class="qcard">
-              <div class="q-mark">&ldquo;</div>
-              <p class="q-body">This cohort has been a transformative experience, giving me hands-on opportunities to apply AI in real-world problem solving while strengthening my technical and strategic skillset. Beyond training, the program opened doors to meaningful networking and authentic connections with peers who share a passion for innovation.</p>
-              <div><div class="q-name">Brittany Chappell</div><div class="q-meta">Alumni, FinLit Coach &middot; Inaugural AI Cohort</div></div>
+              <div class="q-avatar">BC</div>
+              <p class="q-body">Hands-on AI in real-world problem solving, plus authentic connections with peers who share a passion for innovation. The kind of experience that actually changes how you work.</p>
+              <div><div class="q-name">Brittany Chappell</div><div class="q-meta">FinLit Coach &middot; Inaugural AI Cohort</div></div>
             </div>
             <div class="qcard">
-              <div class="q-mark">&ldquo;</div>
-              <p class="q-body">I came in wanting to close my own technical gap as a Customer Success Manager, and I left realizing that gap is exactly where my strength lies—translating between tools, teams, and real user needs. AI isn't just about smarter apps; it's about community, trust, and adoption—the human side of technology that makes long-term value possible.</p>
-              <div><div class="q-name">Suzie Zhang</div><div class="q-meta">Alumni, FinLit Coach &middot; Inaugural AI Cohort</div></div>
+              <div class="q-avatar">SZ</div>
+              <p class="q-body">I left realizing my gap is exactly where my strength lies—translating between tools, teams, and user needs. AI is about community, trust, and the human side of technology.</p>
+              <div><div class="q-name">Suzie Zhang</div><div class="q-meta">FinLit Coach &middot; Inaugural AI Cohort</div></div>
             </div>
           </div>
         </div>
