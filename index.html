@@ -282,14 +282,14 @@ button,input,select,textarea { font-family:inherit; }
 .pubnav { position:absolute; top:0; left:0; right:0; z-index:60; background:linear-gradient(to bottom, var(--ink) 0%, transparent 100%); }
 .pubnav-inner { max-width:var(--maxw); margin:0 auto; padding:12px var(--pad); display:flex; align-items:center; gap:20px; }
 .pubnav .nav-links { display:none; margin-left:auto; gap:2px; }
-.pubnav .pub-cta { display:flex; align-items:center; gap:8px; }
+.pubnav .pub-cta { display:none; align-items:center; gap:8px; }
 .pubnav .pub-cta .btn { padding:10px 18px; font-size:14px; }
 .pub-signin { display:none; }
 
 /* landing hero band (dark cover, not full-screen) */
 .hero-band { position:relative; z-index:2; overflow:hidden; border-radius:0 0 calc(var(--r)*3) calc(var(--r)*3); margin-bottom:calc(-3*var(--r)); }
-#view-landing .hero-band { min-height:100svh; display:flex; flex-direction:column; justify-content:center; }
-.hero-inner { max-width:var(--maxw); margin:0 auto; padding:80px var(--pad) 64px; }
+#view-landing .hero-band { min-height:100svh; }
+.hero-inner { max-width:var(--maxw); margin:0 auto; padding:124px var(--pad) 72px; }
 
 /* generic content section */
 .section { padding:56px 0; }
@@ -348,11 +348,14 @@ button,input,select,textarea { font-family:inherit; }
   .pubnav .nav-links { display:flex; }
   .pub-signin { display:inline-flex; }
   .pubnav .title { display:none; }
-  .hero-inner { padding:80px var(--pad) 80px; }
+  .hero-inner { padding:148px var(--pad) 104px; }
   .section { padding:72px 0; }
   #sec-cycles { padding-top:72px; }
   .prof-head { gap:32px; }
   .avatar-lg { width:104px; height:104px; font-size:38px; }
+  .pubnav .pub-cta { display:flex; }
+  .ham-btn { display:none; }
+  .hero-login { display:none; }
 }
 
 /* dark nav — the logo only ever sits on dark navy */
@@ -364,6 +367,18 @@ button,input,select,textarea { font-family:inherit; }
 .nav-link.active { color:var(--od1); background:rgba(255,255,255,.12); box-shadow:none; }
 .pub-signin { color:var(--od2); }
 .pubnav .btn-ghost { color:var(--od1); border-color:rgba(255,255,255,.42); }
+
+/* hamburger menu (mobile only) */
+.ham-btn { display:flex; align-items:center; justify-content:center; width:42px; height:42px; margin-left:auto; background:none; border:none; cursor:pointer; color:var(--od1); flex-shrink:0; }
+.ham-btn .close-icon { display:none; }
+.ham-btn.open .ham-icon { display:none; }
+.ham-btn.open .close-icon { display:block; }
+.ham-menu { display:none; flex-direction:column; background:var(--ink); padding:4px var(--pad) 16px; }
+.ham-menu.open { display:flex; animation:viewIn .18s ease; }
+.ham-menu .nav-link { color:var(--od2); font-size:16px; font-weight:500; padding:15px 2px; border-radius:0; border-bottom:1px solid rgba(255,255,255,.08); }
+.ham-menu .nav-link:last-child { border-bottom:none; }
+.ham-menu .nav-link:hover { color:var(--od1); background:transparent; }
+.hero-login { display:inline-flex; }
 
 /* dense experiences grid (workshops / events) — many columns, compact tiles */
 .cards.dense { grid-template-columns:repeat(2,1fr); gap:14px; align-items:start; }
@@ -403,14 +418,25 @@ button,input,select,textarea { font-family:inherit; }
         <div class="pub-cta" style="margin-left:auto;">
           <button class="btn btn-ghost" onclick="signinReturning()">Log in</button>
         </div>
+        <button class="ham-btn" id="ham-btn" onclick="toggleHamMenu()" aria-label="Open menu">
+          <svg class="ham-icon" width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="5" width="18" height="2" rx="1" fill="currentColor"/><rect x="2" y="10" width="18" height="2" rx="1" fill="currentColor"/><rect x="2" y="15" width="18" height="2" rx="1" fill="currentColor"/></svg>
+          <svg class="close-icon" width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 5L17 17M17 5L5 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
       </div>
+      <nav class="ham-menu" id="ham-menu">
+        <a class="nav-link" onclick="closeHamMenu();scrollToSection('sec-cycles')">Cycles</a>
+        <a class="nav-link" onclick="closeHamMenu();scrollToSection('sec-workshops')">Workshops</a>
+        <a class="nav-link" onclick="closeHamMenu();scrollToSection('sec-labs')">Labs</a>
+        <a class="nav-link" onclick="closeHamMenu();showView('about')">About</a>
+      </nav>
     </header>
 
     <div class="hero-band s-cover grain on-dark">
       <div class="hero-inner">
         <h1 class="t-display" style="max-width:14ch;">Build real skills. Through real work. <span style="color:var(--teal);">With real people.</span></h1>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:32px;">
+        <div style="display:flex;flex-direction:column;gap:12px;align-items:flex-start;margin-top:32px;">
           <button class="btn btn-red btn-lg" onclick="startCreateAccount()">Create account</button>
+          <button class="btn btn-ghost btn-lg hero-login" onclick="signinReturning()">Log in</button>
         </div>
       </div>
     </div>
@@ -789,12 +815,25 @@ button,input,select,textarea { font-family:inherit; }
             <span class="open-tag"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3.5 9h17M3.5 15h17M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg> Public · open by default</span>
           </div>
         </div>
-        <p class="t-lede" style="margin-bottom:32px;max-width:60ch;">Product-minded generalist learning by shipping. Currently in the Civic AI Build Cycle, focused on benefits navigation for DC residents.</p>
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:32px;">
+          <p class="t-lede" id="prof-bio" style="max-width:60ch;">Product-minded generalist learning by shipping. Currently in the Civic AI Build Cycle, focused on benefits navigation for DC residents.</p>
+          <button class="btn btn-ghost-teal btn-sm" style="flex-shrink:0;margin-top:4px;" onclick="editProfile()">Edit profile</button>
+        </div>
 
         <div class="stat-row" style="margin-bottom:48px;">
           <div class="stat-cell"><div class="stat-num">1</div><div class="stat-lbl">Cycle</div></div>
           <div class="stat-cell"><div class="stat-num">3</div><div class="stat-lbl">Projects</div></div>
           <div class="stat-cell"><div class="stat-num">11</div><div class="stat-lbl">Workshops</div></div>
+        </div>
+
+        <div id="prof-mentor-section" style="display:none;margin-bottom:32px;">
+          <div class="section-head" style="padding-bottom:12px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Mentor</div><h2 class="t-h3">Mentor profile</h2></div><button class="btn btn-ghost-teal btn-sm" onclick="editMentorProfile()">Edit</button></div>
+          <div id="prof-mentor-content"></div>
+        </div>
+
+        <div id="prof-volunteer-section" style="display:none;margin-bottom:32px;">
+          <div class="section-head" style="padding-bottom:12px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Volunteer</div><h2 class="t-h3">Volunteer profile</h2></div><button class="btn btn-ghost-teal btn-sm" onclick="editVolunteerProfile()">Edit</button></div>
+          <div id="prof-volunteer-content"></div>
         </div>
 
         <div class="section-head" style="padding-bottom:12px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Portfolio</div><h2 class="t-h3">Projects shipped in the open</h2></div></div>
@@ -872,7 +911,7 @@ button,input,select,textarea { font-family:inherit; }
               <div id="checklist-items">
                 <div class="check-row"><input type="checkbox" onchange="tickChecklist(this)"><div><div class="t-h4" style="margin-bottom:2px;">Confirm your email</div><div class="t-small">Click the link we sent to your inbox</div></div></div>
                 <div class="check-row"><input type="checkbox" onchange="tickChecklist(this)"><div><div class="t-h4" style="margin-bottom:2px;">Join our Slack workspace</div><div class="t-small">Accept the invite — that's where the community lives</div></div></div>
-                <div class="check-row"><input type="checkbox" onchange="tickChecklist(this)"><div><div class="t-h4" style="margin-bottom:2px;">Complete your public profile</div><div class="t-small">Add a bio so pods can find you</div></div></div>
+                <div class="check-row" id="profile-checklist-row" style="cursor:pointer;" onclick="onProfileChecklistClick(this)"><input type="checkbox" id="profile-checklist-cb" onchange="tickChecklist(this)" onclick="event.stopPropagation()"><div><div class="t-h4" style="margin-bottom:2px;">Complete your public profile</div><div class="t-small">Add a bio so pods can find you</div></div></div>
                 <div id="role-items"></div>
               </div>
               <div style="border-bottom:2px solid var(--ink);padding-bottom:12px;margin-top:40px;"><div class="lbl lbl-teal">Up next</div></div>
@@ -1133,7 +1172,7 @@ button,input,select,textarea { font-family:inherit; }
 
 
 <script>
-const userState = {name:'Alex', initials:'AR', roles:[], isMentor:false, completed:{}};
+const userState = {name:'Alex', initials:'AR', roles:[], isMentor:false, completed:{}, profileAnswers:{}, mentorAnswers:{}, volunteerAnswers:{}};
 const FLOW_ROLES=['mentor','volunteer','cycle']; // roles with a deferrable setup flow ('events' is passive)
 const ROLE_ITEMS={
   mentor:{title:'Complete the mentor section of your profile', sub:'Tell pods what you bring and how to reach you.'},
@@ -1146,13 +1185,23 @@ function scrollTop(){ const v=document.querySelector('.view.active .vscroll'); i
 function scrollToSection(id){ const el=document.getElementById(id); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); }
 
 function showView(id){
+  closeHamMenu();
   document.querySelectorAll('#screens > .view').forEach(v=>v.classList.remove('active'));
   if(['dashboard','cycles','events','resources','event','labs'].includes(id)){ document.getElementById('app-shell').classList.add('active'); showAppView(id); }
   else { const el=document.getElementById('view-'+id); if(el) el.classList.add('active'); }
   window.scrollTo(0,0); document.querySelectorAll('.vscroll').forEach(s=>s.scrollTop=0);
 }
+function toggleHamMenu(){
+  const btn=document.getElementById('ham-btn'); const menu=document.getElementById('ham-menu');
+  if(!btn||!menu) return;
+  const open=menu.classList.toggle('open'); btn.classList.toggle('open',open);
+}
+function closeHamMenu(){
+  const btn=document.getElementById('ham-btn'); const menu=document.getElementById('ham-menu');
+  if(btn) btn.classList.remove('open'); if(menu) menu.classList.remove('open');
+}
 function goApp(id){ showView(id); }
-function showProfile(){ renderActivity(); showView('profile'); }
+function showProfile(){ renderActivity(); renderProfileView(); showView('profile'); }
 function showAppView(id){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-link,.tab').forEach(t=>t.classList.remove('active'));
@@ -1210,10 +1259,16 @@ function FLOWS(name){
     steps:[ {id:'areas',type:'tags',q:'Where would you like to help?',help:'Pick the areas that fit. Choose as many as you like.',options:VOL_AREAS,required:true},
       {id:'ways',type:'checks',q:'How would you like to pitch in?',help:'Select all that work for you.',options:VOL_WAYS,required:true},
       {id:'hours',type:'choice',q:'How much time can you commit?',options:HOURS.map(h=>({v:h,label:h}))} ]};
+  if(name==='profile') return { eyebrow:'Your profile', finalLabel:'Save profile', finalClass:'btn-teal',
+    onComplete:()=>{ userState.profileAnswers={...fans}; userState.completed.profile=true; const cb=document.getElementById('profile-checklist-cb'); if(cb&&!cb.checked){cb.checked=true;tickChecklist(cb);} renderProfileView(); (flow.returnTo||showProfile)(); },
+    steps:[ {id:'bio',type:'textarea',q:'How would you describe yourself?',help:"A few sentences — what you're working on and what you bring.",ph:'Product-minded generalist learning by shipping...',required:true},
+      {id:'location',type:'text',q:'What city are you in?',help:'Shows on your public profile.',ph:'Washington, DC',required:false},
+      {id:'linkedin',type:'text',q:'LinkedIn profile',help:'Optional — makes it easy for pods and mentors to find you.',ph:'linkedin.com/in/yourname',required:false},
+      {id:'website',type:'text',q:'Personal website or portfolio',help:'Optional — anywhere you share your work.',ph:'yoursite.com',required:false} ]};
 }
-function startFlow(name, backFn){ flow=FLOWS(name); flow.name=name; flow.backTo=backFn||(()=>showView('landing')); fstep=0; fans={}; renderFlowStep(); showView('flow'); }
+function startFlow(name, backFn, preload, returnTo){ flow=FLOWS(name); flow.name=name; flow.backTo=backFn||(()=>showView('landing')); flow.returnTo=returnTo||null; fstep=0; fans=preload?{...preload}:{}; renderFlowStep(); showView('flow'); }
 function startRoleFlow(role, backFn){ if(role==='mentor'){ mentorBack=backFn||(()=>showView('dashboard')); mentorStep=1; renderMentor(); showView('mentor-explainer'); } else { startFlow(role, backFn||(()=>showView('dashboard'))); } }
-function finishRoleFlow(role){ userState.completed[role]=true; renderProfileChecklist(); showView('dashboard'); }
+function finishRoleFlow(role){ if(role==='mentor')userState.mentorAnswers={...fans}; else if(role==='volunteer')userState.volunteerAnswers={...fans}; userState.completed[role]=true; renderProfileChecklist(); renderProfileView(); if(flow&&flow.returnTo)flow.returnTo(); else showView('dashboard'); }
 function pad2(n){ return n<10?'0'+n:''+n; }
 function renderFlowStep(){
   const step=flow.steps[fstep];
@@ -1281,6 +1336,35 @@ function renderTodos(){
   todos.forEach(t=>{ const d=document.createElement('div'); d.className='lcard'; d.style.padding='20px 22px'; d.innerHTML='<div class="lbl lbl-teal" style="margin-bottom:8px;">'+t.label+'</div><div class="t-h4" style="margin-bottom:6px;">'+t.title+'</div><p class="t-small" style="margin-bottom:'+(t.cta?'14px':'0')+';">'+t.body+'</p>'+(t.cta?'<button class="btn btn-ghost-teal btn-sm">'+t.cta+'</button>':''); if(t.action){ const b=d.querySelector('.btn'); if(b) b.onclick=t.action; } c.appendChild(d); });
 }
 function buildWeekRail(){ const rail=document.getElementById('week-rail'); if(!rail)return; rail.innerHTML=''; const CUR=4; const wk=[[1,'Kickoff'],[2,'Orient'],[3,'Discovery'],[4,'Deep Dive'],[5,'Pod Form'],[6,'Research'],[7,'Synthesis'],[8,'Ideation'],[9,'Prototype'],[10,'Build'],[11,'Testing'],[12,'Refine'],[13,'Showcase']]; wk.forEach(([w,label])=>{ const past=w<CUR,cur=w===CUR; const n=document.createElement('div'); n.className='week-node'; n.innerHTML='<div class="week-pip '+(past?'past':cur?'current':'')+'">'+w+'</div><div class="week-label">'+(cur?'<b>Wk '+w+'</b><br>'+label:'Wk '+w)+'</div>'; rail.appendChild(n); }); }
+function editProfile(){ startFlow('profile', showProfile, userState.profileAnswers, showProfile); }
+function editMentorProfile(){ startFlow('mentor', showProfile, userState.mentorAnswers, showProfile); }
+function editVolunteerProfile(){ startFlow('volunteer', showProfile, userState.volunteerAnswers, showProfile); }
+function onProfileChecklistClick(row){ const cb=document.getElementById('profile-checklist-cb'); if(!cb||cb.checked)return; startFlow('profile', ()=>goApp('dashboard'), userState.profileAnswers, showProfile); }
+function renderProfileView(){
+  const pa=userState.profileAnswers||{};
+  const bio=document.getElementById('prof-bio'); if(bio&&pa.bio) bio.textContent=pa.bio;
+  const meta=document.getElementById('prof-meta'); if(meta) meta.textContent=(pa.location||'Washington, DC')+' · Joined Spring 2026';
+  const ms=document.getElementById('prof-mentor-section'); if(ms){ const show=userState.roles.includes('mentor')&&!!userState.completed.mentor; ms.style.display=show?'block':'none'; if(show)renderMentorSection(); }
+  const vs=document.getElementById('prof-volunteer-section'); if(vs){ const show=userState.roles.includes('volunteer')&&!!userState.completed.volunteer; vs.style.display=show?'block':'none'; if(show)renderVolunteerSection(); }
+}
+function renderMentorSection(){
+  const a=userState.mentorAnswers||{}; const c=document.getElementById('prof-mentor-content'); if(!c)return;
+  const expertise=Array.isArray(a.expertise)?a.expertise:[]; const engage=Array.isArray(a.engage)?a.engage:[]; const tz=a.tz||''; const booking=a.booking||'';
+  let h='<div class="lcard" style="padding:24px;">';
+  if(expertise.length){h+='<div class="lbl" style="margin-bottom:8px;">Expertise</div><div class="tag-wrap" style="margin-bottom:16px;">';expertise.forEach(t=>{h+='<span class="tag-btn active" style="cursor:default;pointer-events:none;">'+t+'</span>';});h+='</div>';}
+  if(engage.length){h+='<div class="lbl" style="margin-bottom:8px;">How I engage</div><div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px;">';engage.forEach(e=>{h+='<span class="t-small">· '+e+'</span>';});h+='</div>';}
+  if(tz||booking){h+='<div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center;">';if(tz)h+='<span class="t-small" style="color:var(--meta);">'+tz+'</span>';if(booking)h+='<span class="t-small" style="color:var(--teal-deep);">'+booking+'</span>';h+='</div>';}
+  h+='</div>'; c.innerHTML=h;
+}
+function renderVolunteerSection(){
+  const a=userState.volunteerAnswers||{}; const c=document.getElementById('prof-volunteer-content'); if(!c)return;
+  const areas=Array.isArray(a.areas)?a.areas:[]; const ways=Array.isArray(a.ways)?a.ways:[]; const hours=a.hours||'';
+  let h='<div class="lcard" style="padding:24px;">';
+  if(areas.length){h+='<div class="lbl" style="margin-bottom:8px;">Focus areas</div><div class="tag-wrap" style="margin-bottom:16px;">';areas.forEach(t=>{h+='<span class="tag-btn active" style="cursor:default;pointer-events:none;">'+t+'</span>';});h+='</div>';}
+  if(ways.length){h+='<div class="lbl" style="margin-bottom:8px;">How I pitch in</div><div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px;">';ways.forEach(w=>{h+='<span class="t-small">· '+w+'</span>';});h+='</div>';}
+  if(hours)h+='<span class="t-small" style="color:var(--meta);">'+hours+'</span>';
+  h+='</div>'; c.innerHTML=h;
+}
 function logout(){ showView('landing'); }
 document.addEventListener('DOMContentLoaded',()=>{ initEventCats(); renderTodos(); buildWeekRail(); renderActivity(); });
 </script>
