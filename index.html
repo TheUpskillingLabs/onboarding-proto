@@ -867,11 +867,10 @@ button,input,select,textarea { font-family:inherit; }
               <div style="display:flex;align-items:flex-end;justify-content:space-between;border-bottom:2px solid var(--ink);padding-bottom:12px;"><div class="lbl lbl-teal">Your profile</div><span id="checklist-count" class="lbl">2 left</span></div>
               <h3 class="t-h3" style="margin:18px 0 4px;">Complete your profile</h3>
               <div id="checklist-items">
+                <div class="check-row"><input type="checkbox" onchange="tickChecklist(this)"><div><div class="t-h4" style="margin-bottom:2px;">Confirm your email</div><div class="t-small">Click the link we sent to your inbox</div></div></div>
+                <div class="check-row"><input type="checkbox" onchange="tickChecklist(this)"><div><div class="t-h4" style="margin-bottom:2px;">Join our Slack workspace</div><div class="t-small">Accept the invite — that's where the community lives</div></div></div>
+                <div class="check-row"><input type="checkbox" onchange="tickChecklist(this)"><div><div class="t-h4" style="margin-bottom:2px;">Complete your public profile</div><div class="t-small">Add a bio so pods can find you</div></div></div>
                 <div id="role-items"></div>
-                <div class="check-row"><input type="checkbox" onchange="tickChecklist(this)"><div><div class="t-h4" style="margin-bottom:2px;">Allowlist our email domain</div><div class="t-small">So our messages don't go to spam</div></div></div>
-                <div class="check-row"><input type="checkbox" checked disabled><div><div class="t-h4" style="color:var(--meta);text-decoration:line-through;">Slack invite sent</div></div></div>
-                <div class="check-row"><input type="checkbox" checked disabled><div><div class="t-h4" style="color:var(--meta);text-decoration:line-through;">Added to community calendar</div></div></div>
-                <div class="check-row"><input type="checkbox" onchange="tickChecklist(this)"><div><div class="t-h4" style="margin-bottom:2px;">Set up your public profile</div><div class="t-small">Add a bio so pods can find you</div></div></div>
               </div>
               <div style="border-bottom:2px solid var(--ink);padding-bottom:12px;margin-top:40px;"><div class="lbl lbl-teal">Up next</div></div>
               <h3 class="t-h3" style="margin:18px 0 16px;">Up next for you</h3>
@@ -1132,11 +1131,11 @@ button,input,select,textarea { font-family:inherit; }
 
 <script>
 const userState = {name:'Alex', initials:'AR', roles:[], isMentor:false, completed:{}};
-const FLOW_ROLES=['cycle','volunteer','mentor']; // roles with a deferrable setup flow ('events' is passive)
+const FLOW_ROLES=['mentor','volunteer','cycle']; // roles with a deferrable setup flow ('events' is passive)
 const ROLE_ITEMS={
-  cycle:{title:'Register for the Spring 2026 Build Cycle', sub:'Pick a problem area and your commitment.'},
-  mentor:{title:'Complete your mentor profile', sub:'Tell pods what you bring and how to reach you.'},
-  volunteer:{title:'Complete your volunteer profile', sub:'Tell us where and how you want to help.'}
+  mentor:{title:'Complete the mentor section of your profile', sub:'Tell pods what you bring and how to reach you.'},
+  volunteer:{title:'Complete the volunteer section of your profile', sub:'Tell us where and how you want to help.'},
+  cycle:{title:'Register for the Spring 2026 Build Cycle', sub:'Pick a problem area and your commitment.'}
 };
 let mentorStep = 1; let gateContext = ''; let mentorBack=()=>showView('role-intent');
 
