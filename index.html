@@ -371,10 +371,9 @@ button,input,select,textarea { font-family:inherit; }
 }
 
 /* ════ Testimonials ════ */
-/* Reuses .section / .section-head / .cards.two / .card — no bespoke styles.
-   Section sits on the cool --tint colorway (set inline) so the rounded hero
-   bottom flows into it. */
-.s-tint { background:var(--tint); }
+/* Reuses .section / .cards.two / .card — no bespoke styles. Testimonials sit on
+   warm --paper (the rounded hero flows into paper); the Cycles/Workshops/Labs
+   sections that follow use .s-white. */
 </style>
 </head>
 <body>
@@ -414,7 +413,7 @@ button,input,select,textarea { font-family:inherit; }
 
     <div class="vscroll">
       <!-- Testimonials -->
-      <section class="section s-tint" id="sec-testimonials" style="padding-top:calc(56px + 3*var(--r));">
+      <section class="section" id="sec-testimonials" style="padding-top:calc(56px + 3*var(--r));">
         <div class="container">
           <div class="cards two">
             <div class="card"><div class="card-body">
@@ -434,7 +433,7 @@ button,input,select,textarea { font-family:inherit; }
       </section>
 
       <!-- Cycles -->
-      <section class="section" id="sec-cycles"><div class="container">
+      <section class="section s-white" id="sec-cycles"><div class="container">
         <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Build Cycles · 4 a year</div><h2 class="t-h2">Join a cohort, ship something real</h2></div><span class="see" onclick="startCreateAccount()">See all →</span></div>
         <div class="cards two">
           <div class="card expandable tappable" onclick="toggleExpand(this,event)">
@@ -480,7 +479,7 @@ button,input,select,textarea { font-family:inherit; }
       </div></section>
 
       <!-- Workshops -->
-      <section class="section" id="sec-workshops"><div class="container">
+      <section class="section s-white" id="sec-workshops"><div class="container">
         <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Workshops &amp; sessions · weekly</div><h2 class="t-h2">Drop into a session</h2></div><span class="see" onclick="startCreateAccount()">See all →</span></div>
         <div class="cards dense">
           <div class="card tappable" onclick="gateCreateAccount('the Jul 9 workshop',event)"><div class="media"><img src="assets/sample-workshop-recap.png" alt="Workshop Recap" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button><div class="m-tag">In person</div></div><div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">Jul 9 · 6 PM</div><div class="t-h4">Prompting for real work</div><p class="t-small" style="margin-top:4px;">DC Public Library</p></div></div>
@@ -549,7 +548,7 @@ button,input,select,textarea { font-family:inherit; }
       </div></section>
 
       <!-- Local labs -->
-      <section class="section" id="sec-labs"><div class="container">
+      <section class="section s-white" id="sec-labs"><div class="container">
         <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Local labs</div><h2 class="t-h2">Find your city</h2></div><span class="see" onclick="startCreateAccount()">See all →</span></div>
         <div class="cards">
           <div class="card expandable tappable" onclick="toggleExpand(this,event)">
