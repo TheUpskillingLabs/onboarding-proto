@@ -415,7 +415,7 @@ button,input,select,textarea { font-family:inherit; }
       <!-- Testimonials -->
       <section class="section" id="sec-testimonials" style="padding-top:calc(56px + 3*var(--r));">
         <div class="container">
-          <div class="cards two">
+          <div class="cards">
             <div class="card"><div class="card-body">
               <p class="t-body" style="margin-bottom:18px;">&ldquo;The program gave me purpose again—connecting me with mission-driven public servants to tackle real problems. AI as an empowerment tool for people-first civic design.&rdquo;</p>
               <div class="t-h4">Hector Perla</div>
@@ -428,6 +428,14 @@ button,input,select,textarea { font-family:inherit; }
               <div class="lbl" style="margin-top:4px;">FinLit Coach &middot; Inaugural AI Cohort</div>
               <a class="see" style="display:inline-block;margin-top:16px;" onclick="showView('stub')">Read more &rarr;</a>
             </div></div>
+            <div class="card tappable" onclick="startCreateAccount()" style="background:var(--teal);border-color:transparent;">
+              <div class="card-body" style="display:flex;flex-direction:column;height:100%;">
+                <div class="lbl" style="color:var(--od1);margin-bottom:8px;">Your turn</div>
+                <div class="t-h4" style="color:var(--white);margin-bottom:8px;">Share your story</div>
+                <p class="t-body" style="color:var(--od1);margin-bottom:18px;">Spotlights are public — read more from the community, or add your own.</p>
+                <a class="see" style="color:var(--white);margin-top:auto;" onclick="event.stopPropagation();showView('stub')">Read more &rarr;</a>
+              </div>
+            </div>
           </div>
         </div>
       </section>
