@@ -282,7 +282,7 @@ button,input,select,textarea { font-family:inherit; }
 .pub-signin { display:none; }
 
 /* landing hero band (dark cover, not full-screen) */
-.hero-band { position:relative; z-index:2; overflow:hidden; border-radius:0 0 var(--r) var(--r); margin-bottom:calc(-1*var(--r)); }
+.hero-band { position:relative; z-index:2; overflow:hidden; border-radius:0 0 calc(var(--r)*3) calc(var(--r)*3); margin-bottom:calc(-3*var(--r)); }
 .hero-inner { max-width:var(--maxw); margin:0 auto; padding:64px var(--pad) 72px; }
 
 /* generic content section */
@@ -414,24 +414,20 @@ button,input,select,textarea { font-family:inherit; }
 
     <div class="vscroll">
       <!-- Testimonials -->
-      <section class="section s-tint" id="sec-testimonials" style="padding-top:calc(56px + var(--r));">
+      <section class="section s-tint" id="sec-testimonials" style="padding-top:calc(56px + 3*var(--r));">
         <div class="container">
-          <div class="section-head">
-            <div>
-              <div class="lbl lbl-teal" style="margin-bottom:8px;">From the community</div>
-              <h2 class="t-h2">What upskillers say</h2>
-            </div>
-          </div>
           <div class="cards two">
             <div class="card"><div class="card-body">
               <p class="t-body" style="margin-bottom:18px;">&ldquo;The program gave me purpose again—connecting me with mission-driven public servants to tackle real problems. AI as an empowerment tool for people-first civic design.&rdquo;</p>
               <div class="t-h4">Hector Perla</div>
               <div class="lbl" style="margin-top:4px;">ADHD Brain &middot; Inaugural AI Cohort</div>
+              <a class="see" style="display:inline-block;margin-top:16px;" onclick="showView('stub')">Read more &rarr;</a>
             </div></div>
             <div class="card"><div class="card-body">
               <p class="t-body" style="margin-bottom:18px;">&ldquo;I left realizing my gap is exactly where my strength lies—translating between tools, teams, and user needs. AI is about community, trust, and the human side of technology.&rdquo;</p>
               <div class="t-h4">Suzie Zhang</div>
               <div class="lbl" style="margin-top:4px;">FinLit Coach &middot; Inaugural AI Cohort</div>
+              <a class="see" style="display:inline-block;margin-top:16px;" onclick="showView('stub')">Read more &rarr;</a>
             </div></div>
           </div>
         </div>
