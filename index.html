@@ -789,12 +789,25 @@ button,input,select,textarea { font-family:inherit; }
             <span class="open-tag"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3.5 9h17M3.5 15h17M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg> Public · open by default</span>
           </div>
         </div>
-        <p class="t-lede" style="margin-bottom:32px;max-width:60ch;">Product-minded generalist learning by shipping. Currently in the Civic AI Build Cycle, focused on benefits navigation for DC residents.</p>
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:32px;">
+          <p class="t-lede" id="prof-bio" style="max-width:60ch;">Product-minded generalist learning by shipping. Currently in the Civic AI Build Cycle, focused on benefits navigation for DC residents.</p>
+          <button class="btn btn-ghost-teal btn-sm" style="flex-shrink:0;margin-top:4px;" onclick="editProfile()">Edit profile</button>
+        </div>
 
         <div class="stat-row" style="margin-bottom:48px;">
           <div class="stat-cell"><div class="stat-num">1</div><div class="stat-lbl">Cycle</div></div>
           <div class="stat-cell"><div class="stat-num">3</div><div class="stat-lbl">Projects</div></div>
           <div class="stat-cell"><div class="stat-num">11</div><div class="stat-lbl">Workshops</div></div>
+        </div>
+
+        <div id="prof-mentor-section" style="display:none;margin-bottom:32px;">
+          <div class="section-head" style="padding-bottom:12px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Mentor</div><h2 class="t-h3">Mentor profile</h2></div><button class="btn btn-ghost-teal btn-sm" onclick="editMentorProfile()">Edit</button></div>
+          <div id="prof-mentor-content"></div>
+        </div>
+
+        <div id="prof-volunteer-section" style="display:none;margin-bottom:32px;">
+          <div class="section-head" style="padding-bottom:12px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Volunteer</div><h2 class="t-h3">Volunteer profile</h2></div><button class="btn btn-ghost-teal btn-sm" onclick="editVolunteerProfile()">Edit</button></div>
+          <div id="prof-volunteer-content"></div>
         </div>
 
         <div class="section-head" style="padding-bottom:12px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Portfolio</div><h2 class="t-h3">Projects shipped in the open</h2></div></div>
@@ -872,7 +885,7 @@ button,input,select,textarea { font-family:inherit; }
               <div id="checklist-items">
                 <div class="check-row"><input type="checkbox" onchange="tickChecklist(this)"><div><div class="t-h4" style="margin-bottom:2px;">Confirm your email</div><div class="t-small">Click the link we sent to your inbox</div></div></div>
                 <div class="check-row"><input type="checkbox" onchange="tickChecklist(this)"><div><div class="t-h4" style="margin-bottom:2px;">Join our Slack workspace</div><div class="t-small">Accept the invite — that's where the community lives</div></div></div>
-                <div class="check-row"><input type="checkbox" onchange="tickChecklist(this)"><div><div class="t-h4" style="margin-bottom:2px;">Complete your public profile</div><div class="t-small">Add a bio so pods can find you</div></div></div>
+                <div class="check-row" id="profile-checklist-row" style="cursor:pointer;" onclick="onProfileChecklistClick(this)"><input type="checkbox" id="profile-checklist-cb" onchange="tickChecklist(this)" onclick="event.stopPropagation()"><div><div class="t-h4" style="margin-bottom:2px;">Complete your public profile</div><div class="t-small">Add a bio so pods can find you</div></div></div>
                 <div id="role-items"></div>
               </div>
               <div style="border-bottom:2px solid var(--ink);padding-bottom:12px;margin-top:40px;"><div class="lbl lbl-teal">Up next</div></div>
@@ -1133,7 +1146,7 @@ button,input,select,textarea { font-family:inherit; }
 
 
 <script>
-const userState = {name:'Alex', initials:'AR', roles:[], isMentor:false, completed:{}};
+const userState = {name:'Alex', initials:'AR', roles:[], isMentor:false, completed:{}, profileAnswers:{}, mentorAnswers:{}, volunteerAnswers:{}};
 const FLOW_ROLES=['mentor','volunteer','cycle']; // roles with a deferrable setup flow ('events' is passive)
 const ROLE_ITEMS={
   mentor:{title:'Complete the mentor section of your profile', sub:'Tell pods what you bring and how to reach you.'},
@@ -1152,7 +1165,7 @@ function showView(id){
   window.scrollTo(0,0); document.querySelectorAll('.vscroll').forEach(s=>s.scrollTop=0);
 }
 function goApp(id){ showView(id); }
-function showProfile(){ renderActivity(); showView('profile'); }
+function showProfile(){ renderActivity(); renderProfileView(); showView('profile'); }
 function showAppView(id){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-link,.tab').forEach(t=>t.classList.remove('active'));
@@ -1210,10 +1223,16 @@ function FLOWS(name){
     steps:[ {id:'areas',type:'tags',q:'Where would you like to help?',help:'Pick the areas that fit. Choose as many as you like.',options:VOL_AREAS,required:true},
       {id:'ways',type:'checks',q:'How would you like to pitch in?',help:'Select all that work for you.',options:VOL_WAYS,required:true},
       {id:'hours',type:'choice',q:'How much time can you commit?',options:HOURS.map(h=>({v:h,label:h}))} ]};
+  if(name==='profile') return { eyebrow:'Your profile', finalLabel:'Save profile', finalClass:'btn-teal',
+    onComplete:()=>{ userState.profileAnswers={...fans}; userState.completed.profile=true; const cb=document.getElementById('profile-checklist-cb'); if(cb&&!cb.checked){cb.checked=true;tickChecklist(cb);} renderProfileView(); (flow.returnTo||showProfile)(); },
+    steps:[ {id:'bio',type:'textarea',q:'How would you describe yourself?',help:"A few sentences — what you're working on and what you bring.",ph:'Product-minded generalist learning by shipping...',required:true},
+      {id:'location',type:'text',q:'What city are you in?',help:'Shows on your public profile.',ph:'Washington, DC',required:false},
+      {id:'linkedin',type:'text',q:'LinkedIn profile',help:'Optional — makes it easy for pods and mentors to find you.',ph:'linkedin.com/in/yourname',required:false},
+      {id:'website',type:'text',q:'Personal website or portfolio',help:'Optional — anywhere you share your work.',ph:'yoursite.com',required:false} ]};
 }
-function startFlow(name, backFn){ flow=FLOWS(name); flow.name=name; flow.backTo=backFn||(()=>showView('landing')); fstep=0; fans={}; renderFlowStep(); showView('flow'); }
+function startFlow(name, backFn, preload, returnTo){ flow=FLOWS(name); flow.name=name; flow.backTo=backFn||(()=>showView('landing')); flow.returnTo=returnTo||null; fstep=0; fans=preload?{...preload}:{}; renderFlowStep(); showView('flow'); }
 function startRoleFlow(role, backFn){ if(role==='mentor'){ mentorBack=backFn||(()=>showView('dashboard')); mentorStep=1; renderMentor(); showView('mentor-explainer'); } else { startFlow(role, backFn||(()=>showView('dashboard'))); } }
-function finishRoleFlow(role){ userState.completed[role]=true; renderProfileChecklist(); showView('dashboard'); }
+function finishRoleFlow(role){ if(role==='mentor')userState.mentorAnswers={...fans}; else if(role==='volunteer')userState.volunteerAnswers={...fans}; userState.completed[role]=true; renderProfileChecklist(); renderProfileView(); if(flow&&flow.returnTo)flow.returnTo(); else showView('dashboard'); }
 function pad2(n){ return n<10?'0'+n:''+n; }
 function renderFlowStep(){
   const step=flow.steps[fstep];
@@ -1281,6 +1300,35 @@ function renderTodos(){
   todos.forEach(t=>{ const d=document.createElement('div'); d.className='lcard'; d.style.padding='20px 22px'; d.innerHTML='<div class="lbl lbl-teal" style="margin-bottom:8px;">'+t.label+'</div><div class="t-h4" style="margin-bottom:6px;">'+t.title+'</div><p class="t-small" style="margin-bottom:'+(t.cta?'14px':'0')+';">'+t.body+'</p>'+(t.cta?'<button class="btn btn-ghost-teal btn-sm">'+t.cta+'</button>':''); if(t.action){ const b=d.querySelector('.btn'); if(b) b.onclick=t.action; } c.appendChild(d); });
 }
 function buildWeekRail(){ const rail=document.getElementById('week-rail'); if(!rail)return; rail.innerHTML=''; const CUR=4; const wk=[[1,'Kickoff'],[2,'Orient'],[3,'Discovery'],[4,'Deep Dive'],[5,'Pod Form'],[6,'Research'],[7,'Synthesis'],[8,'Ideation'],[9,'Prototype'],[10,'Build'],[11,'Testing'],[12,'Refine'],[13,'Showcase']]; wk.forEach(([w,label])=>{ const past=w<CUR,cur=w===CUR; const n=document.createElement('div'); n.className='week-node'; n.innerHTML='<div class="week-pip '+(past?'past':cur?'current':'')+'">'+w+'</div><div class="week-label">'+(cur?'<b>Wk '+w+'</b><br>'+label:'Wk '+w)+'</div>'; rail.appendChild(n); }); }
+function editProfile(){ startFlow('profile', showProfile, userState.profileAnswers, showProfile); }
+function editMentorProfile(){ startFlow('mentor', showProfile, userState.mentorAnswers, showProfile); }
+function editVolunteerProfile(){ startFlow('volunteer', showProfile, userState.volunteerAnswers, showProfile); }
+function onProfileChecklistClick(row){ const cb=document.getElementById('profile-checklist-cb'); if(!cb||cb.checked)return; startFlow('profile', ()=>goApp('dashboard'), userState.profileAnswers, showProfile); }
+function renderProfileView(){
+  const pa=userState.profileAnswers||{};
+  const bio=document.getElementById('prof-bio'); if(bio&&pa.bio) bio.textContent=pa.bio;
+  const meta=document.getElementById('prof-meta'); if(meta) meta.textContent=(pa.location||'Washington, DC')+' · Joined Spring 2026';
+  const ms=document.getElementById('prof-mentor-section'); if(ms){ const show=userState.roles.includes('mentor')&&!!userState.completed.mentor; ms.style.display=show?'block':'none'; if(show)renderMentorSection(); }
+  const vs=document.getElementById('prof-volunteer-section'); if(vs){ const show=userState.roles.includes('volunteer')&&!!userState.completed.volunteer; vs.style.display=show?'block':'none'; if(show)renderVolunteerSection(); }
+}
+function renderMentorSection(){
+  const a=userState.mentorAnswers||{}; const c=document.getElementById('prof-mentor-content'); if(!c)return;
+  const expertise=Array.isArray(a.expertise)?a.expertise:[]; const engage=Array.isArray(a.engage)?a.engage:[]; const tz=a.tz||''; const booking=a.booking||'';
+  let h='<div class="lcard" style="padding:24px;">';
+  if(expertise.length){h+='<div class="lbl" style="margin-bottom:8px;">Expertise</div><div class="tag-wrap" style="margin-bottom:16px;">';expertise.forEach(t=>{h+='<span class="tag-btn active" style="cursor:default;pointer-events:none;">'+t+'</span>';});h+='</div>';}
+  if(engage.length){h+='<div class="lbl" style="margin-bottom:8px;">How I engage</div><div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px;">';engage.forEach(e=>{h+='<span class="t-small">· '+e+'</span>';});h+='</div>';}
+  if(tz||booking){h+='<div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center;">';if(tz)h+='<span class="t-small" style="color:var(--meta);">'+tz+'</span>';if(booking)h+='<span class="t-small" style="color:var(--teal-deep);">'+booking+'</span>';h+='</div>';}
+  h+='</div>'; c.innerHTML=h;
+}
+function renderVolunteerSection(){
+  const a=userState.volunteerAnswers||{}; const c=document.getElementById('prof-volunteer-content'); if(!c)return;
+  const areas=Array.isArray(a.areas)?a.areas:[]; const ways=Array.isArray(a.ways)?a.ways:[]; const hours=a.hours||'';
+  let h='<div class="lcard" style="padding:24px;">';
+  if(areas.length){h+='<div class="lbl" style="margin-bottom:8px;">Focus areas</div><div class="tag-wrap" style="margin-bottom:16px;">';areas.forEach(t=>{h+='<span class="tag-btn active" style="cursor:default;pointer-events:none;">'+t+'</span>';});h+='</div>';}
+  if(ways.length){h+='<div class="lbl" style="margin-bottom:8px;">How I pitch in</div><div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px;">';ways.forEach(w=>{h+='<span class="t-small">· '+w+'</span>';});h+='</div>';}
+  if(hours)h+='<span class="t-small" style="color:var(--meta);">'+hours+'</span>';
+  h+='</div>'; c.innerHTML=h;
+}
 function logout(){ showView('landing'); }
 document.addEventListener('DOMContentLoaded',()=>{ initEventCats(); renderTodos(); buildWeekRail(); renderActivity(); });
 </script>
