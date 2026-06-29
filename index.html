@@ -373,14 +373,19 @@ button,input,select,textarea { font-family:inherit; }
 /* ════ Testimonials ════ */
 .quote-strip { display:flex; gap:12px; overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; padding:4px var(--pad) 20px; margin:0 calc(-1*var(--pad)); scrollbar-width:none; }
 .quote-strip::-webkit-scrollbar { display:none; }
-.qcard { background:var(--white); border-radius:var(--r); padding:18px 16px 16px; flex:0 0 220px; scroll-snap-align:start; display:flex; flex-direction:column; gap:10px; border-left:3px solid var(--teal); box-shadow:var(--shadow); }
+.qcard { background:var(--white); border-radius:var(--r); padding:18px 16px 16px; flex:0 0 240px; scroll-snap-align:start; display:flex; flex-direction:column; gap:10px; border-left:3px solid var(--teal); box-shadow:var(--shadow); }
 .q-avatar { width:32px; height:32px; border-radius:50%; background:var(--teal); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:var(--white); letter-spacing:.04em; flex-shrink:0; }
 .q-body { font-size:12.5px; line-height:19px; color:var(--charcoal); display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden; flex:1; }
 .q-name { font-size:12.5px; font-weight:700; color:var(--ink); letter-spacing:-.01em; }
 .q-meta { font-size:10px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--meta); margin-top:2px; }
+.qcard-cta { background:var(--teal); border-left:none; cursor:pointer; justify-content:space-between; }
+.qcard-cta .qc-head { font-size:16px; font-weight:700; color:var(--white); letter-spacing:-.01em; line-height:22px; }
+.qcard-cta .qc-sub { font-size:12px; color:var(--od1); line-height:18px; }
+.qcard-cta .qc-arrow { width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,.16); display:flex; align-items:center; justify-content:center; color:var(--white); font-size:18px; transition:transform .2s ease, background .2s ease; }
+.qcard-cta:hover .qc-arrow { background:rgba(255,255,255,.28); transform:translateX(3px); }
 @media (min-width:1024px) {
-  .quote-strip { padding:4px 0 20px; margin:0; }
-  .qcard { flex:0 0 252px; }
+  .quote-strip { padding:4px 0 20px; margin:0; overflow:visible; }
+  .qcard { flex:1 1 0; min-width:0; }
 }
 </style>
 </head>
@@ -400,7 +405,7 @@ button,input,select,textarea { font-family:inherit; }
           <a class="nav-link" onclick="showView('about')">About</a>
         </nav>
         <div class="pub-cta" style="margin-left:auto;">
-          <button class="btn-link pub-signin" onclick="signinReturning()">Sign in</button>
+          <button class="btn-link pub-signin" onclick="signinReturning()">Log in</button>
           <button class="btn btn-red" onclick="startCreateAccount()">Create account</button>
         </div>
       </div>
@@ -431,19 +436,16 @@ button,input,select,textarea { font-family:inherit; }
               <div><div class="q-name">Hector Perla</div><div class="q-meta">ADHD Brain &middot; Inaugural AI Cohort</div></div>
             </div>
             <div class="qcard">
-              <div class="q-avatar">SH</div>
-              <p class="q-body">As a social scientist I had never worked with design thinking before. This taught me to leverage AI while building real mentorship and a sense of community I didn't expect.</p>
-              <div><div class="q-name">Sara Head</div><div class="q-meta">Journey IQ &middot; Inaugural AI Cohort</div></div>
-            </div>
-            <div class="qcard">
-              <div class="q-avatar">BC</div>
-              <p class="q-body">Hands-on AI in real-world problem solving, plus authentic connections with peers who share a passion for innovation. The kind of experience that actually changes how you work.</p>
-              <div><div class="q-name">Brittany Chappell</div><div class="q-meta">FinLit Coach &middot; Inaugural AI Cohort</div></div>
-            </div>
-            <div class="qcard">
               <div class="q-avatar">SZ</div>
               <p class="q-body">I left realizing my gap is exactly where my strength lies—translating between tools, teams, and user needs. AI is about community, trust, and the human side of technology.</p>
               <div><div class="q-name">Suzie Zhang</div><div class="q-meta">FinLit Coach &middot; Inaugural AI Cohort</div></div>
+            </div>
+            <div class="qcard qcard-cta" onclick="startCreateAccount()">
+              <div class="qc-arrow">&rarr;</div>
+              <div>
+                <div class="qc-head">Share your story</div>
+                <div class="qc-sub">Join a cohort and read more from the community.</div>
+              </div>
             </div>
           </div>
         </div>
@@ -653,7 +655,7 @@ button,input,select,textarea { font-family:inherit; }
     <header class="pubnav">
       <div class="pubnav-inner">
         <div style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="showView('landing')"><img src="assets/logo-lockup-light.png" alt="The Upskilling Labs" style="height:36px;width:auto;display:block;"></div>
-        <div class="pub-cta" style="margin-left:auto;"><button class="btn-link pub-signin" onclick="signinReturning()">Sign in</button><button class="btn btn-red" onclick="startCreateAccount()">Create account</button></div>
+        <div class="pub-cta" style="margin-left:auto;"><button class="btn-link pub-signin" onclick="signinReturning()">Log in</button><button class="btn btn-red" onclick="startCreateAccount()">Create account</button></div>
       </div>
     </header>
     <div class="vscroll">
