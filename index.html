@@ -282,7 +282,7 @@ button,input,select,textarea { font-family:inherit; }
 .pub-signin { display:none; }
 
 /* landing hero band (dark cover, not full-screen) */
-.hero-band { position:relative; }
+.hero-band { position:relative; z-index:2; overflow:hidden; border-radius:0 0 var(--r) var(--r); margin-bottom:calc(-1*var(--r)); }
 .hero-inner { max-width:var(--maxw); margin:0 auto; padding:64px var(--pad) 72px; }
 
 /* generic content section */
@@ -371,22 +371,10 @@ button,input,select,textarea { font-family:inherit; }
 }
 
 /* ════ Testimonials ════ */
-.quote-strip { display:flex; gap:12px; overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; padding:4px var(--pad) 20px; margin:0 calc(-1*var(--pad)); scrollbar-width:none; }
-.quote-strip::-webkit-scrollbar { display:none; }
-.qcard { background:var(--white); border-radius:var(--r); padding:18px 16px 16px; flex:0 0 240px; scroll-snap-align:start; display:flex; flex-direction:column; gap:10px; border-left:3px solid var(--teal); box-shadow:var(--shadow); }
-.q-avatar { width:32px; height:32px; border-radius:50%; background:var(--teal); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:var(--white); letter-spacing:.04em; flex-shrink:0; }
-.q-body { font-size:12.5px; line-height:19px; color:var(--charcoal); display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden; flex:1; }
-.q-name { font-size:12.5px; font-weight:700; color:var(--ink); letter-spacing:-.01em; }
-.q-meta { font-size:10px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--meta); margin-top:2px; }
-.qcard-cta { background:var(--teal); border-left:none; cursor:pointer; justify-content:space-between; }
-.qcard-cta .qc-head { font-size:16px; font-weight:700; color:var(--white); letter-spacing:-.01em; line-height:22px; }
-.qcard-cta .qc-sub { font-size:12px; color:var(--od1); line-height:18px; }
-.qcard-cta .qc-arrow { width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,.16); display:flex; align-items:center; justify-content:center; color:var(--white); font-size:18px; transition:transform .2s ease, background .2s ease; }
-.qcard-cta:hover .qc-arrow { background:rgba(255,255,255,.28); transform:translateX(3px); }
-@media (min-width:1024px) {
-  .quote-strip { padding:4px 0 20px; margin:0; overflow:visible; }
-  .qcard { flex:1 1 0; min-width:0; }
-}
+/* Reuses .section / .section-head / .cards.two / .card — no bespoke styles.
+   Section sits on the cool --tint colorway (set inline) so the rounded hero
+   bottom flows into it. */
+.s-tint { background:var(--tint); }
 </style>
 </head>
 <body>
@@ -426,27 +414,25 @@ button,input,select,textarea { font-family:inherit; }
 
     <div class="vscroll">
       <!-- Testimonials -->
-      <section class="section" id="sec-testimonials" style="padding-bottom:8px;">
+      <section class="section s-tint" id="sec-testimonials" style="padding-top:calc(56px + var(--r));">
         <div class="container">
-          <div class="lbl lbl-teal" style="margin-bottom:16px;">From the community</div>
-          <div class="quote-strip">
-            <div class="qcard">
-              <div class="q-avatar">HP</div>
-              <p class="q-body">The program gave me purpose again—connecting me with mission-driven public servants to tackle real problems. AI as an empowerment tool for people-first civic design.</p>
-              <div><div class="q-name">Hector Perla</div><div class="q-meta">ADHD Brain &middot; Inaugural AI Cohort</div></div>
+          <div class="section-head">
+            <div>
+              <div class="lbl lbl-teal" style="margin-bottom:8px;">From the community</div>
+              <h2 class="t-h2">What upskillers say</h2>
             </div>
-            <div class="qcard">
-              <div class="q-avatar">SZ</div>
-              <p class="q-body">I left realizing my gap is exactly where my strength lies—translating between tools, teams, and user needs. AI is about community, trust, and the human side of technology.</p>
-              <div><div class="q-name">Suzie Zhang</div><div class="q-meta">FinLit Coach &middot; Inaugural AI Cohort</div></div>
-            </div>
-            <div class="qcard qcard-cta" onclick="startCreateAccount()">
-              <div class="qc-arrow">&rarr;</div>
-              <div>
-                <div class="qc-head">Share your story</div>
-                <div class="qc-sub">Join a cohort and read more from the community.</div>
-              </div>
-            </div>
+          </div>
+          <div class="cards two">
+            <div class="card"><div class="card-body">
+              <p class="t-body" style="margin-bottom:18px;">&ldquo;The program gave me purpose again—connecting me with mission-driven public servants to tackle real problems. AI as an empowerment tool for people-first civic design.&rdquo;</p>
+              <div class="t-h4">Hector Perla</div>
+              <div class="lbl" style="margin-top:4px;">ADHD Brain &middot; Inaugural AI Cohort</div>
+            </div></div>
+            <div class="card"><div class="card-body">
+              <p class="t-body" style="margin-bottom:18px;">&ldquo;I left realizing my gap is exactly where my strength lies—translating between tools, teams, and user needs. AI is about community, trust, and the human side of technology.&rdquo;</p>
+              <div class="t-h4">Suzie Zhang</div>
+              <div class="lbl" style="margin-top:4px;">FinLit Coach &middot; Inaugural AI Cohort</div>
+            </div></div>
           </div>
         </div>
       </section>
@@ -745,7 +731,7 @@ button,input,select,textarea { font-family:inherit; }
   <!-- ════════ MENTOR EXPLAINER ════════ -->
   <div id="view-mentor-explainer" class="view light onboard s-paper">
     <div class="sheet">
-      <div class="topbar"><button class="icon-btn" onclick="showView('role-intent')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></button></div>
+      <div class="topbar"><button class="icon-btn" onclick="mentorBack()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></button></div>
       <div class="vscroll pad">
         <div id="ms1">
           <div class="lbl lbl-teal" style="margin-bottom:16px;">For mentors</div>
@@ -874,9 +860,10 @@ button,input,select,textarea { font-family:inherit; }
           <p class="t-lede" style="margin-bottom:40px;">Here's what's happening in the Labs right now.</p>
           <div class="dash">
             <div>
-              <div style="display:flex;align-items:flex-end;justify-content:space-between;border-bottom:2px solid var(--ink);padding-bottom:12px;"><div class="lbl lbl-teal">Setup</div><span id="checklist-count" class="lbl">2 left</span></div>
-              <h3 class="t-h3" style="margin:18px 0 4px;">Get set up</h3>
+              <div style="display:flex;align-items:flex-end;justify-content:space-between;border-bottom:2px solid var(--ink);padding-bottom:12px;"><div class="lbl lbl-teal">Your profile</div><span id="checklist-count" class="lbl">2 left</span></div>
+              <h3 class="t-h3" style="margin:18px 0 4px;">Complete your profile</h3>
               <div id="checklist-items">
+                <div id="role-items"></div>
                 <div class="check-row"><input type="checkbox" onchange="tickChecklist(this)"><div><div class="t-h4" style="margin-bottom:2px;">Allowlist our email domain</div><div class="t-small">So our messages don't go to spam</div></div></div>
                 <div class="check-row"><input type="checkbox" checked disabled><div><div class="t-h4" style="color:var(--meta);text-decoration:line-through;">Slack invite sent</div></div></div>
                 <div class="check-row"><input type="checkbox" checked disabled><div><div class="t-h4" style="color:var(--meta);text-decoration:line-through;">Added to community calendar</div></div></div>
@@ -1140,8 +1127,14 @@ button,input,select,textarea { font-family:inherit; }
 
 
 <script>
-const userState = {name:'Alex', initials:'AR', roles:[], isMentor:false};
-let mentorStep = 1; let gateContext = '';
+const userState = {name:'Alex', initials:'AR', roles:[], isMentor:false, completed:{}};
+const FLOW_ROLES=['cycle','volunteer','mentor']; // roles with a deferrable setup flow ('events' is passive)
+const ROLE_ITEMS={
+  cycle:{title:'Register for the Spring 2026 Build Cycle', sub:'Pick a problem area and your commitment.'},
+  mentor:{title:'Complete your mentor profile', sub:'Tell pods what you bring and how to reach you.'},
+  volunteer:{title:'Complete your volunteer profile', sub:'Tell us where and how you want to help.'}
+};
+let mentorStep = 1; let gateContext = ''; let mentorBack=()=>showView('role-intent');
 
 function scrollTop(){ const v=document.querySelector('.view.active .vscroll'); if(v) v.scrollTop=0; else window.scrollTo(0,0); }
 function scrollToSection(id){ const el=document.getElementById(id); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); }
@@ -1171,7 +1164,7 @@ function startCreateAccount(){ gateContext=''; applyGate(); showView('google-aut
 function gateCreateAccount(ctx, e){ if(e) e.stopPropagation(); gateContext=ctx||''; applyGate(); showView('google-auth'); }
 function toggleExpand(card, e){ if(e){ const t=e.target; if(t.closest('button')) return; } card.classList.toggle('expanded'); }
 
-function signinReturning(){ document.getElementById('header-avatar').textContent=userState.initials; document.getElementById('dash-greeting').textContent='Welcome back, '+userState.name+'.'; renderTodos(); buildWeekRail(); showView('dashboard'); }
+function signinReturning(){ document.getElementById('header-avatar').textContent=userState.initials; document.getElementById('dash-greeting').textContent='Welcome back, '+userState.name+'.'; renderTodos(); buildWeekRail(); renderProfileChecklist(); showView('dashboard'); }
 function updateRoleBtn(){ const c=document.querySelectorAll('#role-options input:checked'); document.getElementById('role-continue-btn').disabled=c.length===0; document.querySelectorAll('#role-options .opt-card').forEach(x=>x.classList.toggle('selected',x.querySelector('input').checked)); }
 function submitRoleIntent(){ userState.roles=[...document.querySelectorAll('#role-options input:checked')].map(c=>c.value); userState.isMentor=userState.roles.includes('mentor'); startFlow('signup', ()=>showView('role-intent')); }
 function continueWithGoogle(){ showView('role-intent'); }
@@ -1186,27 +1179,35 @@ const HOURS=['2–4 hrs / week','5–8 hrs / week','8+ hrs / week'];
 const TZ=['ET — Eastern','CT — Central','MT — Mountain','PT — Pacific','GMT','CET — Central European','IST — India Standard'];
 const EXPERTISE=['AI tools','Design','Product','Data','Writing','Facilitation','Research','Strategy','Operations','Policy','Engineering'];
 const ENGAGE=['Workshops','Office hours','Slack support','Pod coaching'];
+const VOL_AREAS=['Events & logistics','Outreach & community','Mentoring support','Content & docs','Tech & tooling','Partnerships'];
+const VOL_WAYS=['At in-person events','Behind the scenes','On-call for specific needs','An ongoing role'];
 function FLOWS(name){
   if(name==='signup') return { eyebrow:'Your profile', finalLabel:'Become an Upskiller', finalClass:'btn-red',
-    onComplete:()=>{ const f=(fans.first||'Alex').trim()||'Alex'; userState.name=f; userState.initials=(f[0]||'A').toUpperCase()+'R'; document.getElementById('header-avatar').textContent=userState.initials; document.getElementById('prof-avatar').textContent=userState.initials; document.getElementById('prof-name').textContent=f+' '+(fans.last||'Rivera'); document.getElementById('dash-greeting').textContent='Welcome, '+f+'.'; renderTodos(); buildWeekRail(); if(userState.isMentor){ mentorStep=1; renderMentor(); showView('mentor-explainer'); } else if(userState.roles.includes('cycle')) startFlow('cycle', ()=>showView('role-intent')); else showView('dashboard'); },
+    onComplete:()=>{ const f=(fans.first||'Alex').trim()||'Alex'; userState.name=f; userState.initials=(f[0]||'A').toUpperCase()+'R'; document.getElementById('header-avatar').textContent=userState.initials; document.getElementById('prof-avatar').textContent=userState.initials; document.getElementById('prof-name').textContent=f+' '+(fans.last||'Rivera'); document.getElementById('dash-greeting').textContent='Welcome, '+f+'.'; renderTodos(); buildWeekRail(); renderProfileChecklist(); const pending=userState.roles.filter(r=>FLOW_ROLES.includes(r)); if(pending.length===1){ startRoleFlow(pending[0], ()=>showView('role-intent')); } else { showView('dashboard'); } },
     steps:[ {id:'email',type:'info',q:'Signing up as',help:'We pulled this from your Google account.',render:'<div class="flow-emaillarge">alex.rivera@gmail.com</div>'},
       {id:'first',type:'text',q:"What's your first name?",ph:'Alex',required:true},
       {id:'last',type:'text',q:'And your last name?',ph:'Rivera',required:true},
       {id:'zip',type:'text',q:'Where are you based?',help:'Your zip code helps us connect you with local labs.',ph:'20001',inputmode:'numeric',required:true},
       {id:'work',type:'choice',q:'What best describes you right now?',options:WORK.map(w=>({v:w,label:w}))},
       {id:'consent',type:'consent',q:'One last thing',text:'I agree to the Participant Agreement and consent to receive updates from The Upskilling Labs. My profile is public by default.'} ]};
-  if(name==='cycle') return { eyebrow:'Spring 2026', finalLabel:'Submit registration', finalClass:'btn-teal', onComplete:()=>showView('dashboard'),
+  if(name==='cycle') return { eyebrow:'Spring 2026', finalLabel:'Submit registration', finalClass:'btn-teal', onComplete:()=>finishRoleFlow('cycle'),
     steps:[ {id:'problem',type:'textarea',q:'What problem area excites you most?',help:'A sentence or two is plenty.',ph:'e.g. how AI can help DC residents navigate benefits eligibility...',required:true},
       {id:'level',type:'choice',q:'Where are you at in your primary area?',options:LEVELS.map(l=>({v:l[0],label:l[0],sub:l[1]}))},
       {id:'goals',type:'textarea',q:'What do you most want from this cycle?',ph:'What would make this time well spent?',required:true},
       {id:'hours',type:'choice',q:'How much time can you commit?',options:HOURS.map(h=>({v:h,label:h}))} ]};
-  if(name==='mentor') return { eyebrow:'Mentor profile', finalLabel:'Save profile', finalClass:'btn-teal', onComplete:()=>{ if(userState.roles.includes('cycle')) startFlow('cycle', ()=>showView('dashboard')); else showView('dashboard'); },
+  if(name==='mentor') return { eyebrow:'Mentor profile', finalLabel:'Save profile', finalClass:'btn-teal', onComplete:()=>finishRoleFlow('mentor'),
     steps:[ {id:'expertise',type:'tags',q:'What do you bring?',help:'Pick the areas where you can help. Choose as many as fit.',options:EXPERTISE,required:true},
       {id:'engage',type:'checks',q:'How would you like to engage?',help:'Select all that work for you.',options:ENGAGE,required:true},
       {id:'tz',type:'choice',q:'What time zone are you in?',options:TZ.map(t=>({v:t,label:t}))},
       {id:'booking',type:'text',q:'Share a booking link',help:'Optional — makes it easy for pods to grab time with you.',ph:'calendly.com/your-link',required:false} ]};
+  if(name==='volunteer') return { eyebrow:'Volunteer profile', finalLabel:'Save profile', finalClass:'btn-teal', onComplete:()=>finishRoleFlow('volunteer'),
+    steps:[ {id:'areas',type:'tags',q:'Where would you like to help?',help:'Pick the areas that fit. Choose as many as you like.',options:VOL_AREAS,required:true},
+      {id:'ways',type:'checks',q:'How would you like to pitch in?',help:'Select all that work for you.',options:VOL_WAYS,required:true},
+      {id:'hours',type:'choice',q:'How much time can you commit?',options:HOURS.map(h=>({v:h,label:h}))} ]};
 }
 function startFlow(name, backFn){ flow=FLOWS(name); flow.name=name; flow.backTo=backFn||(()=>showView('landing')); fstep=0; fans={}; renderFlowStep(); showView('flow'); }
+function startRoleFlow(role, backFn){ if(role==='mentor'){ mentorBack=backFn||(()=>showView('dashboard')); mentorStep=1; renderMentor(); showView('mentor-explainer'); } else { startFlow(role, backFn||(()=>showView('dashboard'))); } }
+function finishRoleFlow(role){ userState.completed[role]=true; renderProfileChecklist(); showView('dashboard'); }
 function pad2(n){ return n<10?'0'+n:''+n; }
 function renderFlowStep(){
   const step=flow.steps[fstep];
@@ -1265,7 +1266,9 @@ function initEventCats(){ const cats=['All','In person','Virtual','This month','
 function initGallery(){ const tr=document.getElementById('ev-gallery'); const dots=document.getElementById('ev-dots'); if(!tr||!dots)return; tr.onscroll=()=>{ const i=Math.round(tr.scrollLeft/tr.clientWidth); [...dots.children].forEach((d,k)=>d.classList.toggle('on',k===i)); }; }
 function renderActivity(){ const g=document.getElementById('act-grid'); if(!g||g.childElementCount)return; const pat=[1,0,2,3,1,0,0,2,4,3,1,2,0,1,3,4,2,1,0,2,3,1,4,2,0,1,2,3,1,0,2,4,3,2,1,0,1,3,2,4,1,0,2,1,3,2,0,1,4,2,1,3]; const op=[.08,.22,.4,.6,.85]; pat.forEach(v=>{ const s=document.createElement('div'); s.className='act-sq'; s.style.background='rgba(0,148,160,'+op[v]+')'; g.appendChild(s); }); }
 
-function tickChecklist(el){ const total=document.querySelectorAll('#checklist-items input[type=checkbox]').length; const done=document.querySelectorAll('#checklist-items input[type=checkbox]:checked').length; const rem=total-done; document.getElementById('checklist-count').textContent=rem===0?'All done':rem+' left'; if(el.checked){ const l=el.closest('.check-row').querySelector('.t-h4'); if(l){ l.style.textDecoration='line-through'; l.style.color='var(--meta)'; } } }
+function updateChecklistCount(){ const total=document.querySelectorAll('#checklist-items input[type=checkbox]').length; const done=document.querySelectorAll('#checklist-items input[type=checkbox]:checked').length; const rem=total-done; const c=document.getElementById('checklist-count'); if(c) c.textContent=rem===0?'All done':rem+' left'; }
+function tickChecklist(el){ if(el.checked){ const l=el.closest('.check-row').querySelector('.t-h4'); if(l){ l.style.textDecoration='line-through'; l.style.color='var(--meta)'; } } updateChecklistCount(); }
+function renderProfileChecklist(){ const box=document.getElementById('role-items'); if(!box) return; box.innerHTML=''; userState.roles.filter(r=>FLOW_ROLES.includes(r)).forEach(role=>{ const meta=ROLE_ITEMS[role]; if(!meta) return; const done=!!userState.completed[role]; const row=document.createElement('div'); row.className='check-row role-row'; if(!done){ row.style.cursor='pointer'; row.onclick=()=>startRoleFlow(role, ()=>showView('dashboard')); } const strike=done?'color:var(--meta);text-decoration:line-through;':''; row.innerHTML='<input type="checkbox" '+(done?'checked ':'')+'disabled><div><div class="t-h4" style="margin-bottom:2px;'+strike+'">'+meta.title+'</div>'+(done?'':'<div class="t-small">'+meta.sub+'</div>')+'</div>'; box.appendChild(row); }); updateChecklistCount(); }
 function renderTodos(){
   const todos=[{label:'Cycles',title:'Build Cycle is forming',body:'Pod registration opens Mar 30.',cta:'Learn more',action:()=>goApp('cycles')},{label:'Profile',title:'Make your work public',body:'Add a bio and your first project to your profile.',cta:'Open profile',action:()=>showProfile()},{label:'Events',title:'Prompting for real work',body:'Jul 9 · In person at DC Public Library.',cta:'Register',action:()=>openEvent()}];
   const c=document.getElementById('todos-container'); if(!c)return; c.innerHTML='';
