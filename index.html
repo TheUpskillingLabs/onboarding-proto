@@ -175,6 +175,24 @@ button,input,select,textarea { font-family:inherit; }
 .heart svg { width:20px; height:20px; stroke:#fff; fill:none; stroke-width:2; }
 .heart.saved svg { fill:var(--red); stroke:#fff; }
 
+/* save gate modal */
+.gate-modal { display:none; position:fixed; inset:0; z-index:200; background:rgba(0,20,27,.58); backdrop-filter:blur(4px); padding:var(--pad); align-items:flex-end; justify-content:center; }
+.gate-modal.open { display:flex; animation:gateFade .2s ease; }
+.gate-sheet { position:relative; width:100%; max-width:420px; padding:32px 24px 24px; border-radius:var(--r) var(--r) 0 0; box-shadow:var(--shadow-lg); animation:gateUp .24s cubic-bezier(.2,.8,.25,1); }
+.gate-close { position:absolute; top:14px; right:14px; width:36px; height:36px; display:flex; align-items:center; justify-content:center; background:none; border:none; cursor:pointer; color:var(--meta); border-radius:50%; }
+.gate-close:hover { background:rgba(0,20,27,.06); color:var(--ink); }
+.gate-heart { width:52px; height:52px; border-radius:50%; background:rgba(225,29,42,.1); display:flex; align-items:center; justify-content:center; margin-bottom:16px; }
+.gate-heart svg { width:26px; height:26px; }
+@keyframes gateFade { from { opacity:0; } to { opacity:1; } }
+@keyframes gateUp { from { transform:translateY(24px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+@media (min-width:1024px) {
+  .gate-modal { align-items:center; }
+  .gate-sheet { border-radius:var(--r); animation:gateFade .2s ease; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gate-modal.open, .gate-sheet { animation:none; }
+}
+
 /* category chip scroller */
 .cat-scroll { display:flex; gap:8px; overflow-x:auto; padding:4px var(--pad); margin:0 calc(-1*var(--pad)) 8px; -webkit-overflow-scrolling:touch; }
 .cat-scroll::-webkit-scrollbar { height:0; }
@@ -391,6 +409,13 @@ button,input,select,textarea { font-family:inherit; }
 .cards.dense .heart { width:32px; height:32px; }
 @media (min-width:700px) { .cards.dense { grid-template-columns:repeat(3,1fr); } }
 @media (min-width:1024px) { .cards.dense { grid-template-columns:repeat(4,1fr); gap:20px; } }
+/* compact expand inside dense tiles: stacked key/value, tighter padding */
+.cards.dense .card-expand { padding:0 14px; }
+.cards.dense .card.expanded .card-expand { padding:4px 14px 14px; }
+.cards.dense .kv { flex-direction:column; gap:2px; padding:8px 0; }
+.cards.dense .kv .k { width:auto; }
+.cards.dense .lock-note { font-size:12px; margin:8px 0 12px; }
+.cards.dense .card-row { gap:6px; }
 
 @media (prefers-reduced-motion: reduce) {
   .card-expand { transition:none; }
@@ -487,7 +512,7 @@ button,input,select,textarea { font-family:inherit; }
   <circle cx="120" cy="120" r="116" fill="url(#oc)"/>
   <circle cx="120" cy="120" r="116" fill="url(#or)"/>
   <g transform="translate(20,40) scale(0.142)"><path d="M 0 900.84 C 532.341 651.368 841.069 454.81 1407.215 0 C 1190.699 365.98 1060.371 566.788 776.503 900.84 L 950.588 496.405 C 539.219 733.009 347.248 789.767 0 900.84 Z" fill="url(#og)"/></g>
-</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button><div class="m-tag">13 weeks</div></div>
+</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg></button><div class="m-tag">13 weeks</div></div>
             <div class="card-body"><div class="card-row"><div class="lbl lbl-teal">Spring 2026 · Washington, DC</div><span class="card-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div><div class="t-h4" style="margin:6px 0 4px;">Civic AI Build Cycle</div><p class="t-small">Mar 2 – May 29 · 42 members</p></div>
             <div class="card-expand">
               <div class="kv"><span class="k lbl">Format</span><span class="t-small">13-week pod that ships a real civic project</span></div>
@@ -507,7 +532,7 @@ button,input,select,textarea { font-family:inherit; }
   <circle cx="120" cy="120" r="116" fill="url(#oc)"/>
   <circle cx="120" cy="120" r="116" fill="url(#or)"/>
   <g transform="translate(20,40) scale(0.142)"><path d="M 0 900.84 C 532.341 651.368 841.069 454.81 1407.215 0 C 1190.699 365.98 1060.371 566.788 776.503 900.84 L 950.588 496.405 C 539.219 733.009 347.248 789.767 0 900.84 Z" fill="url(#og)"/></g>
-</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button><div class="m-tag">Forming</div></div>
+</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg></button><div class="m-tag">Forming</div></div>
             <div class="card-body"><div class="card-row"><div class="lbl lbl-teal">Summer 2026 · Washington, DC</div><span class="card-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div><div class="t-h4" style="margin:6px 0 4px;">Benefits Navigator Cycle</div><p class="t-small">Jun 15 – Sep 11 · interest open</p></div>
             <div class="card-expand">
               <div class="kv"><span class="k lbl">Theme</span><span class="t-small">Helping residents navigate public benefits</span></div>
@@ -523,8 +548,8 @@ button,input,select,textarea { font-family:inherit; }
       <section class="section s-white" id="sec-workshops"><div class="container">
         <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Workshops &amp; sessions · weekly</div><h2 class="t-h2">Drop into a session</h2></div><span class="see" onclick="startCreateAccount()">See all →</span></div>
         <div class="cards dense">
-          <div class="card tappable" onclick="gateCreateAccount('the Jul 9 workshop',event)"><div class="media"><img src="assets/sample-workshop-recap.png" alt="Workshop Recap" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button><div class="m-tag">In person</div></div><div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">Jul 9 · 6 PM</div><div class="t-h4">Prompting for real work</div><p class="t-small" style="margin-top:4px;">DC Public Library</p></div></div>
-          <div class="card tappable" onclick="gateCreateAccount('the design session',event)"><div class="media m-forest"><div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
+          <div class="card expandable tappable" onclick="toggleExpand(this,event)"><div class="media"><img src="assets/sample-workshop-recap.png" alt="Workshop Recap" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg></button><div class="m-tag">In person</div></div><div class="card-body"><div class="card-row"><div class="lbl lbl-teal">Jul 9 · 6 PM</div><span class="card-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div><div class="t-h4" style="margin:6px 0 4px;">Prompting for real work</div><p class="t-small">DC Public Library</p></div><div class="card-expand"><div class="kv"><span class="k lbl">What</span><span class="t-small">A hands-on intro to prompting for everyday work</span></div><div class="kv"><span class="k lbl">Bring</span><span class="t-small">A laptop and a real task to try</span></div><div class="lock-note"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Free &amp; public — save a spot for the room details</div><button class="btn btn-teal btn-block" onclick="gateCreateAccount('the Jul 9 workshop',event)">Save a spot</button></div></div>
+          <div class="card expandable tappable" onclick="toggleExpand(this,event)"><div class="media m-forest"><div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
   <defs>
     <radialGradient id="oc" cx="38%" cy="35%" r="58%"><stop offset="0%" stop-color="#0094A0"/><stop offset="62%" stop-color="rgba(0,148,160,0)"/></radialGradient>
     <radialGradient id="or" cx="62%" cy="78%" r="65%"><stop offset="60%" stop-color="rgba(225,29,42,0)"/><stop offset="100%" stop-color="#E11D2A"/></radialGradient>
@@ -533,9 +558,9 @@ button,input,select,textarea { font-family:inherit; }
   <circle cx="120" cy="120" r="116" fill="url(#oc)"/>
   <circle cx="120" cy="120" r="116" fill="url(#or)"/>
   <g transform="translate(20,40) scale(0.142)"><path d="M 0 900.84 C 532.341 651.368 841.069 454.81 1407.215 0 C 1190.699 365.98 1060.371 566.788 776.503 900.84 L 950.588 496.405 C 539.219 733.009 347.248 789.767 0 900.84 Z" fill="url(#og)"/></g>
-</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button><div class="m-tag">In person</div></div><div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">Jul 16 · 6 PM</div><div class="t-h4">Design for non-designers</div><p class="t-small" style="margin-top:4px;">Tenley-Friendship</p></div></div>
-          <div class="card tappable" onclick="gateCreateAccount('the climate roundtable',event)"><div class="media"><img src="assets/sample-square-event.png" alt="Energy &amp; Climate Roundtable" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button><div class="m-tag">Virtual</div></div><div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">Jul 22 · 7 PM</div><div class="t-h4">Energy &amp; Climate Roundtable</div><p class="t-small" style="margin-top:4px;">Online</p></div></div>
-          <div class="card tappable" onclick="gateCreateAccount('the AI tool session',event)"><div class="media m-teal"><div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
+</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg></button><div class="m-tag">In person</div></div><div class="card-body"><div class="card-row"><div class="lbl lbl-teal">Jul 16 · 6 PM</div><span class="card-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div><div class="t-h4" style="margin:6px 0 4px;">Design for non-designers</div><p class="t-small">Tenley-Friendship</p></div><div class="card-expand"><div class="kv"><span class="k lbl">What</span><span class="t-small">Practical design fundamentals for builders</span></div><div class="kv"><span class="k lbl">Bring</span><span class="t-small">Something you'd like to make look better</span></div><div class="lock-note"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Free &amp; public — save a spot for the room details</div><button class="btn btn-teal btn-block" onclick="gateCreateAccount('the design session',event)">Save a spot</button></div></div>
+          <div class="card expandable tappable" onclick="toggleExpand(this,event)"><div class="media"><img src="assets/sample-square-event.png" alt="Energy &amp; Climate Roundtable" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg></button><div class="m-tag">Virtual</div></div><div class="card-body"><div class="card-row"><div class="lbl lbl-teal">Jul 22 · 7 PM</div><span class="card-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div><div class="t-h4" style="margin:6px 0 4px;">Energy &amp; Climate Roundtable</div><p class="t-small">Online</p></div><div class="card-expand"><div class="kv"><span class="k lbl">What</span><span class="t-small">A community discussion on energy &amp; climate work</span></div><div class="kv"><span class="k lbl">Where</span><span class="t-small">Online — link sent after you save a spot</span></div><div class="lock-note"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Free &amp; public — save a spot and we'll send the link</div><button class="btn btn-teal btn-block" onclick="gateCreateAccount('the climate roundtable',event)">Save a spot</button></div></div>
+          <div class="card expandable tappable" onclick="toggleExpand(this,event)"><div class="media m-teal"><div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
   <defs>
     <radialGradient id="oc" cx="38%" cy="35%" r="58%"><stop offset="0%" stop-color="#0094A0"/><stop offset="62%" stop-color="rgba(0,148,160,0)"/></radialGradient>
     <radialGradient id="or" cx="62%" cy="78%" r="65%"><stop offset="60%" stop-color="rgba(225,29,42,0)"/><stop offset="100%" stop-color="#E11D2A"/></radialGradient>
@@ -544,8 +569,8 @@ button,input,select,textarea { font-family:inherit; }
   <circle cx="120" cy="120" r="116" fill="url(#oc)"/>
   <circle cx="120" cy="120" r="116" fill="url(#or)"/>
   <g transform="translate(20,40) scale(0.142)"><path d="M 0 900.84 C 532.341 651.368 841.069 454.81 1407.215 0 C 1190.699 365.98 1060.371 566.788 776.503 900.84 L 950.588 496.405 C 539.219 733.009 347.248 789.767 0 900.84 Z" fill="url(#og)"/></g>
-</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button><div class="m-tag">In person</div></div><div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">Jul 29 · 6 PM</div><div class="t-h4">Ship your first AI tool</div><p class="t-small" style="margin-top:4px;">Main branch</p></div></div>
-          <div class="card tappable" onclick="gateCreateAccount('build night',event)"><div class="media m-forest"><div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
+</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg></button><div class="m-tag">In person</div></div><div class="card-body"><div class="card-row"><div class="lbl lbl-teal">Jul 29 · 6 PM</div><span class="card-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div><div class="t-h4" style="margin:6px 0 4px;">Ship your first AI tool</div><p class="t-small">Main branch</p></div><div class="card-expand"><div class="kv"><span class="k lbl">What</span><span class="t-small">Build and ship a small AI tool, start to finish</span></div><div class="kv"><span class="k lbl">Bring</span><span class="t-small">A laptop — no coding experience needed</span></div><div class="lock-note"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Free &amp; public — save a spot for the room details</div><button class="btn btn-teal btn-block" onclick="gateCreateAccount('the AI tool session',event)">Save a spot</button></div></div>
+          <div class="card expandable tappable" onclick="toggleExpand(this,event)"><div class="media m-forest"><div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
   <defs>
     <radialGradient id="oc" cx="38%" cy="35%" r="58%"><stop offset="0%" stop-color="#0094A0"/><stop offset="62%" stop-color="rgba(0,148,160,0)"/></radialGradient>
     <radialGradient id="or" cx="62%" cy="78%" r="65%"><stop offset="60%" stop-color="rgba(225,29,42,0)"/><stop offset="100%" stop-color="#E11D2A"/></radialGradient>
@@ -554,8 +579,8 @@ button,input,select,textarea { font-family:inherit; }
   <circle cx="120" cy="120" r="116" fill="url(#oc)"/>
   <circle cx="120" cy="120" r="116" fill="url(#or)"/>
   <g transform="translate(20,40) scale(0.142)"><path d="M 0 900.84 C 532.341 651.368 841.069 454.81 1407.215 0 C 1190.699 365.98 1060.371 566.788 776.503 900.84 L 950.588 496.405 C 539.219 733.009 347.248 789.767 0 900.84 Z" fill="url(#og)"/></g>
-</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button><div class="m-tag">In person</div></div><div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">Aug 6 · 6 PM</div><div class="t-h4">Build night: ship something small</div><p class="t-small" style="margin-top:4px;">Main branch</p></div></div>
-          <div class="card tappable" onclick="gateCreateAccount('the data storytelling session',event)"><div class="media m-navy"><div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
+</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg></button><div class="m-tag">In person</div></div><div class="card-body"><div class="card-row"><div class="lbl lbl-teal">Aug 6 · 6 PM</div><span class="card-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div><div class="t-h4" style="margin:6px 0 4px;">Build night: ship something small</div><p class="t-small">Main branch</p></div><div class="card-expand"><div class="kv"><span class="k lbl">What</span><span class="t-small">An open work session to ship something small</span></div><div class="kv"><span class="k lbl">Bring</span><span class="t-small">Whatever you're working on</span></div><div class="lock-note"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Free &amp; public — save a spot for the room details</div><button class="btn btn-teal btn-block" onclick="gateCreateAccount('build night',event)">Save a spot</button></div></div>
+          <div class="card expandable tappable" onclick="toggleExpand(this,event)"><div class="media m-navy"><div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
   <defs>
     <radialGradient id="oc" cx="38%" cy="35%" r="58%"><stop offset="0%" stop-color="#0094A0"/><stop offset="62%" stop-color="rgba(0,148,160,0)"/></radialGradient>
     <radialGradient id="or" cx="62%" cy="78%" r="65%"><stop offset="60%" stop-color="rgba(225,29,42,0)"/><stop offset="100%" stop-color="#E11D2A"/></radialGradient>
@@ -564,8 +589,8 @@ button,input,select,textarea { font-family:inherit; }
   <circle cx="120" cy="120" r="116" fill="url(#oc)"/>
   <circle cx="120" cy="120" r="116" fill="url(#or)"/>
   <g transform="translate(20,40) scale(0.142)"><path d="M 0 900.84 C 532.341 651.368 841.069 454.81 1407.215 0 C 1190.699 365.98 1060.371 566.788 776.503 900.84 L 950.588 496.405 C 539.219 733.009 347.248 789.767 0 900.84 Z" fill="url(#og)"/></g>
-</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button><div class="m-tag">Virtual</div></div><div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">Aug 13 · 7 PM</div><div class="t-h4">Data storytelling</div><p class="t-small" style="margin-top:4px;">Online</p></div></div>
-          <div class="card tappable" onclick="gateCreateAccount('office hours',event)"><div class="media m-teal"><div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
+</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg></button><div class="m-tag">Virtual</div></div><div class="card-body"><div class="card-row"><div class="lbl lbl-teal">Aug 13 · 7 PM</div><span class="card-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div><div class="t-h4" style="margin:6px 0 4px;">Data storytelling</div><p class="t-small">Online</p></div><div class="card-expand"><div class="kv"><span class="k lbl">What</span><span class="t-small">Turn data into a story people remember</span></div><div class="kv"><span class="k lbl">Where</span><span class="t-small">Online — link sent after you save a spot</span></div><div class="lock-note"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Free &amp; public — save a spot and we'll send the link</div><button class="btn btn-teal btn-block" onclick="gateCreateAccount('the data storytelling session',event)">Save a spot</button></div></div>
+          <div class="card expandable tappable" onclick="toggleExpand(this,event)"><div class="media m-teal"><div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
   <defs>
     <radialGradient id="oc" cx="38%" cy="35%" r="58%"><stop offset="0%" stop-color="#0094A0"/><stop offset="62%" stop-color="rgba(0,148,160,0)"/></radialGradient>
     <radialGradient id="or" cx="62%" cy="78%" r="65%"><stop offset="60%" stop-color="rgba(225,29,42,0)"/><stop offset="100%" stop-color="#E11D2A"/></radialGradient>
@@ -574,8 +599,8 @@ button,input,select,textarea { font-family:inherit; }
   <circle cx="120" cy="120" r="116" fill="url(#oc)"/>
   <circle cx="120" cy="120" r="116" fill="url(#or)"/>
   <g transform="translate(20,40) scale(0.142)"><path d="M 0 900.84 C 532.341 651.368 841.069 454.81 1407.215 0 C 1190.699 365.98 1060.371 566.788 776.503 900.84 L 950.588 496.405 C 539.219 733.009 347.248 789.767 0 900.84 Z" fill="url(#og)"/></g>
-</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button><div class="m-tag">Drop-in</div></div><div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">Aug 20 · 5 PM</div><div class="t-h4">Mentor office hours</div><p class="t-small" style="margin-top:4px;">DC Public Library</p></div></div>
-          <div class="card tappable" onclick="gateCreateAccount('the showcase',event)"><div class="media m-forest"><div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
+</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg></button><div class="m-tag">Drop-in</div></div><div class="card-body"><div class="card-row"><div class="lbl lbl-teal">Aug 20 · 5 PM</div><span class="card-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div><div class="t-h4" style="margin:6px 0 4px;">Mentor office hours</div><p class="t-small">DC Public Library</p></div><div class="card-expand"><div class="kv"><span class="k lbl">What</span><span class="t-small">Drop in for 1:1 time with a mentor</span></div><div class="kv"><span class="k lbl">Format</span><span class="t-small">No agenda — bring your questions</span></div><div class="lock-note"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Free &amp; public — save a spot for the room details</div><button class="btn btn-teal btn-block" onclick="gateCreateAccount('office hours',event)">Save a spot</button></div></div>
+          <div class="card expandable tappable" onclick="toggleExpand(this,event)"><div class="media m-forest"><div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
   <defs>
     <radialGradient id="oc" cx="38%" cy="35%" r="58%"><stop offset="0%" stop-color="#0094A0"/><stop offset="62%" stop-color="rgba(0,148,160,0)"/></radialGradient>
     <radialGradient id="or" cx="62%" cy="78%" r="65%"><stop offset="60%" stop-color="rgba(225,29,42,0)"/><stop offset="100%" stop-color="#E11D2A"/></radialGradient>
@@ -584,7 +609,7 @@ button,input,select,textarea { font-family:inherit; }
   <circle cx="120" cy="120" r="116" fill="url(#oc)"/>
   <circle cx="120" cy="120" r="116" fill="url(#or)"/>
   <g transform="translate(20,40) scale(0.142)"><path d="M 0 900.84 C 532.341 651.368 841.069 454.81 1407.215 0 C 1190.699 365.98 1060.371 566.788 776.503 900.84 L 950.588 496.405 C 539.219 733.009 347.248 789.767 0 900.84 Z" fill="url(#og)"/></g>
-</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button><div class="m-tag">In person</div></div><div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">Aug 27 · 6 PM</div><div class="t-h4">Community showcase night</div><p class="t-small" style="margin-top:4px;">Main branch</p></div></div>
+</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg></button><div class="m-tag">In person</div></div><div class="card-body"><div class="card-row"><div class="lbl lbl-teal">Aug 27 · 6 PM</div><span class="card-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div><div class="t-h4" style="margin:6px 0 4px;">Community showcase night</div><p class="t-small">Main branch</p></div><div class="card-expand"><div class="kv"><span class="k lbl">What</span><span class="t-small">See what the community shipped this cycle</span></div><div class="kv"><span class="k lbl">Open</span><span class="t-small">Everyone welcome — projects are public</span></div><div class="lock-note"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Free &amp; public — save a spot for the room details</div><button class="btn btn-teal btn-block" onclick="gateCreateAccount('the showcase',event)">Save a spot</button></div></div>
         </div>
       </div></section>
 
@@ -972,7 +997,7 @@ button,input,select,textarea { font-family:inherit; }
           <p class="t-lede" style="margin-bottom:20px;">Hands-on sessions and community events.</p>
           <div class="cat-scroll" id="event-cats"></div>
           <div class="cards dense" style="margin-top:8px;">
-            <div class="card tappable" onclick="openEvent()"><div class="media"><img src="assets/sample-workshop-recap.png" alt="Workshop Recap" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button><div class="m-tag">In person</div></div><div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">Jul 9 · 6 PM</div><div class="t-h4">Prompting for real work</div><p class="t-small" style="margin-top:4px;">DC Public Library</p></div></div>
+            <div class="card tappable" onclick="openEvent()"><div class="media"><img src="assets/sample-workshop-recap.png" alt="Workshop Recap" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg></button><div class="m-tag">In person</div></div><div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">Jul 9 · 6 PM</div><div class="t-h4">Prompting for real work</div><p class="t-small" style="margin-top:4px;">DC Public Library</p></div></div>
             <div class="card tappable" onclick="openEvent()"><div class="media m-forest"><div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
   <defs>
     <radialGradient id="oc" cx="38%" cy="35%" r="58%"><stop offset="0%" stop-color="#0094A0"/><stop offset="62%" stop-color="rgba(0,148,160,0)"/></radialGradient>
@@ -982,8 +1007,8 @@ button,input,select,textarea { font-family:inherit; }
   <circle cx="120" cy="120" r="116" fill="url(#oc)"/>
   <circle cx="120" cy="120" r="116" fill="url(#or)"/>
   <g transform="translate(20,40) scale(0.142)"><path d="M 0 900.84 C 532.341 651.368 841.069 454.81 1407.215 0 C 1190.699 365.98 1060.371 566.788 776.503 900.84 L 950.588 496.405 C 539.219 733.009 347.248 789.767 0 900.84 Z" fill="url(#og)"/></g>
-</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button><div class="m-tag">In person</div></div><div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">Jul 16 · 6 PM</div><div class="t-h4">Design for non-designers</div><p class="t-small" style="margin-top:4px;">Tenley-Friendship</p></div></div>
-            <div class="card tappable" onclick="openEvent()"><div class="media"><img src="assets/sample-square-event.png" alt="Energy &amp; Climate Roundtable" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button><div class="m-tag">Virtual</div></div><div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">Jul 22 · 7 PM</div><div class="t-h4">Energy &amp; Climate Roundtable</div><p class="t-small" style="margin-top:4px;">Online</p></div></div>
+</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg></button><div class="m-tag">In person</div></div><div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">Jul 16 · 6 PM</div><div class="t-h4">Design for non-designers</div><p class="t-small" style="margin-top:4px;">Tenley-Friendship</p></div></div>
+            <div class="card tappable" onclick="openEvent()"><div class="media"><img src="assets/sample-square-event.png" alt="Energy &amp; Climate Roundtable" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg></button><div class="m-tag">Virtual</div></div><div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">Jul 22 · 7 PM</div><div class="t-h4">Energy &amp; Climate Roundtable</div><p class="t-small" style="margin-top:4px;">Online</p></div></div>
             <div class="card tappable" onclick="openEvent()"><div class="media m-teal"><div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
   <defs>
     <radialGradient id="oc" cx="38%" cy="35%" r="58%"><stop offset="0%" stop-color="#0094A0"/><stop offset="62%" stop-color="rgba(0,148,160,0)"/></radialGradient>
@@ -993,7 +1018,7 @@ button,input,select,textarea { font-family:inherit; }
   <circle cx="120" cy="120" r="116" fill="url(#oc)"/>
   <circle cx="120" cy="120" r="116" fill="url(#or)"/>
   <g transform="translate(20,40) scale(0.142)"><path d="M 0 900.84 C 532.341 651.368 841.069 454.81 1407.215 0 C 1190.699 365.98 1060.371 566.788 776.503 900.84 L 950.588 496.405 C 539.219 733.009 347.248 789.767 0 900.84 Z" fill="url(#og)"/></g>
-</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button><div class="m-tag">In person</div></div><div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">Jul 29 · 6 PM</div><div class="t-h4">Ship your first AI tool</div><p class="t-small" style="margin-top:4px;">Main branch</p></div></div>
+</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg></button><div class="m-tag">In person</div></div><div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">Jul 29 · 6 PM</div><div class="t-h4">Ship your first AI tool</div><p class="t-small" style="margin-top:4px;">Main branch</p></div></div>
             <div class="card tappable" onclick="openEvent()"><div class="media m-forest"><div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
   <defs>
     <radialGradient id="oc" cx="38%" cy="35%" r="58%"><stop offset="0%" stop-color="#0094A0"/><stop offset="62%" stop-color="rgba(0,148,160,0)"/></radialGradient>
@@ -1003,7 +1028,7 @@ button,input,select,textarea { font-family:inherit; }
   <circle cx="120" cy="120" r="116" fill="url(#oc)"/>
   <circle cx="120" cy="120" r="116" fill="url(#or)"/>
   <g transform="translate(20,40) scale(0.142)"><path d="M 0 900.84 C 532.341 651.368 841.069 454.81 1407.215 0 C 1190.699 365.98 1060.371 566.788 776.503 900.84 L 950.588 496.405 C 539.219 733.009 347.248 789.767 0 900.84 Z" fill="url(#og)"/></g>
-</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button><div class="m-tag">In person</div></div><div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">Aug 6 · 6 PM</div><div class="t-h4">Build night</div><p class="t-small" style="margin-top:4px;">Main branch</p></div></div>
+</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg></button><div class="m-tag">In person</div></div><div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">Aug 6 · 6 PM</div><div class="t-h4">Build night</div><p class="t-small" style="margin-top:4px;">Main branch</p></div></div>
             <div class="card tappable" onclick="openEvent()"><div class="media m-navy"><div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
   <defs>
     <radialGradient id="oc" cx="38%" cy="35%" r="58%"><stop offset="0%" stop-color="#0094A0"/><stop offset="62%" stop-color="rgba(0,148,160,0)"/></radialGradient>
@@ -1013,7 +1038,7 @@ button,input,select,textarea { font-family:inherit; }
   <circle cx="120" cy="120" r="116" fill="url(#oc)"/>
   <circle cx="120" cy="120" r="116" fill="url(#or)"/>
   <g transform="translate(20,40) scale(0.142)"><path d="M 0 900.84 C 532.341 651.368 841.069 454.81 1407.215 0 C 1190.699 365.98 1060.371 566.788 776.503 900.84 L 950.588 496.405 C 539.219 733.009 347.248 789.767 0 900.84 Z" fill="url(#og)"/></g>
-</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button><div class="m-tag">Virtual</div></div><div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">Aug 13 · 7 PM</div><div class="t-h4">Data storytelling</div><p class="t-small" style="margin-top:4px;">Online</p></div></div>
+</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg></button><div class="m-tag">Virtual</div></div><div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">Aug 13 · 7 PM</div><div class="t-h4">Data storytelling</div><p class="t-small" style="margin-top:4px;">Online</p></div></div>
             <div class="card tappable" onclick="openEvent()"><div class="media m-teal"><div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
   <defs>
     <radialGradient id="oc" cx="38%" cy="35%" r="58%"><stop offset="0%" stop-color="#0094A0"/><stop offset="62%" stop-color="rgba(0,148,160,0)"/></radialGradient>
@@ -1023,7 +1048,7 @@ button,input,select,textarea { font-family:inherit; }
   <circle cx="120" cy="120" r="116" fill="url(#oc)"/>
   <circle cx="120" cy="120" r="116" fill="url(#or)"/>
   <g transform="translate(20,40) scale(0.142)"><path d="M 0 900.84 C 532.341 651.368 841.069 454.81 1407.215 0 C 1190.699 365.98 1060.371 566.788 776.503 900.84 L 950.588 496.405 C 539.219 733.009 347.248 789.767 0 900.84 Z" fill="url(#og)"/></g>
-</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button><div class="m-tag">Drop-in</div></div><div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">Aug 20 · 5 PM</div><div class="t-h4">Mentor office hours</div><p class="t-small" style="margin-top:4px;">DC Public Library</p></div></div>
+</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg></button><div class="m-tag">Drop-in</div></div><div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">Aug 20 · 5 PM</div><div class="t-h4">Mentor office hours</div><p class="t-small" style="margin-top:4px;">DC Public Library</p></div></div>
             <div class="card tappable" onclick="openEvent()"><div class="media m-forest"><div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
   <defs>
     <radialGradient id="oc" cx="38%" cy="35%" r="58%"><stop offset="0%" stop-color="#0094A0"/><stop offset="62%" stop-color="rgba(0,148,160,0)"/></radialGradient>
@@ -1033,7 +1058,7 @@ button,input,select,textarea { font-family:inherit; }
   <circle cx="120" cy="120" r="116" fill="url(#oc)"/>
   <circle cx="120" cy="120" r="116" fill="url(#or)"/>
   <g transform="translate(20,40) scale(0.142)"><path d="M 0 900.84 C 532.341 651.368 841.069 454.81 1407.215 0 C 1190.699 365.98 1060.371 566.788 776.503 900.84 L 950.588 496.405 C 539.219 733.009 347.248 789.767 0 900.84 Z" fill="url(#og)"/></g>
-</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button><div class="m-tag">In person</div></div><div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">Aug 27 · 6 PM</div><div class="t-h4">Community showcase night</div><p class="t-small" style="margin-top:4px;">Main branch</p></div></div>
+</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg></button><div class="m-tag">In person</div></div><div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">Aug 27 · 6 PM</div><div class="t-h4">Community showcase night</div><p class="t-small" style="margin-top:4px;">Main branch</p></div></div>
           </div>
         </div>
       </div>
@@ -1171,6 +1196,24 @@ button,input,select,textarea { font-family:inherit; }
     </nav>
   </div>
 
+</div>
+
+<!-- Save gate — shown when a public visitor tries to bookmark a workshop/cycle/lab -->
+<div class="gate-modal" id="save-gate" onclick="if(event.target===this)closeSaveGate()">
+  <div class="gate-sheet s-paper">
+    <button class="gate-close" onclick="closeSaveGate()" aria-label="Close">
+      <svg width="20" height="20" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 5L17 17M17 5L5 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <div class="gate-heart">
+      <svg viewBox="0 0 24 24" fill="var(--red)" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg>
+    </div>
+    <h3 class="t-h3" style="margin-bottom:8px;">Save this for later</h3>
+    <p class="t-body" style="color:var(--slate);margin-bottom:24px;">Create a free account to bookmark workshops, cycles, and labs — and pick up right where you left off.</p>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <button class="btn btn-red btn-lg btn-block" onclick="closeSaveGate();startCreateAccount()">Create account</button>
+      <button class="btn btn-ghost-teal btn-lg btn-block" onclick="closeSaveGate();signinReturning()">Log in</button>
+    </div>
+  </div>
 </div>
 
 
@@ -1325,7 +1368,14 @@ function renderFlowInput(step){
 }
 
 /* Airbnb-isms */
-function toggleHeart(e,btn){ e.stopPropagation(); btn.classList.toggle('saved'); }
+function toggleHeart(e,btn){
+  e.stopPropagation();
+  // Public visitors can't save yet — bookmarking is account-gated.
+  if(!btn.closest('#app-shell')){ openSaveGate(); return; }
+  btn.classList.toggle('saved');
+}
+function openSaveGate(){ const m=document.getElementById('save-gate'); if(m) m.classList.add('open'); }
+function closeSaveGate(){ const m=document.getElementById('save-gate'); if(m) m.classList.remove('open'); }
 function initEventCats(){ const cats=['All','In person','Virtual','This month','Workshops']; const c=document.getElementById('event-cats'); if(!c)return; c.innerHTML=''; cats.forEach((t,i)=>{ const b=document.createElement('button'); b.className='chip'+(i===0?' active':''); b.textContent=t; b.onclick=()=>{ [...c.children].forEach(x=>x.classList.remove('active')); b.classList.add('active'); }; c.appendChild(b); }); }
 function initGallery(){ const tr=document.getElementById('ev-gallery'); const dots=document.getElementById('ev-dots'); if(!tr||!dots)return; tr.onscroll=()=>{ const i=Math.round(tr.scrollLeft/tr.clientWidth); [...dots.children].forEach((d,k)=>d.classList.toggle('on',k===i)); }; }
 function renderActivity(){ const g=document.getElementById('act-grid'); if(!g||g.childElementCount)return; const pat=[1,0,2,3,1,0,0,2,4,3,1,2,0,1,3,4,2,1,0,2,3,1,4,2,0,1,2,3,1,0,2,4,3,2,1,0,1,3,2,4,1,0,2,1,3,2,0,1,4,2,1,3]; const op=[.08,.22,.4,.6,.85]; pat.forEach(v=>{ const s=document.createElement('div'); s.className='act-sq'; s.style.background='rgba(0,148,160,'+op[v]+')'; g.appendChild(s); }); }
@@ -1369,6 +1419,7 @@ function renderVolunteerSection(){
   h+='</div>'; c.innerHTML=h;
 }
 function logout(){ showView('landing'); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeSaveGate(); });
 document.addEventListener('DOMContentLoaded',()=>{ initEventCats(); renderTodos(); buildWeekRail(); renderActivity(); });
 </script>
 
