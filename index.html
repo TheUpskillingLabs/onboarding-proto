@@ -348,11 +348,27 @@ button,input,select,textarea { font-family:inherit; }
 
 /* open-source footer */
 .osfooter { background:var(--ink); color:var(--od1); position:relative; }
-.osfooter-inner { max-width:var(--maxw); margin:0 auto; padding:56px var(--pad); }
+.osfooter-inner { max-width:var(--maxw); margin:0 auto; padding:72px var(--pad) 40px; position:relative; z-index:1; }
 .os-pill { display:inline-flex; align-items:center; gap:8px; padding:7px 13px; border-radius:var(--r); border:1px solid rgba(0,148,160,.4); color:var(--teal); font-size:12px; font-weight:600; letter-spacing:.04em; }
-.os-meta { display:flex; gap:24px; flex-wrap:wrap; align-items:center; margin-top:28px; padding-top:24px; border-top:1px solid var(--rule-d); }
-.os-meta a { color:var(--od2); font-size:13px; }
-.os-meta a:hover { color:var(--od1); }
+.os-pill svg { width:14px; height:14px; }
+.foot-top { display:grid; gap:36px 40px; grid-template-columns:1fr; }
+.foot-brand { max-width:34ch; }
+.foot-brand .logo-link { display:inline-block; cursor:pointer; }
+.foot-brand p { color:var(--od2); margin:16px 0 20px; }
+.foot-col .lbl { color:var(--od3); margin-bottom:14px; }
+.foot-link { display:block; color:var(--od2); font-size:14px; padding:7px 0; cursor:pointer; transition:color .15s ease; }
+.foot-link:hover { color:var(--od1); }
+.foot-link:focus-visible { outline:2px solid var(--teal); outline-offset:3px; border-radius:4px; }
+.foot-partners { display:flex; align-items:center; gap:24px; flex-wrap:wrap; margin-top:44px; padding-top:24px; border-top:1px solid var(--rule-d); }
+.foot-partners .lbl { color:var(--od3); margin-right:4px; }
+.foot-partners img { height:26px; width:auto; opacity:.7; }
+.foot-bottom { display:flex; align-items:center; justify-content:space-between; gap:16px 28px; flex-wrap:wrap; margin-top:24px; padding-top:24px; border-top:1px solid var(--rule-d); }
+.foot-bottom, .foot-bottom a { color:var(--od3); font-size:13px; }
+.foot-legal { display:flex; gap:18px; }
+.foot-legal a { cursor:pointer; }
+.foot-legal a:hover { color:var(--od1); }
+@media (min-width:640px)  { .foot-top { grid-template-columns:repeat(3,1fr); } .foot-brand { grid-column:1 / -1; } }
+@media (min-width:1024px) { .foot-top { grid-template-columns:1.7fr 1fr 1fr 1fr; } .foot-brand { grid-column:auto; } }
 
 /* "open by default" inline tag */
 .open-tag { display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; letter-spacing:.04em; color:var(--teal-deep); }
@@ -740,18 +756,43 @@ button,input,select,textarea { font-family:inherit; }
       <!-- Open-source footer -->
       <footer class="osfooter grain">
         <div class="osfooter-inner">
-          <div class="os-pill"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3.5 9h17M3.5 15h17M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg> Open by default</div>
-          <h2 class="t-h2" style="margin:20px 0 12px;max-width:20ch;">The Wikipedia of upskilling, built like open source.</h2>
-          <p class="t-body" style="color:var(--od2);max-width:54ch;">Profiles, projects, and playbooks are public. Anyone can learn from them, build on them, and contribute back. No gatekeeping, no waiting.</p>
-          <div style="display:flex;align-items:center;gap:28px;margin-top:32px;padding-top:24px;border-top:1px solid rgba(255,255,255,.12);flex-wrap:wrap;">
-            <img src="assets/dcpl-knockout-logo.png" alt="DC Public Library" style="height:28px;width:auto;opacity:.72;">
-            <img src="assets/levy-strategic-design-white.png" alt="Levy Strategic Design" style="height:16px;width:auto;opacity:.72;">
+          <div class="foot-top">
+            <div class="foot-brand">
+              <span class="logo-link" onclick="scrollTop()"><img src="assets/logo-lockup-light.png" alt="The Upskilling Labs" style="height:40px;width:auto;display:block;"></span>
+              <p class="t-body">A commons for upskilling — learn by doing, in the open. Public profiles, projects, and playbooks, built like open source.</p>
+              <div class="os-pill"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3.5 9h17M3.5 15h17M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg> Open by default</div>
+            </div>
+            <div class="foot-col">
+              <div class="lbl">Explore</div>
+              <a class="foot-link" onclick="scrollToSection('sec-cycles')">Build Cycles</a>
+              <a class="foot-link" onclick="scrollToSection('sec-workshops')">Workshops</a>
+              <a class="foot-link" onclick="scrollToSection('sec-library')">Learning Library</a>
+              <a class="foot-link" onclick="scrollToSection('sec-labs')">Local labs</a>
+            </div>
+            <div class="foot-col">
+              <div class="lbl">Community</div>
+              <a class="foot-link" onclick="showView('about')">About</a>
+              <a class="foot-link" onclick="scrollToSection('sec-testimonials')">Member stories</a>
+              <a class="foot-link" onclick="startCreateAccount()">Become a member</a>
+              <a class="foot-link" onclick="signinReturning()">Log in</a>
+            </div>
+            <div class="foot-col">
+              <div class="lbl">Open source</div>
+              <a class="foot-link" onclick="showView('about')">How it works</a>
+              <a class="foot-link" onclick="showView('stub')">Content license</a>
+              <a class="foot-link" onclick="showView('stub')">Built in the open</a>
+              <a class="foot-link" onclick="startCreateAccount()">Join The Labs</a>
+            </div>
           </div>
-          <div class="os-meta">
-            <a onclick="showView('about')" style="cursor:pointer;">About</a>
-            <a onclick="scrollToSection('sec-labs')" style="cursor:pointer;">Local labs</a>
-            <a onclick="startCreateAccount()" style="cursor:pointer;">Join The Labs</a>
-            <span style="color:var(--od3);font-size:13px;margin-left:auto;">Content under CC BY-SA · Built in the open</span>
+          <div class="foot-partners">
+            <span class="lbl">In partnership with</span>
+            <img src="assets/dcpl-knockout-logo.png" alt="DC Public Library">
+            <img src="assets/levy-strategic-design-white.png" alt="Levy Strategic Design">
+          </div>
+          <div class="foot-bottom">
+            <span>© 2026 The Upskilling Labs</span>
+            <span class="foot-legal"><a onclick="showView('stub')">Privacy</a><a onclick="showView('stub')">Terms</a><a onclick="showView('stub')">Accessibility</a></span>
+            <span>Content under CC BY-SA · Built in the open</span>
           </div>
         </div>
       </footer>
