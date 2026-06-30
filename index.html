@@ -306,7 +306,7 @@ button,input,select,textarea { font-family:inherit; }
 /* ════════ v8 — public browse, labs, profile, open-source ════════ */
 
 /* public sticky nav (over landing/about) */
-.pubnav { position:fixed; top:0; left:0; right:0; z-index:60; transition:transform .35s ease, opacity .35s ease; }
+.pubnav { position:fixed; top:0; left:0; right:0; z-index:60; transition:transform .35s ease, opacity .35s ease; background:linear-gradient(to bottom, var(--ink) 0%, transparent 100%); }
 .pubnav-inner { max-width:none; margin:0 auto; padding:12px var(--pad); display:flex; align-items:center; gap:20px; }
 .pubnav .nav-links { display:none; margin-left:0; gap:2px; }
 .pubnav .pub-cta { display:none; align-items:center; gap:8px; }
@@ -317,7 +317,7 @@ button,input,select,textarea { font-family:inherit; }
 /* landing hero band (dark cover, not full-screen) */
 .hero-band { position:relative; z-index:2; overflow:hidden; border-radius:0 0 calc(var(--r)*3) calc(var(--r)*3); margin-bottom:calc(-3*var(--r)); }
 .hero-gradient-word { background:linear-gradient(90deg, var(--teal) 0%, var(--teal-deep) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; text-decoration:underline; text-decoration-color:var(--teal); text-underline-offset:6px; text-decoration-thickness:3px; }
-#view-landing .hero-band { min-height:100svh; display:flex; align-items:flex-end; background:none; }
+#view-landing .hero-band { min-height:calc(100svh + calc(var(--r)*3)); display:flex; align-items:flex-end; background:none; }
 .hero-scrim { position:absolute; top:0; left:0; right:0; height:190px; z-index:3; pointer-events:none;
   background:linear-gradient(to bottom, var(--ink) 0%, rgba(0,20,27,.55) 45%, transparent 100%); }
 #view-landing .hero-band::before { z-index:2; }            /* grain sits over the tint */
@@ -408,7 +408,7 @@ button,input,select,textarea { font-family:inherit; }
   .pubnav .nav-links { display:flex; }
   .pub-signin { display:inline-flex; }
   .pubnav .title { display:none; }
-  #view-landing .hero-band { min-height:100svh; align-items:center; }
+  #view-landing .hero-band { min-height:calc(100svh + calc(var(--r)*3)); align-items:center; }
   .hero-inner { padding:148px var(--pad) 104px; }
   #view-landing .hero-inner { display:grid; grid-template-columns:repeat(7,1fr); column-gap:var(--pad); row-gap:40px; align-items:start; }
   #view-landing .hero-inner .t-display { grid-column:1 / -1; font-size:96px; line-height:100px; letter-spacing:-.05em; }
