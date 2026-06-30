@@ -306,9 +306,9 @@ button,input,select,textarea { font-family:inherit; }
 /* ════════ v8 — public browse, labs, profile, open-source ════════ */
 
 /* public sticky nav (over landing/about) */
-.pubnav { position:absolute; top:0; left:0; right:0; z-index:60; background:linear-gradient(to bottom, var(--ink) 0%, transparent 100%); }
+.pubnav { position:fixed; top:0; left:0; right:0; z-index:60; transition:transform .35s ease, opacity .35s ease; }
 .pubnav-inner { max-width:none; margin:0 auto; padding:12px var(--pad); display:flex; align-items:center; gap:20px; }
-.pubnav .nav-links { display:none; margin-left:auto; gap:2px; }
+.pubnav .nav-links { display:none; margin-left:0; gap:2px; }
 .pubnav .pub-cta { display:none; align-items:center; gap:8px; }
 .pubnav .pub-cta .btn { padding:10px 18px; font-size:14px; }
 .pub-signin { display:none; }
@@ -405,7 +405,7 @@ button,input,select,textarea { font-family:inherit; }
   .pubnav .nav-links { display:flex; }
   .pub-signin { display:inline-flex; }
   .pubnav .title { display:none; }
-  #view-landing .hero-band { min-height:90svh; align-items:center; }
+  #view-landing .hero-band { min-height:100svh; align-items:center; }
   .hero-inner { padding:148px var(--pad) 104px; }
   #view-landing .hero-inner { display:grid; grid-template-columns:repeat(7,1fr); column-gap:var(--pad); row-gap:40px; align-items:start; }
   #view-landing .hero-inner .t-display { grid-column:1 / -1; font-size:96px; line-height:100px; letter-spacing:-.05em; }
@@ -420,7 +420,7 @@ button,input,select,textarea { font-family:inherit; }
 }
 
 /* dark nav — the logo only ever sits on dark navy */
-.pubnav { position:absolute; top:0; left:0; right:0; z-index:60; background:linear-gradient(to bottom, var(--ink) 0%, transparent 100%); }
+.pubnav { position:fixed; top:0; left:0; right:0; z-index:60; transition:transform .35s ease, opacity .35s ease; }
 .topnav { background:var(--ink); border-bottom:1px solid rgba(255,255,255,.08); }
 .pubnav-inner, .topnav-inner { color:var(--od1); }
 .nav-link { color:var(--od3); }
@@ -428,6 +428,10 @@ button,input,select,textarea { font-family:inherit; }
 .nav-link.active { color:var(--od1); background:rgba(255,255,255,.12); box-shadow:none; }
 .pub-signin { color:var(--od2); }
 .pubnav .btn-ghost { color:var(--od1); border-color:rgba(255,255,255,.42); }
+.pubnav::after { content:""; position:absolute; left:0; right:0; top:0; height:190px; pointer-events:none; z-index:-1;
+  background:linear-gradient(to bottom, var(--ink) 0%, rgba(0,20,27,.55) 45%, transparent 100%); }
+.pubnav.nav-hidden { transform:translateY(-100%); opacity:0; pointer-events:none; }
+@media (prefers-reduced-motion: reduce) { .pubnav { transition:none; } }
 
 /* hamburger menu (mobile only) */
 .ham-btn { display:flex; align-items:center; justify-content:center; width:42px; height:42px; margin-left:auto; background:none; border:none; cursor:pointer; color:var(--od1); flex-shrink:0; }
@@ -1526,8 +1530,28 @@ function renderVolunteerSection(){
   h+='</div>'; c.innerHTML=h;
 }
 function logout(){ showView('landing'); }
+function initHeroScroll(){
+  const nav=document.querySelector('#view-landing .pubnav');
+  const hero=document.querySelector('#view-landing .hero-band');
+  const inner=document.querySelector('#view-landing .hero-inner');
+  if(!nav||!hero||!inner) return;
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let ticking=false;
+  function update(){
+    ticking=false;
+    const y=window.scrollY||document.documentElement.scrollTop, h=hero.offsetHeight;
+    nav.classList.toggle('nav-hidden', y > h-80);
+    if(!reduce){
+      const p=Math.min(1, y/(h*0.62));
+      inner.style.opacity=String(1-p);
+      inner.style.transform='translateY('+(p*48)+'px)';
+    }
+  }
+  window.addEventListener('scroll',()=>{ if(!ticking){ ticking=true; requestAnimationFrame(update); } }, {passive:true});
+  update();
+}
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeSaveGate(); });
-document.addEventListener('DOMContentLoaded',()=>{ initEventCats(); renderTodos(); buildWeekRail(); renderActivity(); });
+document.addEventListener('DOMContentLoaded',()=>{ initEventCats(); renderTodos(); buildWeekRail(); renderActivity(); initHeroScroll(); });
 </script>
 
 </body>
