@@ -241,8 +241,14 @@ button,input,select,textarea { font-family:inherit; }
 .nav-link:hover { color:var(--ink); }
 .nav-link.active { color:var(--ink); background:var(--white); box-shadow:var(--shadow); }
 .avatar { width:38px; height:38px; border-radius:50%; background:var(--teal); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:600; font-size:13px; cursor:pointer; flex-shrink:0; }
+.topnav .nav-link { font-size:16px; padding:9px 16px; }
+.topnav .appbar-avatar { width:42px; height:42px; font-size:14px; }
 #app-scroll { padding-bottom:88px; }
 .container { max-width:var(--maxw); margin:0 auto; padding:0 var(--pad); }
+/* dashboard dark cover — the signed-in echo of the landing hero (gradient, no photo) */
+.app-cover { position:relative; overflow:hidden; }
+.app-cover-inner { position:relative; z-index:1; padding-top:44px; padding-bottom:48px; }
+.app-cover .m-orb { position:absolute; width:200px; height:200px; right:-36px; bottom:-52px; opacity:.85; pointer-events:none; }
 
 .tabbar { position:fixed; bottom:0; left:0; right:0; z-index:50; display:flex; background:rgba(255,255,255,.94); backdrop-filter:blur(12px); border-top:1px solid var(--rule); padding:8px 8px max(12px, env(safe-area-inset-bottom)); }
 .tab { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; padding:6px 0; background:none; border:none; cursor:pointer; color:var(--meta); transition:color .15s; }
@@ -293,6 +299,8 @@ button,input,select,textarea { font-family:inherit; }
 
   /* dashboard two-column */
   .dash { display:grid; grid-template-columns:1fr 340px; gap:48px; align-items:start; }
+  .app-cover-inner { padding-top:56px; padding-bottom:60px; }
+  .app-cover .m-orb { width:260px; height:260px; right:-44px; bottom:-64px; }
 
   /* event detail two-column with sticky aside */
   .detail { display:grid; grid-template-columns:1fr 360px; gap:48px; align-items:start; }
@@ -1026,7 +1034,7 @@ button,input,select,textarea { font-family:inherit; }
   <div id="app-shell" class="view light s-paper">
     <header class="topnav">
       <div class="topnav-inner">
-        <div style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="goApp('dashboard')"><img src="assets/logo-lockup-light.png" alt="The Upskilling Labs" style="height:48px;width:auto;display:block;"></div>
+        <div style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="goApp('dashboard')"><img src="assets/logo-lockup-light.png" alt="The Upskilling Labs" style="height:60px;width:auto;display:block;"></div>
         <nav class="nav-links">
           <a class="nav-link" id="nav-dashboard" onclick="goApp('dashboard')">Dashboard</a>
           <a class="nav-link" id="nav-cycles" onclick="goApp('cycles')">Cycles</a>
@@ -1041,22 +1049,34 @@ button,input,select,textarea { font-family:inherit; }
     <div class="vscroll" id="app-scroll">
       <!-- DASHBOARD -->
       <div id="panel-dashboard" class="panel active">
-        <div class="container" style="padding-top:32px;padding-bottom:48px;">
-          <div class="lbl lbl-teal" style="margin-bottom:12px;">Member portal</div>
-          <h1 id="dash-greeting" class="t-h1" style="margin-bottom:10px;">Welcome, Alex.</h1>
-          <p class="t-lede" style="margin-bottom:40px;">Here's what's happening in the Labs right now.</p>
+        <div class="app-cover s-cover grain on-dark">
+          <div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
+  <defs>
+    <radialGradient id="oc" cx="38%" cy="35%" r="58%"><stop offset="0%" stop-color="#0094A0"/><stop offset="62%" stop-color="rgba(0,148,160,0)"/></radialGradient>
+    <radialGradient id="or" cx="62%" cy="78%" r="65%"><stop offset="60%" stop-color="rgba(225,29,42,0)"/><stop offset="100%" stop-color="#E11D2A"/></radialGradient>
+    <linearGradient id="og" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#00D3E4"/><stop offset="60%" stop-color="#0094A0"/><stop offset="100%" stop-color="#007882"/></linearGradient>
+  </defs>
+  <circle cx="120" cy="120" r="116" fill="url(#oc)"/>
+  <circle cx="120" cy="120" r="116" fill="url(#or)"/>
+  <g transform="translate(20,40) scale(0.142)"><path d="M 0 900.84 C 532.341 651.368 841.069 454.81 1407.215 0 C 1190.699 365.98 1060.371 566.788 776.503 900.84 L 950.588 496.405 C 539.219 733.009 347.248 789.767 0 900.84 Z" fill="url(#og)"/></g>
+</svg></div>
+          <div class="container app-cover-inner">
+            <div class="lbl lbl-teal" style="margin-bottom:12px;">Member portal</div>
+            <h1 id="dash-greeting" class="t-h1">Welcome, Alex.</h1>
+            <p class="t-lede" style="margin-top:10px;">Here's what's happening in the Labs right now.</p>
+          </div>
+        </div>
+        <div class="container" style="padding-top:40px;padding-bottom:48px;">
           <div class="dash">
             <div>
-              <div style="display:flex;align-items:flex-end;justify-content:space-between;border-bottom:2px solid var(--ink);padding-bottom:12px;"><div class="lbl lbl-teal">Your profile</div><span id="checklist-count" class="lbl">2 left</span></div>
-              <h3 class="t-h3" style="margin:18px 0 4px;">Complete your profile</h3>
+              <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Your profile</div><h2 class="t-h2">Complete your profile</h2></div><span id="checklist-count" class="lbl">2 left</span></div>
               <div id="checklist-items">
                 <div class="check-row"><input type="checkbox" onchange="tickChecklist(this)"><div><div class="t-h4" style="margin-bottom:2px;">Confirm your email</div><div class="t-small">Click the link we sent to your inbox</div></div></div>
                 <div class="check-row"><input type="checkbox" onchange="tickChecklist(this)"><div><div class="t-h4" style="margin-bottom:2px;">Join our Slack workspace</div><div class="t-small">Accept the invite — that's where the community lives</div></div></div>
                 <div class="check-row" id="profile-checklist-row" style="cursor:pointer;" onclick="onProfileChecklistClick(this)"><input type="checkbox" id="profile-checklist-cb" onchange="tickChecklist(this)" onclick="event.stopPropagation()"><div><div class="t-h4" style="margin-bottom:2px;">Complete your public profile</div><div class="t-small">Add a bio so pods can find you</div></div></div>
                 <div id="role-items"></div>
               </div>
-              <div style="border-bottom:2px solid var(--ink);padding-bottom:12px;margin-top:40px;"><div class="lbl lbl-teal">Up next</div></div>
-              <h3 class="t-h3" style="margin:18px 0 16px;">Up next for you</h3>
+              <div class="section-head" style="margin-top:40px;"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Up next</div><h2 class="t-h2">Up next for you</h2></div><span class="see" onclick="goApp('events')">See all →</span></div>
               <div class="cards two" id="todos-container"></div>
             </div>
             <aside style="display:flex;flex-direction:column;gap:16px;">
@@ -1299,6 +1319,51 @@ button,input,select,textarea { font-family:inherit; }
           </div>
         </div>
       </div>
+
+      <!-- shared footer — same as the public site, wired to app navigation -->
+      <footer class="osfooter grain">
+        <div class="osfooter-inner">
+          <div class="foot-top">
+            <div class="foot-brand">
+              <span class="logo-link" onclick="goApp('dashboard')"><img src="assets/logo-lockup-light.png" alt="The Upskilling Labs" style="height:56px;width:auto;display:block;"></span>
+              <p class="t-body">A commons for upskilling — learn by doing, in the open. Public profiles, projects, and playbooks, built like open source.</p>
+              <a class="btn btn-ghost-teal btn-sm" href="https://www.every.org/theupskillinglabs" target="_blank" rel="noopener">Support The Labs</a>
+            </div>
+            <div class="foot-col">
+              <div class="lbl">Explore</div>
+              <a class="foot-link" onclick="goApp('cycles')">Build Cycles</a>
+              <a class="foot-link" onclick="goApp('events')">Workshops</a>
+              <a class="foot-link" onclick="goApp('resources')">Learning Library</a>
+              <a class="foot-link" onclick="goApp('labs')">Local labs</a>
+            </div>
+            <div class="foot-col">
+              <div class="lbl">Community</div>
+              <a class="foot-link" onclick="showView('about')">About</a>
+              <a class="foot-link" onclick="goApp('resources')">Member stories</a>
+              <a class="foot-link" onclick="showProfile()">Your profile</a>
+              <a class="foot-link" onclick="logout()">Log out</a>
+            </div>
+            <div class="foot-col">
+              <div class="lbl">Open source</div>
+              <a class="foot-link" onclick="showView('about')">How it works</a>
+              <a class="foot-link" onclick="showView('stub')">Content license</a>
+              <a class="foot-link" onclick="showView('stub')">Built in the open</a>
+            </div>
+          </div>
+          <div class="foot-partners">
+            <span class="lbl">In partnership with</span>
+            <img class="p-levy" src="assets/levy-strategic-design-white.png" alt="Levy Strategic Design">
+            <img class="p-dcpl" src="assets/dcpl-knockout-logo.png" alt="DC Public Library">
+            <img class="p-superbloom" src="assets/superbloom-white.png" alt="Superbloom Design">
+          </div>
+          <p class="foot-fineprint">The Upskilling Labs, Inc. operates as a fiscally sponsored project of Superbloom Design, a registered 501(c)(3) nonprofit organization based in the United States. Donations are tax-deductible to the extent permitted by law.</p>
+          <div class="foot-bottom">
+            <span>© 2026 The Upskilling Labs, Inc.</span>
+            <span class="foot-legal"><a onclick="showView('stub')">Privacy</a><a onclick="showView('stub')">Terms</a><a onclick="showView('stub')">Accessibility</a></span>
+            <span>Content under CC BY-SA · Built in the open</span>
+          </div>
+        </div>
+      </footer>
     </div>
 
     <nav class="tabbar">
