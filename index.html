@@ -306,6 +306,7 @@ button,input,select,textarea { font-family:inherit; }
 
 /* landing hero band (dark cover, not full-screen) */
 .hero-band { position:relative; z-index:2; overflow:hidden; border-radius:0 0 calc(var(--r)*3) calc(var(--r)*3); margin-bottom:calc(-3*var(--r)); }
+.hero-gradient-word { background:linear-gradient(90deg, var(--teal) 0%, var(--teal-deep) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; text-decoration:underline; text-decoration-color:var(--teal); text-underline-offset:6px; text-decoration-thickness:3px; }
 #view-landing .hero-band { min-height:100svh; display:flex; align-items:flex-end; background:none; }
 #view-landing .hero-band::before { z-index:2; }            /* grain sits over the tint */
 #view-landing .hero-photo { position:absolute; inset:0; z-index:0; background:url(./assets/img_9531.jpg) center top/cover no-repeat; filter:grayscale(1); }
@@ -471,7 +472,7 @@ button,input,select,textarea { font-family:inherit; }
       <div class="hero-photo" aria-hidden="true"></div>
       <div class="hero-tint" aria-hidden="true"></div>
       <div class="hero-inner">
-        <h1 class="t-display" style="max-width:14ch;">Build real skills. Through real work. <span style="color:var(--teal);">With real people.</span></h1>
+        <h1 class="t-display" style="max-width:14ch;">Learn by <span class="hero-gradient-word">building.</span></h1>
         <div style="display:flex;flex-direction:column;gap:12px;align-items:flex-start;margin-top:32px;">
           <button class="btn btn-red btn-lg" onclick="startCreateAccount()">Create account</button>
           <button class="btn btn-ghost btn-lg hero-login" onclick="signinReturning()">Log in</button>
