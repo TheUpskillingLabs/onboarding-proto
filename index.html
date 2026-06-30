@@ -310,13 +310,16 @@ button,input,select,textarea { font-family:inherit; }
 .pubnav-inner { max-width:none; margin:0 auto; padding:12px var(--pad); display:flex; align-items:center; gap:20px; }
 .pubnav .nav-links { display:none; margin-left:0; gap:2px; }
 .pubnav .pub-cta { display:none; align-items:center; gap:8px; }
-.pubnav .pub-cta .btn { padding:10px 18px; font-size:14px; }
+.pubnav .pub-cta .btn { padding:12px 22px; font-size:16px; line-height:1; }
+.pubnav .nav-link { font-size:16px; padding:9px 16px; }
 .pub-signin { display:none; }
 
 /* landing hero band (dark cover, not full-screen) */
 .hero-band { position:relative; z-index:2; overflow:hidden; border-radius:0 0 calc(var(--r)*3) calc(var(--r)*3); margin-bottom:calc(-3*var(--r)); }
 .hero-gradient-word { background:linear-gradient(90deg, var(--teal) 0%, var(--teal-deep) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; text-decoration:underline; text-decoration-color:var(--teal); text-underline-offset:6px; text-decoration-thickness:3px; }
 #view-landing .hero-band { min-height:100svh; display:flex; align-items:flex-end; background:none; }
+.hero-scrim { position:absolute; top:0; left:0; right:0; height:190px; z-index:3; pointer-events:none;
+  background:linear-gradient(to bottom, var(--ink) 0%, rgba(0,20,27,.55) 45%, transparent 100%); }
 #view-landing .hero-band::before { z-index:2; }            /* grain sits over the tint */
 #view-landing .hero-photo { position:absolute; inset:0; z-index:0; background:url(./assets/img_9531.jpg) center top/cover no-repeat; filter:grayscale(1); }
 #view-landing .hero-tint { position:absolute; inset:0; z-index:1; background:
@@ -428,8 +431,6 @@ button,input,select,textarea { font-family:inherit; }
 .nav-link.active { color:var(--od1); background:rgba(255,255,255,.12); box-shadow:none; }
 .pub-signin { color:var(--od2); }
 .pubnav .btn-ghost { color:var(--od1); border-color:rgba(255,255,255,.42); }
-.pubnav::after { content:""; position:absolute; left:0; right:0; top:0; height:190px; pointer-events:none; z-index:-1;
-  background:linear-gradient(to bottom, var(--ink) 0%, rgba(0,20,27,.55) 45%, transparent 100%); }
 .pubnav.nav-hidden { transform:translateY(-100%); opacity:0; pointer-events:none; }
 @media (prefers-reduced-motion: reduce) { .pubnav { transition:none; } }
 
@@ -485,7 +486,7 @@ button,input,select,textarea { font-family:inherit; }
   <div id="view-landing" class="view active light s-paper">
     <header class="pubnav">
       <div class="pubnav-inner">
-        <div style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="scrollTop()"><img src="assets/logo-lockup-light.png" alt="The Upskilling Labs" style="height:48px;width:auto;display:block;"></div>
+        <div style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="scrollTop()"><img src="assets/logo-lockup-light.png" alt="The Upskilling Labs" style="height:60px;width:auto;display:block;"></div>
         <nav class="nav-links">
           <a class="nav-link" onclick="scrollToSection('sec-cycles')">Cycles</a>
           <a class="nav-link" onclick="scrollToSection('sec-workshops')">Workshops</a>
@@ -511,6 +512,7 @@ button,input,select,textarea { font-family:inherit; }
     </header>
 
     <div class="hero-band s-cover grain on-dark">
+      <div class="hero-scrim" aria-hidden="true"></div>
       <div class="hero-photo" aria-hidden="true"></div>
       <div class="hero-tint" aria-hidden="true"></div>
       <div class="hero-inner">
@@ -812,7 +814,7 @@ button,input,select,textarea { font-family:inherit; }
   <div id="view-about" class="view light s-paper">
     <header class="pubnav">
       <div class="pubnav-inner">
-        <div style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="showView('landing')"><img src="assets/logo-lockup-light.png" alt="The Upskilling Labs" style="height:48px;width:auto;display:block;"></div>
+        <div style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="showView('landing')"><img src="assets/logo-lockup-light.png" alt="The Upskilling Labs" style="height:60px;width:auto;display:block;"></div>
         <div class="pub-cta" style="margin-left:auto;"><button class="btn btn-ghost" onclick="signinReturning()">Log in</button></div>
       </div>
     </header>
