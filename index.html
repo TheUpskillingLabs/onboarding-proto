@@ -73,6 +73,26 @@
         /* Checkboxes tuned to brand accent */
         input[type="checkbox"] { accent-color: #0094a0; }
 
+        /* Hero background image styling */
+        #view-login {
+            background-image: url('IMG_9531');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+        #view-login::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(42,49,66,0.85) 0%, rgba(42,49,66,0.75) 100%);
+            pointer-events: none;
+        }
+        #view-login > div {
+            position: relative;
+            z-index: 1;
+        }
+
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
         }
