@@ -175,6 +175,24 @@ button,input,select,textarea { font-family:inherit; }
 .heart svg { width:20px; height:20px; stroke:#fff; fill:none; stroke-width:2; }
 .heart.saved svg { fill:var(--red); stroke:#fff; }
 
+/* save gate modal */
+.gate-modal { display:none; position:fixed; inset:0; z-index:200; background:rgba(0,20,27,.58); backdrop-filter:blur(4px); padding:var(--pad); align-items:flex-end; justify-content:center; }
+.gate-modal.open { display:flex; animation:gateFade .2s ease; }
+.gate-sheet { position:relative; width:100%; max-width:420px; padding:32px 24px 24px; border-radius:var(--r) var(--r) 0 0; box-shadow:var(--shadow-lg); animation:gateUp .24s cubic-bezier(.2,.8,.25,1); }
+.gate-close { position:absolute; top:14px; right:14px; width:36px; height:36px; display:flex; align-items:center; justify-content:center; background:none; border:none; cursor:pointer; color:var(--meta); border-radius:50%; }
+.gate-close:hover { background:rgba(0,20,27,.06); color:var(--ink); }
+.gate-heart { width:52px; height:52px; border-radius:50%; background:rgba(225,29,42,.1); display:flex; align-items:center; justify-content:center; margin-bottom:16px; }
+.gate-heart svg { width:26px; height:26px; }
+@keyframes gateFade { from { opacity:0; } to { opacity:1; } }
+@keyframes gateUp { from { transform:translateY(24px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+@media (min-width:1024px) {
+  .gate-modal { align-items:center; }
+  .gate-sheet { border-radius:var(--r); animation:gateFade .2s ease; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gate-modal.open, .gate-sheet { animation:none; }
+}
+
 /* category chip scroller */
 .cat-scroll { display:flex; gap:8px; overflow-x:auto; padding:4px var(--pad); margin:0 calc(-1*var(--pad)) 8px; -webkit-overflow-scrolling:touch; }
 .cat-scroll::-webkit-scrollbar { height:0; }
@@ -1173,6 +1191,24 @@ button,input,select,textarea { font-family:inherit; }
 
 </div>
 
+<!-- Save gate — shown when a public visitor tries to bookmark a workshop/cycle/lab -->
+<div class="gate-modal" id="save-gate" onclick="if(event.target===this)closeSaveGate()">
+  <div class="gate-sheet s-paper">
+    <button class="gate-close" onclick="closeSaveGate()" aria-label="Close">
+      <svg width="20" height="20" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 5L17 17M17 5L5 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <div class="gate-heart">
+      <svg viewBox="0 0 24 24" fill="var(--red)" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+    </div>
+    <h3 class="t-h3" style="margin-bottom:8px;">Save this for later</h3>
+    <p class="t-body" style="color:var(--slate);margin-bottom:24px;">Create a free account to bookmark workshops, cycles, and labs — and pick up right where you left off.</p>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <button class="btn btn-red btn-lg btn-block" onclick="closeSaveGate();startCreateAccount()">Create account</button>
+      <button class="btn btn-ghost-teal btn-lg btn-block" onclick="closeSaveGate();signinReturning()">Log in</button>
+    </div>
+  </div>
+</div>
+
 
 <script>
 const userState = {name:'Alex', initials:'AR', roles:[], isMentor:false, completed:{}, profileAnswers:{}, mentorAnswers:{}, volunteerAnswers:{}};
@@ -1325,7 +1361,14 @@ function renderFlowInput(step){
 }
 
 /* Airbnb-isms */
-function toggleHeart(e,btn){ e.stopPropagation(); btn.classList.toggle('saved'); }
+function toggleHeart(e,btn){
+  e.stopPropagation();
+  // Public visitors can't save yet — bookmarking is account-gated.
+  if(!btn.closest('#app-shell')){ openSaveGate(); return; }
+  btn.classList.toggle('saved');
+}
+function openSaveGate(){ const m=document.getElementById('save-gate'); if(m) m.classList.add('open'); }
+function closeSaveGate(){ const m=document.getElementById('save-gate'); if(m) m.classList.remove('open'); }
 function initEventCats(){ const cats=['All','In person','Virtual','This month','Workshops']; const c=document.getElementById('event-cats'); if(!c)return; c.innerHTML=''; cats.forEach((t,i)=>{ const b=document.createElement('button'); b.className='chip'+(i===0?' active':''); b.textContent=t; b.onclick=()=>{ [...c.children].forEach(x=>x.classList.remove('active')); b.classList.add('active'); }; c.appendChild(b); }); }
 function initGallery(){ const tr=document.getElementById('ev-gallery'); const dots=document.getElementById('ev-dots'); if(!tr||!dots)return; tr.onscroll=()=>{ const i=Math.round(tr.scrollLeft/tr.clientWidth); [...dots.children].forEach((d,k)=>d.classList.toggle('on',k===i)); }; }
 function renderActivity(){ const g=document.getElementById('act-grid'); if(!g||g.childElementCount)return; const pat=[1,0,2,3,1,0,0,2,4,3,1,2,0,1,3,4,2,1,0,2,3,1,4,2,0,1,2,3,1,0,2,4,3,2,1,0,1,3,2,4,1,0,2,1,3,2,0,1,4,2,1,3]; const op=[.08,.22,.4,.6,.85]; pat.forEach(v=>{ const s=document.createElement('div'); s.className='act-sq'; s.style.background='rgba(0,148,160,'+op[v]+')'; g.appendChild(s); }); }
@@ -1369,6 +1412,7 @@ function renderVolunteerSection(){
   h+='</div>'; c.innerHTML=h;
 }
 function logout(){ showView('landing'); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeSaveGate(); });
 document.addEventListener('DOMContentLoaded',()=>{ initEventCats(); renderTodos(); buildWeekRail(); renderActivity(); });
 </script>
 
