@@ -399,9 +399,9 @@ button,input,select,textarea { font-family:inherit; }
   .pubnav .title { display:none; }
   #view-landing .hero-band { min-height:90svh; align-items:center; }
   .hero-inner { padding:148px var(--pad) 104px; }
-  #view-landing .hero-inner { display:grid; grid-template-columns:1fr 1fr; gap:var(--pad); align-items:center; }
-  #view-landing .hero-inner .t-display { font-size:96px; line-height:100px; letter-spacing:-.05em; }
-  .hero-cta { align-items:flex-start; margin-top:0; }
+  #view-landing .hero-inner { display:grid; grid-template-columns:1fr 1fr; column-gap:var(--pad); row-gap:40px; align-items:start; }
+  #view-landing .hero-inner .t-display { grid-column:1 / -1; font-size:96px; line-height:100px; letter-spacing:-.05em; }
+  .hero-cta { grid-column:2; align-items:flex-start; margin-top:0; }
   .section { padding:72px 0; }
   #sec-cycles { padding-top:72px; }
   .prof-head { gap:32px; }
