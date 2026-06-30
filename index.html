@@ -17,7 +17,7 @@
   --r:14px;
   --shadow:0 1px 2px rgba(0,20,27,.05), 0 6px 20px rgba(0,20,27,.06);
   --shadow-lg:0 12px 40px rgba(0,20,27,.16);
-  --pad:24px; --maxw:1200px;
+  --pad:24px; --maxw:1440px;
   --grain:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScyMjAnIGhlaWdodD0nMjIwJz48ZmlsdGVyIGlkPSduJz48ZmVUdXJidWxlbmNlIHR5cGU9J2ZyYWN0YWxOb2lzZScgYmFzZUZyZXF1ZW5jeT0nMC45JyBudW1PY3RhdmVzPScyJyBzdGl0Y2hUaWxlcz0nc3RpdGNoJy8+PGZlQ29sb3JNYXRyaXggdmFsdWVzPScwIDAgMCAwIDEgIDAgMCAwIDAgMSAgMCAwIDAgMCAxICAwIDAgMCAwLjUgMCcvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPScxMDAlJyBoZWlnaHQ9JzEwMCUnIGZpbHRlcj0ndXJsKCNuKScgb3BhY2l0eT0nMC41NScvPjwvc3ZnPg==");
 }
 
@@ -312,9 +312,9 @@ button,input,select,textarea { font-family:inherit; }
 #view-landing .hero-band::before { z-index:2; }            /* grain sits over the tint */
 #view-landing .hero-photo { position:absolute; inset:0; z-index:0; background:url(./assets/img_9531.jpg) center top/cover no-repeat; filter:grayscale(1); }
 #view-landing .hero-tint { position:absolute; inset:0; z-index:1; background:
-  radial-gradient(120% 80% at 0% 100%, rgba(0,148,160,.55) 0%, transparent 56%),
-  radial-gradient(110% 70% at 100% 0%, rgba(0,148,160,.40) 0%, transparent 50%),
-  linear-gradient(160deg, rgba(0,20,27,.85) 0%, rgba(3,35,42,.85) 55%, rgba(0,95,104,.85) 120%); }
+  radial-gradient(120% 80% at 0% 100%, rgba(0,148,160,.50) 0%, transparent 56%),
+  radial-gradient(110% 70% at 100% 0%, rgba(0,148,160,.34) 0%, transparent 50%),
+  linear-gradient(160deg, rgba(0,20,27,.93) 0%, rgba(3,35,42,.92) 55%, rgba(0,95,104,.90) 120%); }
 #view-landing .hero-inner { position:relative; z-index:2; width:100%; }
 .hero-inner { max-width:var(--maxw); margin:0 auto; padding:124px var(--pad) 72px; }
 #view-landing .hero-inner .t-display { font-size:56px; line-height:60px; letter-spacing:-.04em; }
@@ -399,9 +399,9 @@ button,input,select,textarea { font-family:inherit; }
   .pubnav .title { display:none; }
   #view-landing .hero-band { min-height:90svh; align-items:center; }
   .hero-inner { padding:148px var(--pad) 104px; }
-  #view-landing .hero-inner { display:grid; grid-template-columns:1fr 1fr 1fr; column-gap:var(--pad); row-gap:40px; align-items:start; }
+  #view-landing .hero-inner { display:grid; grid-template-columns:repeat(7,1fr); column-gap:var(--pad); row-gap:40px; align-items:start; }
   #view-landing .hero-inner .t-display { grid-column:1 / -1; font-size:96px; line-height:100px; letter-spacing:-.05em; }
-  .hero-cta { grid-column:3; align-items:flex-start; margin-top:0; }
+  .hero-cta { grid-column:5 / -1; align-items:flex-start; margin-top:0; }
   .section { padding:72px 0; }
   #sec-cycles { padding-top:72px; }
   .prof-head { gap:32px; }
@@ -443,7 +443,7 @@ button,input,select,textarea { font-family:inherit; }
 .cards.dense .t-h4 { font-size:15px; line-height:20px; }
 .cards.dense .heart { width:32px; height:32px; }
 @media (min-width:700px) { .cards.dense { grid-template-columns:repeat(3,1fr); } }
-@media (min-width:1024px) { .cards.dense { grid-template-columns:repeat(5,1fr); gap:20px; } .cards.dense > .card:nth-child(n+6) { display:none; } }
+@media (min-width:1024px) { .cards.dense { grid-template-columns:repeat(7,1fr); gap:20px; } .cards.dense > .card:nth-child(n+8) { display:none; } }
 /* compact expand inside dense tiles: stacked key/value, tighter padding */
 .cards.dense .card-expand { padding:0 14px; }
 .cards.dense .card.expanded .card-expand { padding:4px 14px 14px; }
@@ -502,7 +502,7 @@ button,input,select,textarea { font-family:inherit; }
       <div class="hero-inner">
         <h1 class="t-display">Find your people.<br>Build your edge.</h1>
         <div class="hero-cta">
-          <p class="t-lede" style="margin-bottom:24px;">Skills built in isolation plateau. Built alongside the right people, they compound. Come find yours.</p>
+          <p class="t-lede" style="margin-bottom:24px;">The Labs isn't a space for you to just consume education. It's where you can practice becoming the person you want to be.</p>
           <button class="btn btn-red btn-lg" onclick="startCreateAccount()">Join The Labs</button>
           <button class="btn btn-ghost btn-lg hero-login" onclick="signinReturning()">Log in</button>
         </div>
