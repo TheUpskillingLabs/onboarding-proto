@@ -417,7 +417,7 @@ button,input,select,textarea { font-family:inherit; }
 .cards.dense .t-h4 { font-size:15px; line-height:20px; }
 .cards.dense .heart { width:32px; height:32px; }
 @media (min-width:700px) { .cards.dense { grid-template-columns:repeat(3,1fr); } }
-@media (min-width:1024px) { .cards.dense { grid-template-columns:repeat(7,1fr); gap:20px; } }
+@media (min-width:1024px) { .cards.dense { grid-template-columns:repeat(5,1fr); gap:20px; } .cards.dense > .card:nth-child(n+6) { display:none; } }
 /* compact expand inside dense tiles: stacked key/value, tighter padding */
 .cards.dense .card-expand { padding:0 14px; }
 .cards.dense .card.expanded .card-expand { padding:4px 14px 14px; }
