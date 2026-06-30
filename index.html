@@ -411,6 +411,12 @@ button,input,select,textarea { font-family:inherit; }
 .stat-lbl { font-size:12px; font-weight:500; letter-spacing:.06em; text-transform:uppercase; color:var(--meta); margin-top:4px; }
 .act-grid { display:flex; flex-wrap:wrap; gap:5px; }
 .act-sq { width:14px; height:14px; border-radius:3px; background:rgba(0,148,160,.10); }
+/* featured portfolio case study — the one new layout (editorial, full-width); media reuses .m-teal */
+.case { display:grid; gap:24px; padding:24px; background:var(--white); border:1px solid var(--rule); border-radius:var(--r); box-shadow:var(--shadow); }
+.case .case-kv > div { margin-bottom:16px; }
+.case .case-kv .k { font-weight:500; font-size:12px; line-height:16px; letter-spacing:.10em; text-transform:uppercase; color:var(--meta); margin-bottom:4px; }
+.case .case-artifact { display:inline-flex; align-items:center; gap:6px; color:var(--teal-deep); font-weight:600; font-size:14px; text-decoration:none; }
+@media (min-width:1024px){ .case { grid-template-columns:1.05fr .95fr; padding:32px; gap:32px; align-items:center; } }
 
 @media (min-width:1024px) {
   .pubnav .nav-links { display:flex; }
@@ -502,8 +508,14 @@ button,input,select,textarea { font-family:inherit; }
           <a class="nav-link" onclick="showView('about')">About</a>
         </nav>
         <div class="pub-cta" style="margin-left:auto;">
-          <button class="btn btn-ghost" onclick="signinReturning()">Log in</button>
-          <a class="btn btn-white" href="https://www.every.org/theupskillinglabs" target="_blank" rel="noopener">Donate</a>
+          <span class="pub-cta-out" style="display:contents;">
+            <button class="btn btn-ghost" onclick="signinReturning()">Log in</button>
+            <a class="btn btn-white" href="https://www.every.org/theupskillinglabs" target="_blank" rel="noopener">Donate</a>
+          </span>
+          <span class="pub-cta-in" style="display:none;align-items:center;gap:12px;">
+            <button class="btn btn-ghost" onclick="goApp('dashboard')">Dashboard</button>
+            <div class="avatar" id="landing-avatar" onclick="showProfile(true)" title="Your profile" style="cursor:pointer;">AR</div>
+          </span>
         </div>
         <button class="ham-btn" id="ham-btn" onclick="toggleHamMenu()" aria-label="Open menu">
           <svg class="ham-icon" width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="5" width="18" height="2" rx="1" fill="currentColor"/><rect x="2" y="10" width="18" height="2" rx="1" fill="currentColor"/><rect x="2" y="15" width="18" height="2" rx="1" fill="currentColor"/></svg>
@@ -511,6 +523,8 @@ button,input,select,textarea { font-family:inherit; }
         </button>
       </div>
       <nav class="ham-menu" id="ham-menu">
+        <a class="nav-link" id="ham-dashboard" style="display:none;" onclick="closeHamMenu();goApp('dashboard')">Dashboard</a>
+        <a class="nav-link" id="ham-profile" style="display:none;" onclick="closeHamMenu();showProfile(true)">Your profile</a>
         <a class="nav-link" onclick="closeHamMenu();scrollToSection('sec-cycles')">Cycles</a>
         <a class="nav-link" onclick="closeHamMenu();scrollToSection('sec-workshops')">Workshops</a>
         <a class="nav-link" onclick="closeHamMenu();scrollToSection('sec-labs')">Labs</a>
@@ -527,8 +541,9 @@ button,input,select,textarea { font-family:inherit; }
         <h1 class="t-display">Find your people.<br>Build your edge.</h1>
         <div class="hero-cta">
           <p class="t-lede" style="margin-bottom:24px;">The Labs isn't a space for you to just consume education. It's where you can practice becoming the person you want to be.</p>
-          <button class="btn btn-red btn-lg" onclick="startCreateAccount()">Join The Labs</button>
-          <button class="btn btn-ghost btn-lg hero-login" onclick="signinReturning()">Log in</button>
+          <button class="btn btn-red btn-lg hero-cta-out" onclick="startCreateAccount()">Join The Labs</button>
+          <button class="btn btn-ghost btn-lg hero-login hero-cta-out" onclick="signinReturning()">Log in</button>
+          <button class="btn btn-teal btn-lg hero-cta-in" style="display:none;" onclick="goApp('dashboard')">Go to your dashboard</button>
         </div>
       </div>
     </div>
@@ -950,81 +965,45 @@ button,input,select,textarea { font-family:inherit; }
   <!-- ════════ PROFILE ════════ -->
   <div id="view-profile" class="view light s-paper">
     <div class="prof-bar">
-      <button class="icon-btn" onclick="goApp('dashboard')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></button>
+      <button class="icon-btn" id="prof-back" onclick="goApp('dashboard')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></button>
       <span class="lbl" style="margin-left:4px;">Public profile</span>
       <button class="icon-btn" style="margin-left:auto;" title="Share"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></button>
     </div>
     <div class="vscroll">
+      <div id="prof-preview-bar" style="display:none;"></div>
       <div class="container" style="padding-top:32px;padding-bottom:48px;max-width:920px;">
-        <div class="prof-head" style="margin-bottom:24px;">
+        <div class="prof-head" style="margin-bottom:18px;align-items:flex-start;">
           <div class="avatar-lg" id="prof-avatar">AR</div>
-          <div>
-            <h1 class="t-h1" id="prof-name" style="margin-bottom:6px;">Alex Rivera</h1>
-            <p class="t-body" id="prof-meta" style="margin-bottom:10px;">Washington, DC · Joined Spring 2026</p>
-            <span class="open-tag"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3.5 9h17M3.5 15h17M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg> Public · open by default</span>
+          <div style="flex:1;min-width:0;">
+            <h1 class="t-h1" id="prof-name" style="margin-bottom:4px;">Alex Rivera</h1>
+            <p class="t-body" id="prof-headline" style="color:var(--teal-deep);font-weight:600;margin-bottom:6px;"></p>
+            <p class="t-body" id="prof-meta" style="margin-bottom:12px;">Washington, DC · Joined Spring 2026</p>
+            <div id="prof-roles" class="tag-wrap"></div>
           </div>
+          <div id="prof-actions" style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;flex-shrink:0;"></div>
         </div>
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:32px;">
-          <p class="t-lede" id="prof-bio" style="max-width:60ch;">Product-minded generalist learning by shipping. Currently in the Civic AI Build Cycle, focused on benefits navigation for DC residents.</p>
-          <button class="btn btn-ghost-teal btn-sm" style="flex-shrink:0;margin-top:4px;" onclick="editProfile()">Edit profile</button>
-        </div>
+        <p class="t-lede" id="prof-bio" style="max-width:60ch;margin-bottom:36px;">Product-minded generalist learning by shipping. Currently in the Civic AI Build Cycle, focused on benefits navigation for DC residents.</p>
 
-        <div class="stat-row" style="margin-bottom:48px;">
-          <div class="stat-cell"><div class="stat-num">1</div><div class="stat-lbl">Cycle</div></div>
-          <div class="stat-cell"><div class="stat-num">3</div><div class="stat-lbl">Projects</div></div>
-          <div class="stat-cell"><div class="stat-num">11</div><div class="stat-lbl">Workshops</div></div>
-        </div>
+        <div id="prof-cred" style="margin-bottom:44px;"></div>
 
-        <div id="prof-mentor-section" style="display:none;margin-bottom:32px;">
-          <div class="section-head" style="padding-bottom:12px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Mentor</div><h2 class="t-h3">Mentor profile</h2></div><button class="btn btn-ghost-teal btn-sm" onclick="editMentorProfile()">Edit</button></div>
-          <div id="prof-mentor-content"></div>
-        </div>
-
-        <div id="prof-volunteer-section" style="display:none;margin-bottom:32px;">
-          <div class="section-head" style="padding-bottom:12px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Volunteer</div><h2 class="t-h3">Volunteer profile</h2></div><button class="btn btn-ghost-teal btn-sm" onclick="editVolunteerProfile()">Edit</button></div>
-          <div id="prof-volunteer-content"></div>
-        </div>
-
-        <div class="section-head" style="padding-bottom:12px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Portfolio</div><h2 class="t-h3">Projects shipped in the open</h2></div></div>
-        <div class="cards" style="margin-bottom:48px;">
-          <div class="card"><div class="media m-teal" style="aspect-ratio:3/2;"><div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
-  <defs>
-    <radialGradient id="oc" cx="38%" cy="35%" r="58%"><stop offset="0%" stop-color="#0094A0"/><stop offset="62%" stop-color="rgba(0,148,160,0)"/></radialGradient>
-    <radialGradient id="or" cx="62%" cy="78%" r="65%"><stop offset="60%" stop-color="rgba(225,29,42,0)"/><stop offset="100%" stop-color="#E11D2A"/></radialGradient>
-    <linearGradient id="og" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#00D3E4"/><stop offset="60%" stop-color="#0094A0"/><stop offset="100%" stop-color="#007882"/></linearGradient>
-  </defs>
-  <circle cx="120" cy="120" r="116" fill="url(#oc)"/>
-  <circle cx="120" cy="120" r="116" fill="url(#or)"/>
-  <g transform="translate(20,40) scale(0.142)"><path d="M 0 900.84 C 532.341 651.368 841.069 454.81 1407.215 0 C 1190.699 365.98 1060.371 566.788 776.503 900.84 L 950.588 496.405 C 539.219 733.009 347.248 789.767 0 900.84 Z" fill="url(#og)"/></g>
-</svg></div><div class="m-tag">Open</div></div><div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">Spring 2026 · Lead</div><div class="t-h4" style="margin-bottom:4px;">BenefitsBot</div><p class="t-small">Plain-language eligibility guide for DC residents.</p></div></div>
-          <div class="card"><div class="media m-forest" style="aspect-ratio:3/2;"><div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
-  <defs>
-    <radialGradient id="oc" cx="38%" cy="35%" r="58%"><stop offset="0%" stop-color="#0094A0"/><stop offset="62%" stop-color="rgba(0,148,160,0)"/></radialGradient>
-    <radialGradient id="or" cx="62%" cy="78%" r="65%"><stop offset="60%" stop-color="rgba(225,29,42,0)"/><stop offset="100%" stop-color="#E11D2A"/></radialGradient>
-    <linearGradient id="og" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#00D3E4"/><stop offset="60%" stop-color="#0094A0"/><stop offset="100%" stop-color="#007882"/></linearGradient>
-  </defs>
-  <circle cx="120" cy="120" r="116" fill="url(#oc)"/>
-  <circle cx="120" cy="120" r="116" fill="url(#or)"/>
-  <g transform="translate(20,40) scale(0.142)"><path d="M 0 900.84 C 532.341 651.368 841.069 454.81 1407.215 0 C 1190.699 365.98 1060.371 566.788 776.503 900.84 L 950.588 496.405 C 539.219 733.009 347.248 789.767 0 900.84 Z" fill="url(#og)"/></g>
-</svg></div><div class="m-tag">Open</div></div><div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">Workshop · Build</div><div class="t-h4" style="margin-bottom:4px;">Prompt patterns deck</div><p class="t-small">Reusable prompts for community research.</p></div></div>
-          <div class="card"><div class="media m-navy" style="aspect-ratio:3/2;"><div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
-  <defs>
-    <radialGradient id="oc" cx="38%" cy="35%" r="58%"><stop offset="0%" stop-color="#0094A0"/><stop offset="62%" stop-color="rgba(0,148,160,0)"/></radialGradient>
-    <radialGradient id="or" cx="62%" cy="78%" r="65%"><stop offset="60%" stop-color="rgba(225,29,42,0)"/><stop offset="100%" stop-color="#E11D2A"/></radialGradient>
-    <linearGradient id="og" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#00D3E4"/><stop offset="60%" stop-color="#0094A0"/><stop offset="100%" stop-color="#007882"/></linearGradient>
-  </defs>
-  <circle cx="120" cy="120" r="116" fill="url(#oc)"/>
-  <circle cx="120" cy="120" r="116" fill="url(#or)"/>
-  <g transform="translate(20,40) scale(0.142)"><path d="M 0 900.84 C 532.341 651.368 841.069 454.81 1407.215 0 C 1190.699 365.98 1060.371 566.788 776.503 900.84 L 950.588 496.405 C 539.219 733.009 347.248 789.767 0 900.84 Z" fill="url(#og)"/></g>
-</svg></div><div class="m-tag">Open</div></div><div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">Solo · Contributor</div><div class="t-h4" style="margin-bottom:4px;">Library hours finder</div><p class="t-small">A tiny tool surfacing branch hours.</p></div></div>
-        </div>
+        <div class="section-head" style="padding-bottom:12px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Portfolio</div><h2 class="t-h3">Evidence, shipped in the open</h2></div></div>
+        <div id="prof-featured" style="margin-bottom:24px;"></div>
+        <div class="cards" id="prof-projects" style="margin-bottom:48px;"></div>
 
         <div class="section-head" style="padding-bottom:12px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Activity</div><h2 class="t-h3">Showing up, week over week</h2></div></div>
-        <div class="lcard" style="padding:24px;margin-bottom:32px;">
-          <div class="act-grid" id="act-grid" style="margin-bottom:14px;"></div>
-          <p class="t-small">Contributions across cycles, workshops, and the community over the last few months.</p>
+        <div class="lcard" style="padding:24px;margin-bottom:44px;">
+          <div class="act-grid" id="act-grid" style="margin-bottom:16px;"></div>
+          <div id="act-legend" style="display:flex;flex-wrap:wrap;gap:8px 18px;margin-bottom:12px;"></div>
+          <p class="t-small">Contributions across every active role — building, mentoring, and volunteering — over the last few months.</p>
         </div>
-        <button class="btn-link" style="color:var(--meta);padding:0;" onclick="logout()">Sign out</button>
+
+        <div id="prof-bookmarks" style="margin-bottom:44px;"></div>
+
+        <div class="section-head" style="padding-bottom:12px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Skills & detail</div><h2 class="t-h3">What I bring</h2></div></div>
+        <div id="prof-skills" style="margin-bottom:24px;"></div>
+        <div id="prof-roledetail" style="margin-bottom:36px;"></div>
+
+        <div id="prof-signout-wrap"><button class="btn-link" style="color:var(--meta);padding:0;" onclick="logout()">Sign out</button></div>
       </div>
       <footer class="osfooter grain"><div class="osfooter-inner"><div class="os-pill"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3.5 9h17M3.5 15h17M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg> Open by default</div><p class="t-body" style="color:var(--od2);max-width:54ch;margin-top:18px;">Every member's profile and projects are public, so the whole community can learn from and build on each other's work.</p></div></footer>
     </div>
@@ -1041,6 +1020,7 @@ button,input,select,textarea { font-family:inherit; }
           <a class="nav-link" id="nav-events" onclick="goApp('events')">Events</a>
           <a class="nav-link" id="nav-labs" onclick="goApp('labs')">Labs</a>
           <a class="nav-link" id="nav-resources" onclick="goApp('resources')">Library</a>
+          <a class="nav-link" id="nav-bookmarks" onclick="goApp('bookmarks')">Saved</a>
         </nav>
         <div class="avatar appbar-avatar" id="header-avatar" onclick="showProfile()" title="Your profile" style="margin-left:auto;">AR</div>
       </div>
@@ -1069,6 +1049,7 @@ button,input,select,textarea { font-family:inherit; }
         <div class="container" style="padding-top:40px;padding-bottom:48px;">
           <div class="dash">
             <div>
+              <div id="dash-cycle" style="display:none;margin-bottom:40px;"></div>
               <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Your profile</div><h2 class="t-h2">Complete your profile</h2></div><span id="checklist-count" class="lbl">2 left</span></div>
               <div id="checklist-items">
                 <div class="check-row"><input type="checkbox" onchange="tickChecklist(this)"><div><div class="t-h4" style="margin-bottom:2px;">Confirm your email</div><div class="t-small">Click the link we sent to your inbox</div></div></div>
@@ -1078,6 +1059,7 @@ button,input,select,textarea { font-family:inherit; }
               </div>
               <div class="section-head" style="margin-top:40px;"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Up next</div><h2 class="t-h2">Up next for you</h2></div><span class="see" onclick="goApp('events')">See all →</span></div>
               <div class="cards two" id="todos-container"></div>
+              <div id="dash-saved" style="display:none;margin-top:40px;"></div>
             </div>
             <aside style="display:flex;flex-direction:column;gap:16px;">
               <div class="card" style="overflow:hidden;"><div class="media m-teal" style="aspect-ratio:16/9;"><div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
@@ -1090,7 +1072,7 @@ button,input,select,textarea { font-family:inherit; }
   <circle cx="120" cy="120" r="116" fill="url(#or)"/>
   <g transform="translate(20,40) scale(0.142)"><path d="M 0 900.84 C 532.341 651.368 841.069 454.81 1407.215 0 C 1190.699 365.98 1060.371 566.788 776.503 900.84 L 950.588 496.405 C 539.219 733.009 347.248 789.767 0 900.84 Z" fill="url(#og)"/></g>
 </svg></div><div class="m-tag">Spring 2026</div></div><div class="card-body"><div class="t-h4" style="margin-bottom:6px;">Build Cycle is forming</div><p class="t-small" style="margin-bottom:16px;">Pod registration opens Mar 30. Join a pod and ship something real.</p><button class="btn btn-teal btn-sm btn-block" onclick="goApp('cycles')">View cycle</button></div></div>
-              <div class="lcard" style="padding:24px;"><div class="lbl" style="margin-bottom:14px;">Quick links</div><div style="display:flex;flex-direction:column;"><a onclick="goApp('labs')" style="font-size:14px;font-weight:600;color:var(--teal-deep);cursor:pointer;padding:12px 0;border-bottom:1px solid var(--rule);">Local labs →</a><a onclick="goApp('resources')" style="font-size:14px;font-weight:600;color:var(--teal-deep);cursor:pointer;padding:12px 0;border-bottom:1px solid var(--rule);">Resource library →</a><a onclick="showProfile()" style="font-size:14px;font-weight:600;color:var(--teal-deep);cursor:pointer;padding:12px 0;border-bottom:1px solid var(--rule);">Your public profile →</a><a href="https://www.every.org/theupskillinglabs" target="_blank" rel="noopener" style="font-size:14px;font-weight:600;color:var(--teal-deep);cursor:pointer;padding:12px 0 0;">Support The Labs →</a></div></div>
+              <div class="lcard" style="padding:24px;"><div class="lbl" style="margin-bottom:14px;">Quick links</div><div style="display:flex;flex-direction:column;"><a onclick="goBookmarks()" style="font-size:14px;font-weight:600;color:var(--teal-deep);cursor:pointer;padding:12px 0;border-bottom:1px solid var(--rule);">Saved items →</a><a onclick="goApp('labs')" style="font-size:14px;font-weight:600;color:var(--teal-deep);cursor:pointer;padding:12px 0;border-bottom:1px solid var(--rule);">Local labs →</a><a onclick="goApp('resources')" style="font-size:14px;font-weight:600;color:var(--teal-deep);cursor:pointer;padding:12px 0;border-bottom:1px solid var(--rule);">Resource library →</a><a onclick="showProfile()" style="font-size:14px;font-weight:600;color:var(--teal-deep);cursor:pointer;padding:12px 0;border-bottom:1px solid var(--rule);">Your public profile →</a><a href="https://www.every.org/theupskillinglabs" target="_blank" rel="noopener" style="font-size:14px;font-weight:600;color:var(--teal-deep);cursor:pointer;padding:12px 0 0;">Support The Labs →</a></div></div>
             </aside>
           </div>
         </div>
@@ -1320,6 +1302,17 @@ button,input,select,textarea { font-family:inherit; }
         </div>
       </div>
 
+      <!-- BOOKMARKS -->
+      <div id="panel-bookmarks" class="panel">
+        <div class="container" style="padding-top:32px;padding-bottom:48px;">
+          <div class="lbl lbl-teal" style="margin-bottom:12px;">Saved</div>
+          <h1 class="t-h1" style="margin-bottom:8px;">Your bookmarks</h1>
+          <p class="t-lede" style="margin-bottom:28px;">Workshops, guides, and labs you've saved across The Labs.</p>
+          <div id="bm-empty" style="display:none;"><div class="lcard" style="padding:32px;text-align:center;"><p class="t-body" style="color:var(--meta);">Nothing saved yet. Tap the bookmark on any workshop, guide, or lab to keep it here.</p></div></div>
+          <div class="cards dense" id="bm-list"></div>
+        </div>
+      </div>
+
       <!-- shared footer — same as the public site, wired to app navigation -->
       <footer class="osfooter grain">
         <div class="osfooter-inner">
@@ -1396,13 +1389,45 @@ button,input,select,textarea { font-family:inherit; }
 
 
 <script>
-const userState = {name:'Alex', initials:'AR', roles:[], isMentor:false, completed:{}, profileAnswers:{}, mentorAnswers:{}, volunteerAnswers:{}};
+const userState = {name:'Alex', initials:'AR', roles:[], isMentor:false, signedIn:false, completed:{}, profileAnswers:{}, mentorAnswers:{}, volunteerAnswers:{}, saved:[], lab:{name:'',status:''}};
 const FLOW_ROLES=['mentor','volunteer','cycle']; // roles with a deferrable setup flow ('events' is passive)
 const ROLE_ITEMS={
   mentor:{title:'Complete the mentor section of your profile', sub:'Tell pods what you bring and how to reach you.'},
   volunteer:{title:'Complete the volunteer section of your profile', sub:'Tell us where and how you want to help.'},
   cycle:{title:'Register for the Spring 2026 Build Cycle', sub:'Pick a problem area and your commitment.'}
 };
+// Lab options shared by onboarding (lab-choice step) and the profile credibility band.
+const LABS={ dc:{name:'Washington, DC', status:'active'}, baltimore:{name:'Baltimore', status:'forming'}, philadelphia:{name:'Philadelphia', status:'soon'} };
+// Cycle context for the dashboard command center. TODO: drive phase/week/milestones from real cycle data.
+const CYCLE={ name:'Spring 2026', phase:'Discovery', phaseIndex:0, phases:['Discovery','Exploration','Prototype'], pod:'Pod 4 · Civic AI', milestones:[ {label:'Pod registration opens', when:'Mar 30'}, {label:'Discovery readout', when:'Apr 10'}, {label:'Prototype demos', when:'May 18'} ] };
+// Portfolio is data-driven: the upskiller baseline is seeded; mentor/volunteer evidence is synthesized
+// at render time from the role flows (only when that role is completed), so the grid reads role-blended.
+const PROJECTS=[
+  { title:'BenefitsBot', roleType:'upskiller', featured:true, tag:'Build Cycle', role:'Spring 2026 Cycle · Pod lead',
+    problem:'DC residents abandon benefits applications because eligibility rules are opaque and scattered across agencies.',
+    summary:'A plain-language eligibility guide that walks residents through SNAP + Medicaid in one calm flow.',
+    outcome:'Piloted in 3 DC Public Library branches; cut intake questions by ~40%.', artifact:{label:'View prototype', href:'#'} },
+  { title:'Prompt patterns deck', roleType:'upskiller', featured:false, tag:'Workshop', role:'Workshop · Author',
+    summary:'Reusable prompts for community research, packaged for non-technical organizers.',
+    outcome:'Adopted by 2 partner orgs; 120+ downloads.' },
+  { title:'Library hours finder', roleType:'upskiller', featured:false, tag:'Open', role:'Solo · Contributor',
+    summary:'A tiny tool that surfaces branch hours from an unstructured PDF.',
+    outcome:'Used by 300+ residents in its first month.' }
+];
+// Brand orb (SVG) reused as the photography stand-in on generated cards/case studies.
+const ORB='<div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%"><defs><radialGradient id="oc" cx="38%" cy="35%" r="58%"><stop offset="0%" stop-color="#0094A0"/><stop offset="62%" stop-color="rgba(0,148,160,0)"/></radialGradient><radialGradient id="or" cx="62%" cy="78%" r="65%"><stop offset="60%" stop-color="rgba(225,29,42,0)"/><stop offset="100%" stop-color="#E11D2A"/></radialGradient><linearGradient id="og" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#00D3E4"/><stop offset="60%" stop-color="#0094A0"/><stop offset="100%" stop-color="#007882"/></linearGradient></defs><circle cx="120" cy="120" r="116" fill="url(#oc)"/><circle cx="120" cy="120" r="116" fill="url(#or)"/><g transform="translate(20,40) scale(0.142)"><path d="M 0 900.84 C 532.341 651.368 841.069 454.81 1407.215 0 C 1190.699 365.98 1060.371 566.788 776.503 900.84 L 950.588 496.405 C 539.219 733.009 347.248 789.767 0 900.84 Z" fill="url(#og)"/></g></svg></div>';
+const GRAD=['m-teal','m-forest','m-navy'];
+function slug(s){ return String(s||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,''); }
+// One blended tag cloud at the profile bottom: upskiller work areas + mentor expertise + volunteer focus,
+// each tagged by source, de-duped by label.
+function mergedSkills(){
+  const out=[], seen=new Set();
+  const add=(label,source)=>{ const k=String(label).toLowerCase(); if(!label||seen.has(k))return; seen.add(k); out.push({label,source}); };
+  if(userState.completed&&userState.completed.mentor){ (userState.mentorAnswers.expertise||[]).forEach(t=>add(t,'mentor')); }
+  const pa=userState.profileAnswers||{}; (pa.workAreas||['Benefits navigation','Community research','Rapid prototyping']).forEach(t=>add(t,'upskiller'));
+  if(userState.completed&&userState.completed.volunteer){ (userState.volunteerAnswers.areas||[]).forEach(t=>add(t,'volunteer')); }
+  return out;
+}
 let mentorStep = 1; let gateContext = ''; let mentorBack=()=>showView('role-intent');
 
 function scrollTop(){ const v=document.querySelector('.view.active .vscroll'); if(v) v.scrollTop=0; else window.scrollTo(0,0); }
@@ -1411,8 +1436,9 @@ function scrollToSection(id){ const el=document.getElementById(id); if(el) el.sc
 function showView(id){
   closeHamMenu();
   document.querySelectorAll('#screens > .view').forEach(v=>v.classList.remove('active'));
-  if(['dashboard','cycles','events','resources','event','labs'].includes(id)){ document.getElementById('app-shell').classList.add('active'); showAppView(id); }
+  if(['dashboard','cycles','events','resources','event','labs','bookmarks'].includes(id)){ document.getElementById('app-shell').classList.add('active'); showAppView(id); }
   else { const el=document.getElementById('view-'+id); if(el) el.classList.add('active'); }
+  if(id==='landing') renderLanding();
   window.scrollTo(0,0); document.querySelectorAll('.vscroll').forEach(s=>s.scrollTop=0);
 }
 function toggleHamMenu(){
@@ -1425,11 +1451,12 @@ function closeHamMenu(){
   if(btn) btn.classList.remove('open'); if(menu) menu.classList.remove('open');
 }
 function goApp(id){ showView(id); }
-function showProfile(){ renderActivity(); renderProfileView(); showView('profile'); }
+function showProfile(isOwner=true){ renderActivity(); renderProfileView(isOwner); showView('profile'); }
 function showAppView(id){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-link,.tab').forEach(t=>t.classList.remove('active'));
   const panel=document.getElementById('panel-'+id); if(panel) panel.classList.add('active');
+  if(id==='bookmarks') renderBookmarks();
   const k=id==='event'?'events':id;
   ['nav-','tab-'].forEach(pre=>{ const e=document.getElementById(pre+k); if(e) e.classList.add('active'); });
   if(!document.getElementById('app-shell').classList.contains('active')){ document.querySelectorAll('#screens > .view').forEach(v=>v.classList.remove('active')); document.getElementById('app-shell').classList.add('active'); }
@@ -1440,13 +1467,16 @@ function openEvent(){ showAppView('event'); initGallery(); }
 /* create-account entry + gate */
 function applyGate(){ const el=document.getElementById('gate-ctx'); if(!el) return; if(gateContext){ el.style.display='inline-flex'; el.innerHTML='Joining '+gateContext; } else { el.style.display='none'; } }
 function startCreateAccount(){ gateContext=''; applyGate(); showView('google-auth'); }
-function gateCreateAccount(ctx, e){ if(e) e.stopPropagation(); gateContext=ctx||''; applyGate(); showView('google-auth'); }
+function gateCreateAccount(ctx, e){ if(e) e.stopPropagation();
+  // Signed-in members act directly — route to the relevant app view instead of the create-account funnel.
+  if(userState.signedIn){ const c=(ctx||'').toLowerCase(); if(/workshop|session|event/.test(c)) goApp('events'); else if(/lab|waitlist/.test(c)) goApp('labs'); else if(/cycle/.test(c)) goApp('cycles'); else goApp('dashboard'); return; }
+  gateContext=ctx||''; applyGate(); showView('google-auth'); }
 function toggleExpand(card, e){ if(e){ const t=e.target; if(t.closest('button')) return; } card.classList.toggle('expanded'); }
 
-function signinReturning(){ document.getElementById('header-avatar').textContent=userState.initials; document.getElementById('dash-greeting').textContent='Welcome back, '+userState.name+'.'; renderTodos(); buildWeekRail(); renderProfileChecklist(); showView('dashboard'); }
+function signinReturning(){ userState.signedIn=true; document.getElementById('header-avatar').textContent=userState.initials; document.getElementById('dash-greeting').textContent='Welcome back, '+userState.name+'.'; renderTodos(); renderDashSaved(); renderDashCycle(); buildWeekRail(); renderProfileChecklist(); showView('dashboard'); }
 function updateRoleBtn(){ const c=document.querySelectorAll('#role-options input:checked'); document.getElementById('role-continue-btn').disabled=c.length===0; document.querySelectorAll('#role-options .opt-card').forEach(x=>x.classList.toggle('selected',x.querySelector('input').checked)); }
 function submitRoleIntent(){ userState.roles=[...document.querySelectorAll('#role-options input:checked')].map(c=>c.value); userState.isMentor=userState.roles.includes('mentor'); startFlow('signup', ()=>showView('role-intent')); }
-function continueWithGoogle(){ showView('role-intent'); }
+function continueWithGoogle(){ userState.signedIn=true; showView('role-intent'); }
 function renderMentor(){ document.getElementById('ms1').style.display=mentorStep===1?'block':'none'; document.getElementById('ms2').style.display=mentorStep===2?'block':'none'; document.getElementById('me-next').textContent=mentorStep===2?'Set up my profile':'Next'; }
 function mentorSlideNext(){ if(mentorStep===1){ mentorStep=2; renderMentor(); document.querySelector('#view-mentor-explainer .vscroll').scrollTop=0; } else { startFlow('mentor', ()=>{ mentorStep=1; renderMentor(); showView('mentor-explainer'); }); } }
 
@@ -1462,11 +1492,14 @@ const VOL_AREAS=['Events & logistics','Outreach & community','Mentoring support'
 const VOL_WAYS=['At in-person events','Behind the scenes','On-call for specific needs','An ongoing role'];
 function FLOWS(name){
   if(name==='signup') return { eyebrow:'Your profile', finalLabel:'Become an Upskiller', finalClass:'btn-red',
-    onComplete:()=>{ const f=(fans.first||'Alex').trim()||'Alex'; userState.name=f; userState.initials=(f[0]||'A').toUpperCase()+'R'; document.getElementById('header-avatar').textContent=userState.initials; document.getElementById('prof-avatar').textContent=userState.initials; document.getElementById('prof-name').textContent=f+' '+(fans.last||'Rivera'); document.getElementById('dash-greeting').textContent='Welcome, '+f+'.'; renderTodos(); buildWeekRail(); renderProfileChecklist(); const pending=userState.roles.filter(r=>FLOW_ROLES.includes(r)); if(pending.length===1){ startRoleFlow(pending[0], ()=>showView('role-intent')); } else { showView('dashboard'); } },
+    onComplete:()=>{ const f=(fans.first||'Alex').trim()||'Alex'; userState.name=f; userState.initials=(f[0]||'A').toUpperCase()+'R'; userState.signedIn=true; if(fans.lab==='none'){ userState.lab={name:(fans.labTown||'').trim()||'Your town', status:'pending-application'}; } else if(fans.lab&&LABS[fans.lab]){ userState.lab={...LABS[fans.lab]}; } document.getElementById('header-avatar').textContent=userState.initials; document.getElementById('prof-avatar').textContent=userState.initials; document.getElementById('prof-name').textContent=f+' '+(fans.last||'Rivera'); document.getElementById('dash-greeting').textContent='Welcome, '+f+'.'; renderTodos(); renderDashSaved(); renderDashCycle(); buildWeekRail(); renderProfileChecklist(); const pending=userState.roles.filter(r=>FLOW_ROLES.includes(r)); if(pending.length===1){ startRoleFlow(pending[0], ()=>showView('role-intent')); } else { showView('dashboard'); } },
     steps:[ {id:'email',type:'info',q:'Signing up as',help:'We pulled this from your Google account.',render:'<div class="flow-emaillarge">alex.rivera@gmail.com</div>'},
       {id:'first',type:'text',q:"What's your first name?",ph:'Alex',required:true},
       {id:'last',type:'text',q:'And your last name?',ph:'Rivera',required:true},
       {id:'zip',type:'text',q:'Where are you based?',help:'Your zip code helps us connect you with local labs.',ph:'20001',inputmode:'numeric',required:true},
+      {id:'lab',type:'choice',q:'Which local lab is yours?',help:'Labs are library-hosted and run in the open. Pick the one nearest you.',options:[{v:'dc',label:'Washington, DC',sub:'Flagship · Active'},{v:'baltimore',label:'Baltimore',sub:'Forming'},{v:'philadelphia',label:'Philadelphia',sub:'Coming soon'},{v:'none',label:"I don't see my town",sub:'Apply to start one'}]},
+      {id:'labTown',type:'text',q:'What town should we consider?',help:"You're applying to help start a new local lab here — not joining an existing one. We'll follow up.",ph:'Richmond, VA',required:true,when:f=>f.lab==='none'},
+      {id:'labWhy',type:'text',q:'In one line, why start a lab here?',help:'What makes your town ready? This is part of your application.',ph:'A library partner and a crew of people ready to build.',required:false,when:f=>f.lab==='none'},
       {id:'work',type:'choice',q:'What best describes you right now?',options:WORK.map(w=>({v:w,label:w}))},
       {id:'consent',type:'consent',q:'One last thing',text:'I agree to the Participant Agreement and consent to receive updates from The Upskilling Labs. My profile is public by default.'} ]};
   if(name==='cycle') return { eyebrow:'Spring 2026', finalLabel:'Submit registration', finalClass:'btn-teal', onComplete:()=>finishRoleFlow('cycle'),
@@ -1477,8 +1510,12 @@ function FLOWS(name){
   if(name==='mentor') return { eyebrow:'Mentor profile', finalLabel:'Save profile', finalClass:'btn-teal', onComplete:()=>finishRoleFlow('mentor'),
     steps:[ {id:'expertise',type:'tags',q:'What do you bring?',help:'Pick the areas where you can help. Choose as many as fit.',options:EXPERTISE,required:true},
       {id:'engage',type:'checks',q:'How would you like to engage?',help:'Select all that work for you.',options:ENGAGE,required:true},
+      {id:'pods',type:'textarea',q:'Who have you mentored, and how?',help:'No names needed — pods or people, and what you helped with.',ph:'e.g. 3 pods in the Civic AI cycle — weekly office hours on scoping and shipping.',required:true},
+      {id:'outcome',type:'textarea',q:'What did they achieve?',help:'Something concrete a recruiter could check.',ph:'e.g. All 3 pods shipped a working demo at the Spring showcase.',required:true},
       {id:'tz',type:'choice',q:'What time zone are you in?',options:TZ.map(t=>({v:t,label:t}))},
-      {id:'booking',type:'text',q:'Share a booking link',help:'Optional — makes it easy for pods to grab time with you.',ph:'calendly.com/your-link',required:false} ]};
+      {id:'booking',type:'text',q:'Share a booking link',help:'Optional — makes it easy for pods to grab time with you.',ph:'calendly.com/your-link',required:false},
+      {id:'artifact',type:'text',q:'Link to something you made as a mentor',help:'Optional — a framework, a workshop, a recap. Shows up on your profile.',ph:'labs.org/showcase/civic-ai',required:false},
+      {id:'testimonial',type:'textarea',q:'A line from someone you mentored',help:'Optional — the one piece of evidence about you, not just by you.',ph:'"Alex unblocked us every single week." — Pod 2',required:false} ]};
   if(name==='volunteer') return { eyebrow:'Volunteer profile', finalLabel:'Save profile', finalClass:'btn-teal', onComplete:()=>finishRoleFlow('volunteer'),
     steps:[ {id:'areas',type:'tags',q:'Where would you like to help?',help:'Pick the areas that fit. Choose as many as you like.',options:VOL_AREAS,required:true},
       {id:'ways',type:'checks',q:'How would you like to pitch in?',help:'Select all that work for you.',options:VOL_WAYS,required:true},
@@ -1492,22 +1529,25 @@ function FLOWS(name){
 }
 function startFlow(name, backFn, preload, returnTo){ flow=FLOWS(name); flow.name=name; flow.backTo=backFn||(()=>showView('landing')); flow.returnTo=returnTo||null; fstep=0; fans=preload?{...preload}:{}; renderFlowStep(); showView('flow'); }
 function startRoleFlow(role, backFn){ if(role==='mentor'){ mentorBack=backFn||(()=>showView('dashboard')); mentorStep=1; renderMentor(); showView('mentor-explainer'); } else { startFlow(role, backFn||(()=>showView('dashboard'))); } }
-function finishRoleFlow(role){ if(role==='mentor')userState.mentorAnswers={...fans}; else if(role==='volunteer')userState.volunteerAnswers={...fans}; userState.completed[role]=true; renderProfileChecklist(); renderProfileView(); if(flow&&flow.returnTo)flow.returnTo(); else showView('dashboard'); }
+function finishRoleFlow(role){ if(role==='mentor')userState.mentorAnswers={...fans}; else if(role==='volunteer')userState.volunteerAnswers={...fans}; userState.completed[role]=true; renderProfileChecklist(); renderDashCycle(); renderProfileView(); if(flow&&flow.returnTo)flow.returnTo(); else showView('dashboard'); }
 function pad2(n){ return n<10?'0'+n:''+n; }
+// Visible step indices — supports optional conditional steps via step.when(fans).
+function fVisible(){ return flow.steps.map((s,i)=>i).filter(i=>{ const s=flow.steps[i]; return !s.when||s.when(fans); }); }
 function renderFlowStep(){
   const step=flow.steps[fstep];
   document.getElementById('flow-eyebrow').textContent=flow.eyebrow;
   document.getElementById('flow-q').textContent=step.q;
   const help=document.getElementById('flow-help'); help.textContent=step.help||''; help.style.display=step.help?'block':'none';
-  document.getElementById('flow-counter').textContent=pad2(fstep+1)+' / '+pad2(flow.steps.length);
-  const seg=document.getElementById('flow-seg'); seg.innerHTML=''; for(let i=0;i<flow.steps.length;i++){ const b=document.createElement('div'); b.className='seg-bar'+(i<fstep?' done':'')+(i===fstep?' active':''); b.innerHTML='<span class="seg-fill"></span>'; seg.appendChild(b); }
-  document.getElementById('flow-back').onclick=()=>{ if(fstep>0){ fstep--; renderFlowStep(); } else { flow.backTo(); } };
+  const vis=fVisible(); const pos=vis.indexOf(fstep);
+  document.getElementById('flow-counter').textContent=pad2(pos+1)+' / '+pad2(vis.length);
+  const seg=document.getElementById('flow-seg'); seg.innerHTML=''; for(let i=0;i<vis.length;i++){ const b=document.createElement('div'); b.className='seg-bar'+(i<pos?' done':'')+(i===pos?' active':''); b.innerHTML='<span class="seg-fill"></span>'; seg.appendChild(b); }
+  document.getElementById('flow-back').onclick=()=>{ const v=fVisible(); const p=v.indexOf(fstep); if(p>0){ fstep=v[p-1]; renderFlowStep(); } else { flow.backTo(); } };
   renderFlowInput(step); document.getElementById('flow-scroll').scrollTop=0;
 }
-function flowAdvance(){ if(fstep<flow.steps.length-1){ fstep++; renderFlowStep(); } else { flow.onComplete(); } }
+function flowAdvance(){ const v=fVisible(); const p=v.indexOf(fstep); if(p<v.length-1){ fstep=v[p+1]; renderFlowStep(); } else { flow.onComplete(); } }
 function renderFlowInput(step){
   const box=document.getElementById('flow-input'); box.innerHTML='';
-  const actions=document.getElementById('flow-actions'); const isLast=fstep===flow.steps.length-1;
+  const actions=document.getElementById('flow-actions'); const _v=fVisible(); const isLast=_v.indexOf(fstep)===_v.length-1;
   const contLabel=isLast?flow.finalLabel:'Continue'; const contClass=isLast?flow.finalClass:'btn-teal';
   function setActions(o){ actions.innerHTML=''; actions.style.display='flex'; const btn=document.createElement('button'); btn.className='btn btn-block '+contClass; btn.textContent=contLabel; btn.disabled=!o.enabled; btn.onclick=flowAdvance; actions.appendChild(btn); if(o.skip){ const s=document.createElement('button'); s.className='btn-link flow-skip'; s.style.color='var(--meta)'; s.textContent='Skip for now'; s.onclick=flowAdvance; actions.appendChild(s); } }
   function enable(on){ const b=actions.querySelector('.btn'); if(b) b.disabled=!on; }
@@ -1548,10 +1588,33 @@ function renderFlowInput(step){
 /* Airbnb-isms */
 function toggleHeart(e,btn){
   e.stopPropagation();
-  // Public visitors can't save yet — bookmarking is account-gated.
-  if(!btn.closest('#app-shell')){ openSaveGate(); return; }
-  btn.classList.toggle('saved');
+  // Logged-out public visitors can't save yet — bookmarking is account-gated.
+  if(!btn.closest('#app-shell') && !userState.signedIn){ openSaveGate(); return; }
+  const card=btn.closest('.card');
+  const titleEl=card&&(card.querySelector('.card-body .t-h4')||card.querySelector('.t-h4'));
+  const title=titleEl?titleEl.textContent.trim():'Saved item';
+  const tagEl=card&&card.querySelector('.m-tag'); const kind=tagEl?tagEl.textContent.trim():'Saved';
+  const metaEl=card&&card.querySelector('.card-body .t-small'); const meta=metaEl?metaEl.textContent.trim():'';
+  const id=slug(title)||('item-'+userState.saved.length);
+  const i=userState.saved.findIndex(s=>s.id===id);
+  if(i>=0) userState.saved.splice(i,1); else userState.saved.push({id,title,kind,meta});
+  syncHearts();
+  const bm=document.getElementById('panel-bookmarks'); if(bm&&bm.classList.contains('active')) renderBookmarks();
+  renderDashSaved();
 }
+// Reflect userState.saved on every heart in the DOM so the same item stays consistent across views.
+function syncHearts(){
+  const ids=new Set(userState.saved.map(s=>s.id));
+  document.querySelectorAll('.card').forEach(card=>{ const h=card.querySelector('.heart'); const t=card.querySelector('.card-body .t-h4')||card.querySelector('.t-h4'); if(h&&t) h.classList.toggle('saved', ids.has(slug(t.textContent.trim()))); });
+}
+function renderBookmarks(){
+  const c=document.getElementById('bm-list'); if(!c) return;
+  const items=userState.saved||[]; const empty=document.getElementById('bm-empty');
+  if(!items.length){ c.innerHTML=''; if(empty) empty.style.display='block'; return; }
+  if(empty) empty.style.display='none';
+  c.innerHTML=items.map(s=>'<div class="card tappable"><div class="media m-teal" style="aspect-ratio:16/10;"><button class="heart saved" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg></button><div class="m-tag">'+s.kind+'</div></div><div class="card-body"><div class="t-h4" style="margin-bottom:4px;">'+s.title+'</div>'+(s.meta?'<p class="t-small">'+s.meta+'</p>':'')+'</div></div>').join('');
+}
+function goBookmarks(){ goApp('bookmarks'); }
 function openSaveGate(){ const m=document.getElementById('save-gate'); if(m) m.classList.add('open'); }
 function closeSaveGate(){ const m=document.getElementById('save-gate'); if(m) m.classList.remove('open'); }
 function initEventCats(){ const cats=['All','In person','Virtual','This month','Workshops']; const c=document.getElementById('event-cats'); if(!c)return; c.innerHTML=''; cats.forEach((t,i)=>{ const b=document.createElement('button'); b.className='chip'+(i===0?' active':''); b.textContent=t; b.onclick=()=>{ [...c.children].forEach(x=>x.classList.remove('active')); b.classList.add('active'); }; c.appendChild(b); }); }
@@ -1567,16 +1630,144 @@ function renderTodos(){
   todos.forEach(t=>{ const d=document.createElement('div'); d.className='lcard'; d.style.padding='20px 22px'; d.innerHTML='<div class="lbl lbl-teal" style="margin-bottom:8px;">'+t.label+'</div><div class="t-h4" style="margin-bottom:6px;">'+t.title+'</div><p class="t-small" style="margin-bottom:'+(t.cta?'14px':'0')+';">'+t.body+'</p>'+(t.cta?'<button class="btn btn-ghost-teal btn-sm">'+t.cta+'</button>':''); if(t.action){ const b=d.querySelector('.btn'); if(b) b.onclick=t.action; } c.appendChild(d); });
 }
 function buildWeekRail(){ const rail=document.getElementById('week-rail'); if(!rail)return; rail.innerHTML=''; const CUR=4; const wk=[[1,'Kickoff'],[2,'Orient'],[3,'Discovery'],[4,'Deep Dive'],[5,'Pod Form'],[6,'Research'],[7,'Synthesis'],[8,'Ideation'],[9,'Prototype'],[10,'Build'],[11,'Testing'],[12,'Refine'],[13,'Showcase']]; wk.forEach(([w,label])=>{ const past=w<CUR,cur=w===CUR; const n=document.createElement('div'); n.className='week-node'; n.innerHTML='<div class="week-pip '+(past?'past':cur?'current':'')+'">'+w+'</div><div class="week-label">'+(cur?'<b>Wk '+w+'</b><br>'+label:'Wk '+w)+'</div>'; rail.appendChild(n); }); }
+// Dashboard cycle command-center — shows only once the member is in a cycle. TODO: drive from real cycle data.
+function renderDashCycle(){
+  const el=document.getElementById('dash-cycle'); if(!el) return;
+  if(!(userState.completed&&userState.completed.cycle)){ el.style.display='none'; el.innerHTML=''; return; }
+  el.style.display='block';
+  const segs=CYCLE.phases.map((p,i)=>'<div class="phase-segment"'+(i<=CYCLE.phaseIndex?' style="background:var(--teal);"':'')+'></div>').join('');
+  const labels=CYCLE.phases.map((p,i)=>'<span class="t-small" style="font-weight:600;color:'+(i===CYCLE.phaseIndex?'var(--ink)':'var(--meta)')+';">'+p+'</span>').join('');
+  const mile=CYCLE.milestones.map(m=>'<div style="display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--rule);"><span class="t-small" style="color:var(--ink);">'+m.label+'</span><span class="t-small">'+m.when+'</span></div>').join('');
+  el.innerHTML='<div class="lcard" style="padding:24px;">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Current cycle · '+CYCLE.name+'</div><div class="t-h4">'+CYCLE.phase+' phase · '+CYCLE.pod+'</div></div><button class="btn btn-ghost-teal btn-sm" onclick="goApp(\'cycles\')">Open cycle</button></div>'
+    +'<div class="phase-band">'+segs+'</div>'
+    +'<div style="display:flex;justify-content:space-between;margin-bottom:18px;">'+labels+'</div>'
+    +'<div class="lbl" style="margin-bottom:4px;">Upcoming milestones</div>'+mile
+    +'</div>';
+}
+// Dashboard saved-items preview — up to 3, linking into Bookmarks. Hidden when nothing is saved.
+function renderDashSaved(){
+  const el=document.getElementById('dash-saved'); if(!el) return;
+  const items=userState.saved||[];
+  if(!items.length){ el.style.display='none'; el.innerHTML=''; return; }
+  el.style.display='block';
+  const rows=items.slice(0,3).map(s=>'<div class="lcard" style="padding:16px 18px;cursor:pointer;" onclick="goBookmarks()"><div class="lbl lbl-teal" style="margin-bottom:4px;">'+s.kind+'</div><div class="t-h4">'+s.title+'</div>'+(s.meta?'<p class="t-small" style="margin-top:2px;">'+s.meta+'</p>':'')+'</div>').join('');
+  el.innerHTML='<div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Saved</div><h2 class="t-h2">Your bookmarks</h2></div><span class="see" onclick="goBookmarks()">See all →</span></div>'
+    +'<div style="display:flex;flex-direction:column;gap:12px;">'+rows+'</div>';
+}
 function editProfile(){ startFlow('profile', showProfile, userState.profileAnswers, showProfile); }
 function editMentorProfile(){ startFlow('mentor', showProfile, userState.mentorAnswers, showProfile); }
 function editVolunteerProfile(){ startFlow('volunteer', showProfile, userState.volunteerAnswers, showProfile); }
 function onProfileChecklistClick(row){ const cb=document.getElementById('profile-checklist-cb'); if(!cb||cb.checked)return; startFlow('profile', ()=>goApp('dashboard'), userState.profileAnswers, showProfile); }
-function renderProfileView(){
+function linkify(u){ u=String(u||'').trim(); if(!u) return '#'; return /^https?:\/\//.test(u)?u:'https://'+u; }
+function firstSentence(s){ const m=String(s||'').split(/[.!?]/)[0]; return (m||s||'').trim(); }
+// Active roles in fixed order; Upskiller is the baseline identity for any member.
+function profRoleList(){
+  const out=[{key:'upskiller',label:'Upskiller'}];
+  if(userState.roles.includes('mentor')&&userState.completed.mentor) out.push({key:'mentor',label:'Mentor'});
+  if(userState.roles.includes('volunteer')&&userState.completed.volunteer) out.push({key:'volunteer',label:'Volunteer'});
+  return out;
+}
+function renderProfileView(isOwner=true){
   const pa=userState.profileAnswers||{};
   const bio=document.getElementById('prof-bio'); if(bio&&pa.bio) bio.textContent=pa.bio;
-  const meta=document.getElementById('prof-meta'); if(meta) meta.textContent=(pa.location||'Washington, DC')+' · Joined Spring 2026';
-  const ms=document.getElementById('prof-mentor-section'); if(ms){ const show=userState.roles.includes('mentor')&&!!userState.completed.mentor; ms.style.display=show?'block':'none'; if(show)renderMentorSection(); }
-  const vs=document.getElementById('prof-volunteer-section'); if(vs){ const show=userState.roles.includes('volunteer')&&!!userState.completed.volunteer; vs.style.display=show?'block':'none'; if(show)renderVolunteerSection(); }
+  const meta=document.getElementById('prof-meta'); if(meta) meta.textContent=(pa.location||userState.lab.name||'Washington, DC')+' · Joined Spring 2026';
+  const head=document.getElementById('prof-headline'); if(head){ const sk=mergedSkills(); head.textContent=pa.headline||(sk.length?sk.slice(0,2).map(s=>s.label).join(' · '):'Practitioner · building in the open'); }
+  const rb=document.getElementById('prof-roles'); if(rb) rb.innerHTML=profRoleList().map(r=>'<span class="tag-btn active" style="pointer-events:none;cursor:default;">'+r.label+'</span>').join('');
+  const act=document.getElementById('prof-actions');
+  if(act){
+    if(isOwner){ act.innerHTML='<button class="btn btn-ghost-teal btn-sm" onclick="editProfile()">Edit profile</button><button class="btn-link" style="color:var(--meta);font-size:13px;" onclick="showProfile(false)">Preview as visitor →</button>'; }
+    else { const li=pa.linkedin||'', ws=pa.website||''; let h='';
+      if(li||ws) h+='<a class="btn btn-teal btn-sm" href="'+linkify(li||ws)+'" target="_blank" rel="noopener">Connect</a>';
+      if(li&&ws) h+='<a class="btn-link" style="color:var(--teal-deep);font-size:13px;" href="'+linkify(ws)+'" target="_blank" rel="noopener">Website →</a>';
+      if(!li&&!ws) h='<span class="t-small" style="color:var(--meta);">No contact links yet</span>';
+      act.innerHTML=h; }
+  }
+  const pv=document.getElementById('prof-preview-bar');
+  if(pv){ if(isOwner){ pv.style.display='none'; pv.innerHTML=''; } else { pv.style.display='block'; pv.innerHTML='<div style="background:var(--ink);color:var(--od1);padding:11px var(--pad);display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;"><span class="t-small" style="color:var(--od2);">Previewing how recruiters and visitors see your profile.</span><button class="btn-link" style="color:#fff;font-weight:600;font-size:13px;" onclick="showProfile(true)">Back to my view</button></div>'; } }
+  const back=document.getElementById('prof-back'); if(back) back.onclick=isOwner?()=>goApp('dashboard'):()=>showProfile(true);
+  const so=document.getElementById('prof-signout-wrap'); if(so) so.style.display=isOwner?'block':'none';
+  renderCredBand(); renderPortfolio(); renderActLegend(); renderProfBookmarks(); renderSkills(); renderRoleDetail(isOwner);
+}
+function credCell(label,valueHTML){ return '<div><div class="lbl" style="margin-bottom:8px;">'+label+'</div><div style="display:flex;align-items:center;">'+valueHTML+'</div></div>'; }
+function statusPill(kind,label){ return '<span class="status '+kind+'">'+label+'</span>'; }
+function labStatusHTML(lab){
+  const name='<span class="t-body" style="margin-left:8px;">'+lab.name+'</span>';
+  if(lab.status==='active') return statusPill('active','Active member')+name;
+  if(lab.status==='forming') return statusPill('forming','Forming')+name;
+  if(lab.status==='soon') return statusPill('soon','Coming soon')+name;
+  if(lab.status==='pending-application') return statusPill('forming','Application pending')+name;
+  return name;
+}
+function renderCredBand(){
+  const el=document.getElementById('prof-cred'); if(!el) return; const cells=[];
+  if(userState.completed&&userState.completed.cycle) cells.push(credCell('Build Cycle', statusPill('active','Active')+'<span class="t-body" style="margin-left:8px;">'+CYCLE.name+'</span>'));
+  else if(userState.roles.includes('cycle')) cells.push(credCell('Build Cycle', statusPill('forming','Registering')+'<span class="t-body" style="margin-left:8px;">'+CYCLE.name+'</span>'));
+  const lab=userState.lab||{}; if(lab.name) cells.push(credCell('Local lab', labStatusHTML(lab)));
+  if(userState.completed&&userState.completed.mentor){ const pods=(userState.mentorAnswers.pods||'').trim(); cells.push(credCell('Mentoring','<span class="t-body">'+(pods?firstSentence(pods):'Active mentor')+'</span>')); }
+  if(userState.completed&&userState.completed.volunteer){ const hrs=(userState.volunteerAnswers.hours||'').trim(); cells.push(credCell('Volunteering','<span class="t-body">'+(hrs||'Active volunteer')+'</span>')); }
+  if(!cells.length){ el.style.display='none'; el.innerHTML=''; return; }
+  el.style.display='block';
+  el.innerHTML='<div class="lcard" style="padding:22px 24px;"><div style="display:flex;flex-wrap:wrap;gap:22px 44px;">'+cells.join('')+'</div></div>';
+}
+function buildPortfolio(){
+  const list=PROJECTS.slice();
+  if(userState.completed&&userState.completed.mentor){ const m=userState.mentorAnswers||{}; list.push({ title:'Mentoring — '+((m.expertise&&m.expertise[0])||'pods'), roleType:'mentor', featured:false, tag:'Mentor', role:'Mentor'+(m.tz?' · '+m.tz:''), summary:(m.pods||'Guided pods through scoping and shipping.'), outcome:(m.outcome||''), testimonial:(m.testimonial||''), artifact:m.artifact?{label:'View artifact',href:linkify(m.artifact)}:null }); }
+  if(userState.completed&&userState.completed.volunteer){ const v=userState.volunteerAnswers||{}; list.push({ title:'Volunteering — '+((v.areas&&v.areas[0])||'community'), roleType:'volunteer', featured:false, tag:'Volunteer', role:'Volunteer', summary:((v.ways&&v.ways.join(', '))||'Pitched in on community operations.'), outcome:(v.hours?('Committing '+v.hours):'') }); }
+  return list;
+}
+function projectCardHTML(p,i){
+  const grad=p.roleType==='mentor'?'m-forest':p.roleType==='volunteer'?'m-navy':GRAD[i%GRAD.length];
+  return '<div class="card"><div class="media '+grad+'" style="aspect-ratio:3/2;">'+ORB+'<div class="m-tag">'+(p.tag||'Open')+'</div></div>'
+    +'<div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">'+(p.role||'')+'</div><div class="t-h4" style="margin-bottom:4px;">'+p.title+'</div><p class="t-small">'+(p.summary||'')+'</p>'
+    +(p.outcome?'<p class="t-small" style="color:var(--teal-deep);margin-top:8px;">'+p.outcome+'</p>':'')+'</div></div>';
+}
+function caseHTML(p){
+  return '<div class="case"><div class="media m-teal" style="aspect-ratio:16/10;">'+ORB+'<div class="m-tag">'+(p.tag||'Featured')+'</div></div>'
+    +'<div class="case-kv">'
+    +'<div><div class="lbl lbl-teal" style="margin-bottom:6px;">'+(p.role||'')+'</div><h3 class="t-h3" style="margin-bottom:6px;">'+p.title+'</h3><p class="t-body">'+(p.summary||'')+'</p></div>'
+    +(p.problem?'<div><div class="k">Problem</div><p class="t-body">'+p.problem+'</p></div>':'')
+    +(p.outcome?'<div><div class="k">Outcome</div><p class="t-body">'+p.outcome+'</p></div>':'')
+    +(p.testimonial?'<div><div class="k">What people say</div><p class="t-body" style="font-style:italic;">'+p.testimonial+'</p></div>':'')
+    +(p.artifact?'<a class="case-artifact" href="'+(p.artifact.href||'#')+'" target="_blank" rel="noopener">'+(p.artifact.label||'View artifact')+' →</a>':'')
+    +'</div></div>';
+}
+function renderPortfolio(){
+  const list=buildPortfolio(); const feat=list.find(p=>p.featured)||list[0]; const rest=list.filter(p=>p!==feat);
+  const fc=document.getElementById('prof-featured'); if(fc) fc.innerHTML=feat?caseHTML(feat):'';
+  const pc=document.getElementById('prof-projects'); if(pc) pc.innerHTML=rest.map((p,i)=>projectCardHTML(p,i)).join('');
+}
+function renderActLegend(){
+  const el=document.getElementById('act-legend'); if(!el) return;
+  const items=[['Building',true],['Mentoring',!!(userState.completed&&userState.completed.mentor)],['Volunteering',!!(userState.completed&&userState.completed.volunteer)]].filter(x=>x[1]);
+  el.innerHTML=items.map(x=>'<span class="t-small" style="display:inline-flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:3px;background:rgba(0,148,160,.55);display:inline-block;"></span>'+x[0]+'</span>').join('');
+}
+function renderProfBookmarks(){
+  const el=document.getElementById('prof-bookmarks'); if(!el) return; const items=userState.saved||[];
+  if(!items.length){ el.style.display='none'; el.innerHTML=''; return; }
+  el.style.display='block';
+  const names=items.slice(0,3).map(s=>s.title).join(' · ');
+  el.innerHTML='<div class="lcard" style="padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;cursor:pointer;" onclick="goBookmarks()"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Bookmarks</div><div class="t-h4" style="margin-bottom:2px;">'+items.length+' saved</div><p class="t-small">'+names+'</p></div><span class="see">Open →</span></div>';
+}
+function renderSkills(){
+  const el=document.getElementById('prof-skills'); if(!el) return; const sk=mergedSkills();
+  if(!sk.length){ el.style.display='none'; el.innerHTML=''; return; }
+  el.style.display='block';
+  el.innerHTML='<div class="tag-wrap">'+sk.map(s=>'<span class="tag-btn active" title="From '+s.source+'" style="pointer-events:none;cursor:default;">'+s.label+'</span>').join('')+'</div>';
+}
+function renderRoleDetail(isOwner){
+  const el=document.getElementById('prof-roledetail'); if(!el) return; const blocks=[];
+  if(userState.completed&&userState.completed.mentor){ const m=userState.mentorAnswers||{}; let h='<div class="lcard" style="padding:24px;"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;"><div class="lbl lbl-teal">As a mentor</div>'+(isOwner?'<button class="btn-link" style="color:var(--teal-deep);font-size:13px;" onclick="editMentorProfile()">Edit</button>':'')+'</div>';
+    if(m.engage&&m.engage.length){ h+='<div class="lbl" style="margin-bottom:6px;">How I engage</div><div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;">'+m.engage.map(e=>'<span class="t-small">· '+e+'</span>').join('')+'</div>'; }
+    const bits=[]; if(m.tz) bits.push('<span class="t-small" style="color:var(--meta);">'+m.tz+'</span>'); if(m.booking) bits.push('<a class="t-small" style="color:var(--teal-deep);" href="'+linkify(m.booking)+'" target="_blank" rel="noopener">'+m.booking+'</a>'); if(bits.length) h+='<div style="display:flex;flex-wrap:wrap;gap:16px;">'+bits.join('')+'</div>';
+    h+='</div>'; blocks.push(h); }
+  if(userState.completed&&userState.completed.volunteer){ const v=userState.volunteerAnswers||{}; let h='<div class="lcard" style="padding:24px;"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;"><div class="lbl lbl-teal">As a volunteer</div>'+(isOwner?'<button class="btn-link" style="color:var(--teal-deep);font-size:13px;" onclick="editVolunteerProfile()">Edit</button>':'')+'</div>';
+    if(v.ways&&v.ways.length){ h+='<div class="lbl" style="margin-bottom:6px;">How I pitch in</div><div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;">'+v.ways.map(w=>'<span class="t-small">· '+w+'</span>').join('')+'</div>'; }
+    if(v.hours) h+='<span class="t-small" style="color:var(--meta);">'+v.hours+'</span>';
+    h+='</div>'; blocks.push(h); }
+  if(!blocks.length){ el.style.display='none'; el.innerHTML=''; return; }
+  el.style.display='block';
+  el.innerHTML='<div class="cards two">'+blocks.join('')+'</div>';
 }
 function renderMentorSection(){
   const a=userState.mentorAnswers||{}; const c=document.getElementById('prof-mentor-content'); if(!c)return;
@@ -1596,7 +1787,20 @@ function renderVolunteerSection(){
   if(hours)h+='<span class="t-small" style="color:var(--meta);">'+hours+'</span>';
   h+='</div>'; c.innerHTML=h;
 }
-function logout(){ showView('landing'); }
+function logout(){ userState.signedIn=false; showView('landing'); }
+// Landing chrome reflects auth state: signed-in shows an avatar + Dashboard, hides Log in / Join.
+function renderLanding(){
+  const on=!!userState.signedIn;
+  document.querySelectorAll('#view-landing .pub-cta-out').forEach(e=>e.style.display=on?'none':'contents');
+  document.querySelectorAll('#view-landing .pub-cta-in').forEach(e=>e.style.display=on?'inline-flex':'none');
+  document.querySelectorAll('#view-landing .hero-cta-out').forEach(e=>e.style.display=on?'none':'');
+  document.querySelectorAll('#view-landing .hero-cta-in').forEach(e=>e.style.display=on?'':'none');
+  const la=document.getElementById('landing-avatar'); if(la) la.textContent=userState.initials;
+  ['ham-dashboard','ham-profile'].forEach(id=>{ const e=document.getElementById(id); if(e) e.style.display=on?'block':'none'; });
+  // Reset any stale hero fade/parallax + nav-hide from a prior scroll session when landing is re-shown.
+  const hi=document.querySelector('#view-landing .hero-inner'); if(hi){ hi.style.opacity=''; hi.style.transform=''; }
+  const nav=document.querySelector('#view-landing .pubnav'); if(nav) nav.classList.remove('nav-hidden');
+}
 function initHeroScroll(){
   const nav=document.querySelector('#view-landing .pubnav');
   const hero=document.querySelector('#view-landing .hero-band');
