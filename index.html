@@ -170,6 +170,14 @@ button,input,select,textarea { font-family:inherit; }
 .m-forest { background:radial-gradient(120% 120% at 100% 0%, rgba(0,148,160,.55), transparent 60%), linear-gradient(150deg, var(--forest), var(--ink)); }
 .m-navy { background:radial-gradient(110% 110% at 50% 120%, rgba(0,148,160,.5), transparent 60%), linear-gradient(160deg, var(--navy), var(--ink)); }
 
+/* Featured cycle banner — highlights the next cycle with open registration */
+.cycle-banner { position:relative; overflow:hidden; border-radius:var(--r); padding:28px 24px; display:flex; flex-direction:column; gap:20px; align-items:flex-start; }
+.cycle-banner .m-orb { position:absolute; width:210px; height:210px; right:-34px; bottom:-54px; opacity:.9; pointer-events:none; }
+.cycle-banner .cb-body { position:relative; z-index:1; }
+.cycle-banner .cb-cta { position:relative; z-index:1; width:100%; }
+.cb-status { display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border-radius:var(--r); background:rgba(0,148,160,.22); border:1px solid rgba(0,148,160,.55); color:#fff; font-size:12px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; }
+.cb-status::before { content:""; width:8px; height:8px; border-radius:50%; background:var(--teal); box-shadow:0 0 0 4px rgba(0,148,160,.25); }
+
 /* heart save */
 .heart { position:absolute; top:10px; right:10px; width:38px; height:38px; border-radius:50%; background:rgba(0,20,27,.32); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; border:none; cursor:pointer; transition:transform .12s; z-index:2; }
 .heart:active { transform:scale(.86); }
@@ -404,6 +412,8 @@ button,input,select,textarea { font-family:inherit; }
   .hero-cta { grid-column:5 / -1; align-items:flex-start; margin-top:0; }
   .section { padding:72px 0; }
   #sec-cycles { padding-top:72px; }
+  .cycle-banner { flex-direction:row; align-items:center; justify-content:space-between; gap:40px; padding:40px 48px; }
+  .cycle-banner .cb-cta { width:auto; flex-shrink:0; }
   .prof-head { gap:32px; }
   .avatar-lg { width:104px; height:104px; font-size:38px; }
   .pubnav .pub-cta { display:flex; }
@@ -541,9 +551,8 @@ button,input,select,textarea { font-family:inherit; }
       <!-- Cycles -->
       <section class="section s-white" id="sec-cycles" style="padding-top:56px;"><div class="container">
         <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Build Cycles · 4 a year</div><h2 class="t-h2">Join a cohort, ship something real</h2></div><span class="see" onclick="startCreateAccount()">See all →</span></div>
-        <div class="cards two">
-          <div class="card expandable tappable" onclick="toggleExpand(this,event)">
-            <div class="media m-teal"><div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
+        <div class="cycle-banner s-cover grain on-dark">
+          <div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
   <defs>
     <radialGradient id="oc" cx="38%" cy="35%" r="58%"><stop offset="0%" stop-color="#0094A0"/><stop offset="62%" stop-color="rgba(0,148,160,0)"/></radialGradient>
     <radialGradient id="or" cx="62%" cy="78%" r="65%"><stop offset="60%" stop-color="rgba(225,29,42,0)"/><stop offset="100%" stop-color="#E11D2A"/></radialGradient>
@@ -552,34 +561,15 @@ button,input,select,textarea { font-family:inherit; }
   <circle cx="120" cy="120" r="116" fill="url(#oc)"/>
   <circle cx="120" cy="120" r="116" fill="url(#or)"/>
   <g transform="translate(20,40) scale(0.142)"><path d="M 0 900.84 C 532.341 651.368 841.069 454.81 1407.215 0 C 1190.699 365.98 1060.371 566.788 776.503 900.84 L 950.588 496.405 C 539.219 733.009 347.248 789.767 0 900.84 Z" fill="url(#og)"/></g>
-</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg></button><div class="m-tag">13 weeks</div></div>
-            <div class="card-body"><div class="card-row"><div class="lbl lbl-teal">Spring 2026 · Washington, DC</div><span class="card-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div><div class="t-h4" style="margin:6px 0 4px;">Civic AI Build Cycle</div><p class="t-small">Mar 2 – May 29 · 42 members</p></div>
-            <div class="card-expand">
-              <div class="kv"><span class="k lbl">Format</span><span class="t-small">13-week pod that ships a real civic project</span></div>
-              <div class="kv"><span class="k lbl">Where</span><span class="t-small">DC Public Library + online</span></div>
-              <div class="kv"><span class="k lbl">Open</span><span class="t-small">Briefs &amp; past projects are public</span></div>
-              <div class="lock-note"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Full schedule, pods, and project briefs unlock when you join</div>
-              <button class="btn btn-teal btn-block" onclick="gateCreateAccount('the Spring 2026 Build Cycle',event)">Join this cycle</button>
-            </div>
+</svg></div>
+          <div class="cb-body">
+            <span class="cb-status">Registration Open Now</span>
+            <div class="lbl lbl-teal" style="margin:14px 0 6px;">Summer 2026 · Washington, DC</div>
+            <h3 class="t-h2">Civic &amp; Elections Cycle</h3>
+            <p class="t-body" style="margin-top:8px;max-width:52ch;">Kicks off July 14, 2026 · a 13-week cohort shipping a real civic project.</p>
           </div>
-          <div class="card expandable tappable" onclick="toggleExpand(this,event)">
-            <div class="media m-forest"><div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
-  <defs>
-    <radialGradient id="oc" cx="38%" cy="35%" r="58%"><stop offset="0%" stop-color="#0094A0"/><stop offset="62%" stop-color="rgba(0,148,160,0)"/></radialGradient>
-    <radialGradient id="or" cx="62%" cy="78%" r="65%"><stop offset="60%" stop-color="rgba(225,29,42,0)"/><stop offset="100%" stop-color="#E11D2A"/></radialGradient>
-    <linearGradient id="og" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#00D3E4"/><stop offset="60%" stop-color="#0094A0"/><stop offset="100%" stop-color="#007882"/></linearGradient>
-  </defs>
-  <circle cx="120" cy="120" r="116" fill="url(#oc)"/>
-  <circle cx="120" cy="120" r="116" fill="url(#or)"/>
-  <g transform="translate(20,40) scale(0.142)"><path d="M 0 900.84 C 532.341 651.368 841.069 454.81 1407.215 0 C 1190.699 365.98 1060.371 566.788 776.503 900.84 L 950.588 496.405 C 539.219 733.009 347.248 789.767 0 900.84 Z" fill="url(#og)"/></g>
-</svg></div><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg></button><div class="m-tag">Forming</div></div>
-            <div class="card-body"><div class="card-row"><div class="lbl lbl-teal">Summer 2026 · Washington, DC</div><span class="card-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div><div class="t-h4" style="margin:6px 0 4px;">Benefits Navigator Cycle</div><p class="t-small">Jun 15 – Sep 11 · interest open</p></div>
-            <div class="card-expand">
-              <div class="kv"><span class="k lbl">Theme</span><span class="t-small">Helping residents navigate public benefits</span></div>
-              <div class="kv"><span class="k lbl">Where</span><span class="t-small">DC Public Library + online</span></div>
-              <div class="lock-note"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Register interest and we'll reach out when pods form</div>
-              <button class="btn btn-teal btn-block" onclick="gateCreateAccount('the Summer 2026 Cycle',event)">Register interest</button>
-            </div>
+          <div class="cb-cta">
+            <button class="btn btn-red btn-lg" onclick="gateCreateAccount('the Civic &amp; Elections Cycle',event)">Join this cycle</button>
           </div>
         </div>
       </div></section>
