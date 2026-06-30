@@ -306,7 +306,14 @@ button,input,select,textarea { font-family:inherit; }
 
 /* landing hero band (dark cover, not full-screen) */
 .hero-band { position:relative; z-index:2; overflow:hidden; border-radius:0 0 calc(var(--r)*3) calc(var(--r)*3); margin-bottom:calc(-3*var(--r)); }
-#view-landing .hero-band { min-height:100svh; }
+#view-landing .hero-band { min-height:100svh; display:flex; align-items:flex-end; background:none; }
+#view-landing .hero-band::before { z-index:2; }            /* grain sits over the tint */
+#view-landing .hero-photo { position:absolute; inset:0; z-index:0; background:url(./assets/img_9531.jpg) center/cover no-repeat; filter:grayscale(1); }
+#view-landing .hero-tint { position:absolute; inset:0; z-index:1; background:
+  radial-gradient(120% 80% at 0% 100%, rgba(0,148,160,.55) 0%, transparent 56%),
+  radial-gradient(110% 70% at 100% 0%, rgba(0,148,160,.40) 0%, transparent 50%),
+  linear-gradient(160deg, rgba(0,20,27,.85) 0%, rgba(3,35,42,.85) 55%, rgba(0,95,104,.85) 120%); }
+#view-landing .hero-inner { position:relative; z-index:2; width:100%; }
 .hero-inner { max-width:var(--maxw); margin:0 auto; padding:124px var(--pad) 72px; }
 
 /* generic content section */
@@ -366,6 +373,7 @@ button,input,select,textarea { font-family:inherit; }
   .pubnav .nav-links { display:flex; }
   .pub-signin { display:inline-flex; }
   .pubnav .title { display:none; }
+  #view-landing .hero-band { min-height:80svh; }
   .hero-inner { padding:148px var(--pad) 104px; }
   .section { padding:72px 0; }
   #sec-cycles { padding-top:72px; }
@@ -459,11 +467,9 @@ button,input,select,textarea { font-family:inherit; }
       </nav>
     </header>
 
-    <div class="hero-band s-cover grain on-dark" style="background:
-  radial-gradient(120% 80% at 0% 100%, rgba(0,148,160,.55) 0%, transparent 56%),
-  radial-gradient(110% 70% at 100% 0%, rgba(0,148,160,.40) 0%, transparent 50%),
-  linear-gradient(160deg, rgba(0,20,27,.85) 0%, rgba(3,35,42,.85) 55%, rgba(0,95,104,.85) 120%),
-  url(./assets/img_9531.jpg) center/cover no-repeat;">
+    <div class="hero-band s-cover grain on-dark">
+      <div class="hero-photo" aria-hidden="true"></div>
+      <div class="hero-tint" aria-hidden="true"></div>
       <div class="hero-inner">
         <h1 class="t-display" style="max-width:14ch;">Build real skills. Through real work. <span style="color:var(--teal);">With real people.</span></h1>
         <div style="display:flex;flex-direction:column;gap:12px;align-items:flex-start;margin-top:32px;">
