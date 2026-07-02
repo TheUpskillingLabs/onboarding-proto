@@ -157,37 +157,53 @@ how content is sourced. See §6 for why this is a separate table from `pulse_che
 
 ### 1.10 Team formation & governance (selected Open Labs OS elements)
 
-- **`problem_frames`** — `id, cycle_id FK, client_sponsor_id FK, title, messy_context text,
-  status enum('open','matched','archived'), created_at`. Source object for Discover's staking
-  cards (`FRAMES` in the prototype).
+**Product decision (confirmed): problem frames are cycle-specific, pod-scoped objects,
+created from the pod's Triangulator sensemaking.** They are not public discovery content, and
+staking a seat is a pod-member action. The lifecycle:
+
+```
+pod forms (existing mechanism, unchanged)
+  → pod runs sensemaking (sensemaking_sessions, §1.4)
+  → mapped Problem Situations become problem_frames
+  → pod members stake seats (instance_members)
+  → at 3 commits a project_instance auto-provisions
+```
+
+- **`problem_frames`** — `id, cycle_id FK, pod_id FK, sensemaking_session_id FK NULL,
+  client_sponsor_id FK, title, messy_context text,
+  status enum('open','matched','archived'), created_at`. `pod_id` scopes the frame to the pod
+  that produced it; `sensemaking_session_id` records provenance — which Triangulator session's
+  mapped Problem Situation the frame came from (the prototype renders this as the card's
+  "Mapped in the Triangulator · Pod 4 sensemaking" origin line). Frames render only inside the
+  cycle view for enrolled pod members (the prototype's Cycles panel) — never on public
+  surfaces, never in Discover.
 - **`project_instances`** — `id, problem_frame_id FK,
   status enum('scoping','executing','delivered'), qa_verified boolean default false, created_at`.
 - **`instance_members`** — compound PK `(project_instance_id, participant_id)`, plus
-  `intent enum('builder','dri','mentor'), joined_at`.
+  `intent enum('builder','dri','mentor'), joined_at`. Inserts require the participant to be an
+  **active member of the frame's pod** — enforced in the commit route handler (§2) and by RLS.
 - **`narrative_revisions`** — `id, project_instance_id FK, author_id FK, proposed_text text,
   status enum('pending','approved','rejected'), created_at`. Backs peer-approved case-study
   edits.
 - **`citations`** — `id, participant_id FK, project_instance_id FK, narrative_claim text,
   source_url, domain_verified boolean, created_at`. Backs the profile citation chips.
 
-⚠️ **Highest-risk open question in this document — resolve before writing these migrations.**
-`problem_frames → project_instances → instance_members` overlaps conceptually with the
-in-production Pod Layer (`problem_statements → pods → pod_memberships`) and Project Layer
-(`solution_proposals → projects → project_memberships`). The new tables model a *different
-mechanism* (threshold-triggered staking with immediate auto-ignition) versus the live
-voting-and-registration-window mechanism. Decide explicitly:
+**Frame creation:** `POST /api/pods/[pod_id]/frames`, drawing title/context from a
+`sensemaking_sessions` state's mapped Problem Situation. *Open question: who may create — any
+pod member from their own session, or moderator-curated from the pod's sessions?*
 
-- **(a)** a separate, lighter-weight formation flow coexisting with the formal
-  Cycle→Pod→Project pipeline (an early interest-testing layer that feeds a Pod later), or
-- **(b)** map the new concepts onto existing tables (`problem_frames`≈`problem_statements`,
-  `project_instances`≈`projects`, `instance_members`≈`project_memberships`) to avoid two
-  parallel team-formation systems.
-
-The confirmed sizing bands (§2 below) put Projects at exactly the same tier the existing
-`projects` table models, which strengthens option (b) — but confirm whether committing to a
-`problem_frame` requires prior Pod membership (does staking sit *inside* a Pod, or can any
-cycle-enrolled member commit directly?) before finalizing. Default to (a) only if staking is
-genuinely meant to bypass Pods.
+**Remaining overlap question (narrowed, still needs one decision).** With frames pod-scoped
+and downstream of sensemaking, they no longer touch pod formation
+(`problem_statements → pods` stays exactly as-is). The remaining overlap is with the
+**Project Layer only**: staking-to-ignition is an alternative *project-formation* mechanism to
+the live `solution_proposals → project_votes → projects` voting flow, at the same tier and the
+same team sizes. Decide before migrating: **(a)** keep `project_instances`/`instance_members`
+as separate tables for cycles that use staking, or **(b)** fold them into the existing
+`projects`/`project_memberships` tables with a `formed_via enum('voting','staking')` column
+and a nullable `problem_frame_id` FK. **Recommend (b)** — it avoids two parallel project
+tables feeding the same downstream surfaces (showcase, portfolios, case studies); keep (a)
+only if staking-formed teams genuinely diverge in behavior. Whether a cycle uses voting,
+staking, or both belongs in `cycle_config`.
 
 ---
 
@@ -205,10 +221,11 @@ other names — roadmap W2-006 notes reference `project_min`/`max_projects` and 
 so at least the Project side may already be configured. Check `cycle_config`'s actual columns
 in `SCHEMA.md`/migrations first.
 
-- **Ignition trigger:** `POST /api/frames/[id]/commit` inserts an `instance_members` row, then
-  counts members for that frame. At `count == 3` (Project minimum) the handler auto-provisions
-  the `project_instances` row (`status='scoping'`). The prototype's ignition interstitial
-  (`view-team-ignition`) is the frontend for this moment.
+- **Ignition trigger:** `POST /api/frames/[id]/commit` — caller must be an **active member of
+  the frame's pod** (and enrolled in its cycle); reject otherwise. On success it inserts an
+  `instance_members` row, then counts members for that frame. At `count == 3` (Project minimum)
+  the handler auto-provisions the `project_instances` row (`status='scoping'`). The prototype's
+  ignition interstitial (`view-team-ignition`) is the frontend for this moment.
 - **Capacity limits:** reject inserts at `count >= 5` unless the request carries a Delivery
   Facilitator override, which permits growth to 7 (5 + 2 override seats); reject unconditionally
   beyond 7. Implement in the route handler (the override needs a role check the DB can't express
@@ -336,7 +353,9 @@ new `lib/validations/survey-responses.ts`; accepts session participant **or** an
 **Authenticated:** `GET/PUT /api/sensemaking-sessions/[cycle_id]`,
 `GET /api/surveys/[survey_id]/responses` (moderator/admin review),
 `PUT /api/onboarding/checklist`, `POST /api/profile-updates`,
-`POST /api/frames/[id]/commit`, `POST /api/projects/[id]/revisions/[rev_id]/approve`,
+`GET /api/pods/[pod_id]/frames` + `POST /api/pods/[pod_id]/frames` (pod members — frames are
+pod-scoped, never public), `POST /api/frames/[id]/commit` (frame's pod members only),
+`POST /api/projects/[id]/revisions/[rev_id]/approve`,
 `POST /api/profiles/citations`, plus admin CRUD for metros / resources / events /
 mentor-profiles.
 
@@ -368,16 +387,19 @@ Confirm the head number first (see §1 preamble), then land in this order:
 5. `events` (Luma cache)
 6. `resources` (CMS)
 7. `profile_updates` + RLS
-8. `problem_frames` + `project_instances` + `instance_members` + RLS — **only after §1.10's
-   overlap question is resolved**
+8. `problem_frames` + project-formation tables + RLS — **only after §1.10's remaining
+   decision (separate tables vs. `formed_via` column on the existing `projects` tables)**
 9. `narrative_revisions` + `citations` + RLS — same gate as (8)
 
 ---
 
 ## 10. Open questions (product decisions needed before implementation)
 
-1. **Pod/Project overlap (§1.10)** — separate staking flow vs. mapping onto existing tables.
-   Highest priority; gates migrations 8–9.
+1. **Project-formation storage (§1.10)** — pod scoping and Triangulator provenance are now
+   settled; the remaining decision is separate `project_instances` tables vs. a `formed_via`
+   column on the existing `projects`/`project_memberships` (recommended). Gates migrations 8–9.
+   Related: who creates a frame from a sensemaking session — any pod member, or
+   moderator-curated?
 2. Raw survey response → Triangulator `title+summary` card mapping: direct 1:1, manual
    curation, or AI-assisted? Affects whether `survey_responses` needs a "promoted to pool"
    workflow state.

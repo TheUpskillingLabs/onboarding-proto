@@ -1084,7 +1084,7 @@ button,input,select,textarea { font-family:inherit; }
   <!-- ════════ PROJECT INSTANCE CANVAS (static mockup) ════════ -->
   <div id="view-project-canvas" class="view light s-paper">
     <div class="prof-bar">
-      <button class="icon-btn" onclick="goApp('discover')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></button>
+      <button class="icon-btn" onclick="goApp('cycles')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></button>
       <span class="lbl" style="margin-left:4px;">Project instance</span>
     </div>
     <div class="vscroll">
@@ -1128,10 +1128,7 @@ button,input,select,textarea { font-family:inherit; }
         <div class="container" style="padding-top:40px;padding-bottom:48px;">
           <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Discover</div><h2 class="t-h1">What's happening in the Labs</h2></div></div>
 
-          <div class="section-head" style="margin-top:32px;"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Problem frames · commit to ignite</div><h2 class="t-h2">Pick a problem, stake a seat</h2></div></div>
-          <div class="cards two" id="disc-frames"></div>
-
-          <div class="section-head" style="margin-top:40px;"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Build Cycles · 4 a year</div><h2 class="t-h2">Join a cohort, ship something real</h2></div><span class="see" onclick="goApp('cycles')">View all →</span></div>
+          <div class="section-head" style="margin-top:32px;"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Build Cycles · 4 a year</div><h2 class="t-h2">Join a cohort, ship something real</h2></div><span class="see" onclick="goApp('cycles')">View all →</span></div>
           <div id="disc-cycle"></div>
 
           <div class="section-head" style="margin-top:40px;"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Workshops &amp; events · weekly</div><h2 class="t-h2">Drop into a session</h2></div><span class="see" onclick="goApp('events')">View all →</span></div>
@@ -1247,6 +1244,16 @@ button,input,select,textarea { font-family:inherit; }
           <div class="cards two" style="margin-top:36px;">
             <div class="lcard" style="padding:24px;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;"><span class="live-dot"></span><span class="lbl lbl-teal">Next window</span></div><div class="t-h4" style="margin-bottom:6px;">Pod Registration</div><p class="t-small" style="margin-bottom:16px;">Opens Mar 30 · Weeks 4–5. Join a pod and ship something real.</p><button class="btn btn-teal btn-sm" onclick="startFlow('cycle', ()=>goApp('cycles'))">Join a pod</button></div>
             <div class="lcard" style="padding:24px;"><div class="lbl" style="margin-bottom:14px;">Later window</div><div class="t-h4" style="margin-bottom:6px;">Project Registration</div><p class="t-small" style="margin-bottom:16px;">Opens May 4 · Week 9. Join a project team building toward Showcase.</p><button class="btn btn-ghost btn-sm" disabled>Opens May 4</button></div>
+          </div>
+
+          <!-- Pod problem frames — cycle-specific, pod-scoped. Frames are born from the
+               pod's Triangulator sensemaking (each is a mapped Problem Situation);
+               staking a seat is a pod-member action, never public discovery. -->
+          <div id="cycle-frames-wrap" style="margin-top:44px;">
+            <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;" id="cycle-frames-eyebrow">Pod 4 · Civic AI — problem frames</div><h2 class="t-h2">Frame the problem, stake a seat</h2></div><span class="see" onclick="openTriangulator()">Open the Triangulator →</span></div>
+            <p class="t-body" style="max-width:62ch;margin-bottom:20px;">Frames come out of your pod's sensemaking — each one is a Problem Situation your pod mapped in the Triangulator. Commit as a builder or lead; at 3 commits the frame ignites into a project team.</p>
+            <div id="cycle-frames-note"></div>
+            <div class="cards two" id="cycle-frames"></div>
           </div>
         </div>
       </div>
@@ -1620,14 +1627,17 @@ const MEMBERS=[
   {id:'m5', name:'Sam Whitfield', initials:'SW', headline:'Builder · writer', metro:'Washington, DC', roles:['upskiller'], expertise:['Writing','Policy'], bio:'Policy writer learning to prototype. Words first, then working software.', updates:[{body:'Drafted the case study for our pod’s voting-info project.', at:Date.now()-5*DAY}], projects:[{title:'Voting info cards', tag:'Build Cycle', summary:'Scannable local-election explainers.'}]},
   {id:'m6', name:'Aisha Karim', initials:'AK', headline:'Design mentor · volunteer', metro:'Washington, DC', roles:['mentor','volunteer'], expertise:['Design','Facilitation'], bio:'Service designer. I run the design crits and keep the showcase honest.', updates:[{body:'Design crit #4 done — six projects reviewed, all sharper for it.', at:Date.now()-2*DAY}], projects:[{title:'Design crit series', tag:'Mentor', summary:'Recurring community design reviews.'}]}
 ];
-/* ── Problem frames — the team-formation staking mechanic. A project ignites at
-   FRAME_MIN commits; seats hard-cap at FRAME_MAX with 2 facilitator-override
-   seats above (7 absolute). Production: problem_frames / instance_members. */
+/* ── Problem frames — cycle-specific, POD-scoped team formation. A frame is a
+   Problem Situation the pod mapped in the Triangulator (never hand-authored,
+   never public discovery content). Only pod members stake seats. A project
+   ignites at FRAME_MIN commits; seats hard-cap at FRAME_MAX with 2
+   facilitator-override seats above (7 absolute).
+   Production: problem_frames (pod_id + sensemaking provenance) / instance_members. */
 const FRAME_MIN=3, FRAME_MAX=5;
 const FRAMES=[
-  {id:'f1', title:'Benefits navigation dead-ends', sponsor:'DC Public Library', context:'Residents abandon benefits applications mid-way. Frontline librarians field the fallout daily but the failure points are invisible to the agencies upstream.', committed:[{ref:'m3', intent:'builder'},{ref:'m5', intent:'builder'}]},
-  {id:'f2', title:'First-time voter information gap', sponsor:'League of Women Voters DC', context:'First-time voters can find national coverage everywhere and local ballot information almost nowhere. The gap is worst exactly where votes matter most.', committed:[{ref:'m4', intent:'builder'}]},
-  {id:'f3', title:'Volunteer knowledge walks out the door', sponsor:'Civic Tech DC', context:'Local civic groups run on a few overloaded volunteers. When leadership turns over, everything they knew leaves with them.', committed:[]}
+  {id:'f1', title:'Benefits navigation dead-ends', sponsor:'DC Public Library', pod:'Pod 4 · Civic AI', origin:'Mapped in the Triangulator · Pod 4 sensemaking, Week 3', context:'Residents abandon benefits applications mid-way. Frontline librarians field the fallout daily but the failure points are invisible to the agencies upstream.', committed:[{ref:'m3', intent:'builder'},{ref:'m5', intent:'builder'}]},
+  {id:'f2', title:'First-time voter information gap', sponsor:'League of Women Voters DC', pod:'Pod 4 · Civic AI', origin:'Mapped in the Triangulator · Pod 4 sensemaking, Week 3', context:'First-time voters can find national coverage everywhere and local ballot information almost nowhere. The gap is worst exactly where votes matter most.', committed:[{ref:'m4', intent:'builder'}]},
+  {id:'f3', title:'Volunteer knowledge walks out the door', sponsor:'Civic Tech DC', pod:'Pod 4 · Civic AI', origin:'Mapped in the Triangulator · Pod 4 sensemaking, Week 4', context:'Local civic groups run on a few overloaded volunteers. When leadership turns over, everything they knew leaves with them.', committed:[]}
 ];
 let peopleFilter='all';
 
@@ -1637,7 +1647,7 @@ function mediaHTML(item){ return '<div class="media '+(item.img?'':(item.grad||'
 function fmtEvt(e){ const d=new Date(e.start_at); const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]; let h=d.getHours(); const ap=h>=12?'PM':'AM'; h=h%12||12; return mo+' '+d.getDate()+' · '+h+' '+ap; }
 
 /* ── Discover renderers ── */
-function renderDiscover(){ renderDiscFrames(); renderDiscCycle(); renderDiscEvents(); renderDiscLibrary(); renderDiscPeople(); renderDiscUpdates(); renderDiscLabs(); renderDiscSaved(); }
+function renderDiscover(){ renderDiscCycle(); renderDiscEvents(); renderDiscLibrary(); renderDiscPeople(); renderDiscUpdates(); renderDiscLabs(); renderDiscSaved(); }
 function renderDiscCycle(){
   const el=document.getElementById('disc-cycle'); if(!el) return;
   el.innerHTML='<div class="cycle-banner s-cover grain on-dark">'+ORB
@@ -1705,31 +1715,37 @@ function frameSeatHTML(f){
   }
   return seats.join('');
 }
-function renderDiscFrames(){
-  const c=document.getElementById('disc-frames'); if(!c) return;
+function inPod(){ return !!(userState.signedIn&&userState.completed&&userState.completed.cycle); }
+function renderCycleFrames(){
+  const c=document.getElementById('cycle-frames'); const note=document.getElementById('cycle-frames-note'); if(!c) return;
+  const member=inPod();
+  if(note) note.innerHTML=member?'':'<div class="lcard" style="padding:16px 20px;margin-bottom:20px;background:var(--tint);"><span class="t-small" style="color:var(--teal-deep);font-weight:600;">Staking is for pod members.</span> <span class="t-small">Register for this cycle to join a pod, run the sensemaking together, and stake a seat when the frames emerge.</span> <a class="see" style="display:inline-block;margin-left:6px;" onclick="'+(userState.signedIn?'startFlow(\'cycle\', ()=>goApp(\'cycles\'))':'gateCreateAccount(\'the Civic & Elections Cycle\',event)')+'">'+(userState.signedIn?'Register for the cycle →':'Create an account →')+'</a></div>';
   c.innerHTML=FRAMES.map(f=>{
     const n=f.committed.length; const youIn=f.committed.some(x=>x.ref==='you'); const full=n>=FRAME_MAX;
     return '<div class="card expandable tappable" onclick="toggleExpand(this,event)"><div class="card-body">'
       +'<div class="card-row"><div class="lbl lbl-teal">Problem owner · '+escHTML(f.sponsor)+'</div><span class="card-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>'
       +'<div class="t-h3" style="margin:8px 0 10px;">'+escHTML(f.title)+'</div>'
-      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><div style="display:flex;gap:6px;">'+frameSeatHTML(f)+'</div><span class="lbl" style="margin-left:6px;">'+n+' / '+FRAME_MIN+' min committed</span></div>'
+      +'<p class="t-small" style="color:var(--meta);margin-bottom:10px;">'+escHTML(f.origin)+'</p>'
+      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><div style="display:flex;gap:6px;">'+frameSeatHTML(f)+'</div><span class="lbl" style="margin-left:6px;">'+n+' of '+FRAME_MIN+' to ignite · '+FRAME_MAX+' seats</span></div>'
       +'</div><div class="card-expand"><div class="kv"><span class="k lbl">Situation</span><span class="t-small">'+escHTML(f.context)+'</span></div>'
       +(youIn?'<p class="t-small" style="color:var(--teal-deep);font-weight:600;">You’re committed. The team ignites at '+FRAME_MIN+'.</p>'
         : full?'<p class="t-small" style="color:var(--meta);">Team full ('+FRAME_MAX+'). Seats 6–7 need a facilitator override.</p>'
-        : '<div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn btn-teal" style="flex:1;" onclick="commitToFrame(\''+f.id+'\',\'builder\',event)">Commit as builder</button><button class="btn btn-ghost-teal" style="flex:1;" onclick="commitToFrame(\''+f.id+'\',\'dri\',event)">Commit as lead</button></div>')
+        : member?'<div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn btn-teal" style="flex:1;" onclick="commitToFrame(\''+f.id+'\',\'builder\',event)">Commit as builder</button><button class="btn btn-ghost-teal" style="flex:1;" onclick="commitToFrame(\''+f.id+'\',\'dri\',event)">Commit as lead</button></div>'
+        : '<p class="t-small" style="color:var(--meta);">Pod members can stake a seat once they’ve been through the sensemaking.</p>')
       +'</div></div>';
   }).join('');
 }
 function commitToFrame(id,intent,e){
   if(e) e.stopPropagation();
   if(!userState.signedIn){ gateCreateAccount('a problem frame team', e); return; }
+  if(!inPod()){ startFlow('cycle', ()=>goApp('cycles')); return; }
   const f=FRAMES.find(x=>x.id===id); if(!f||f.committed.some(x=>x.ref==='you')||f.committed.length>=FRAME_MAX) return;
   f.committed.push({ref:'you', intent:intent});
   if(f.committed.length>=FRAME_MIN){
     ignitedFrame=f;
-    document.getElementById('ignition-copy').textContent=f.committed.length+' builders committed — “'+f.title+'” just became a project.';
+    document.getElementById('ignition-copy').textContent=f.committed.length+' seats filled — “'+f.title+'” just became a project.';
     showView('team-ignition');
-  } else { renderDiscFrames(); }
+  } else { renderCycleFrames(); }
 }
 function openProjectCanvas(){
   const f=ignitedFrame||FRAMES[0];
@@ -1888,6 +1904,7 @@ function showAppView(id){
   const panel=document.getElementById('panel-'+id); if(panel) panel.classList.add('active');
   if(id==='bookmarks') renderBookmarks();
   if(id==='discover') renderDiscover();
+  if(id==='cycles') renderCycleFrames();
   const k=id==='event'?'events':id;
   ['nav-','tab-'].forEach(pre=>{ const e=document.getElementById(pre+k); if(e) e.classList.add('active'); });
   if(!document.getElementById('app-shell').classList.contains('active')){ document.querySelectorAll('#screens > .view').forEach(v=>v.classList.remove('active')); document.getElementById('app-shell').classList.add('active'); }

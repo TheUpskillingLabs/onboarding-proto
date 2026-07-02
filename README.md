@@ -16,11 +16,14 @@ The prototype covers the full member journey:
 - **The Triangulator** — a full sensemaking instrument (sort observations → triangulate signals →
   map the problem situation), embedded via iframe and pre-loaded with the survey pool
 - **Signed-in app** — three nav destinations:
-  - **Discover** — problem frames (commit-to-ignite team staking), cycle, events, learning
-    library, community directory (mentor-filterable), community updates, labs
+  - **Discover** — cycle, events, learning library, community directory (mentor-filterable),
+    community updates, labs
   - **Dashboard** — your identity header, update composer, setup checklist, dismissible "Up next"
   - **Profile** — public portfolio with trust badges, sourced citation chips, an updates feed,
     and peer-approved case-study editing
+- **Pod problem frames** — on the Cycles panel: frames born from your pod's Triangulator
+  sensemaking; pod members commit as builder or lead, and at 3 commits the frame ignites into
+  a project team (5 seats + 2 facilitator-override seats)
 
 Mobile-first and fully responsive: bottom tab bar and full-screen steps on phones, top nav and
 multi-column grids on desktop.

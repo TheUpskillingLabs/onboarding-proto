@@ -98,11 +98,18 @@ its own **panels** (`.panel`), a sticky dark top nav, and a mobile bottom tab ba
 ### Signed-in navigation: Discover · Dashboard · Profile
 
 Top nav and bottom tab bar both carry exactly three destinations. **`panel-discover`** is the
-single browse destination — problem frames (staking), cycle banner, events, library, community
-directory (mentor-filterable chips), community updates, labs, saved. Every section renders from
-JS data arrays (`FRAMES`, `EVENTS`, `RESOURCES`, `MEMBERS`, `LABS`) so production swaps the data
-source, not markup. Legacy panels (`panel-cycles/events/event/labs/resources/bookmarks`) are
-retained as "View all →" drill-ins only — no nav entries.
+single browse destination — cycle banner, events, library, community directory
+(mentor-filterable chips), community updates, labs, saved. Every section renders from JS data
+arrays (`EVENTS`, `RESOURCES`, `MEMBERS`, `LABS`) so production swaps the data source, not
+markup. Legacy panels (`panel-cycles/events/event/labs/resources/bookmarks`) are retained as
+"View all →" drill-ins only — no nav entries.
+
+**Problem frames are NOT Discover content.** They are cycle-specific, pod-scoped, and born
+from the pod's Triangulator sensemaking (each frame is a mapped Problem Situation). They live
+on `panel-cycles` (`#cycle-frames`, rendered by `renderCycleFrames()`), show a provenance line
+("Mapped in the Triangulator · Pod 4 sensemaking"), and staking is gated on cycle membership
+(`inPod()`): non-members see the frames with a "register for the cycle" note instead of
+commit buttons.
 
 **`panel-dashboard`** is the admin view of your own presence: condensed identity header
 (avatar + greeting + "View your full profile"), the **update composer** (posts to your profile's
@@ -119,9 +126,11 @@ Triangulator lead that list (prominent but skippable, never a gate).
   straight into the flow, no account needed) → `openTriangulator()` → the iframe ingests the
   pool on boot and live via the `storage` event. **Prototype limit (by design):** single-browser
   aggregation only — real cross-user pooling is the OLOS `survey_responses` API.
-- **Staking → ignition:** commit to a problem frame as builder or lead (buttons, not swipe);
-  at 3 commits the frame ignites → `view-team-ignition` → `view-project-canvas`. Caps: 3 min,
-  5 max, +2 facilitator-override seats (7 absolute).
+- **Staking → ignition (pod members only):** on the Cycles panel, commit to one of your pod's
+  problem frames as builder or lead (buttons, not swipe); at 3 commits the frame ignites →
+  `view-team-ignition` → `view-project-canvas` (back arrow returns to Cycles). Caps: 3 min,
+  5 max, +2 facilitator-override seats (7 absolute). Frames are produced by the pod's
+  Triangulator sensemaking — never hand-authored, never public.
 - **Directory:** Discover → member card → `showMemberProfile(id)` renders that member into
   `view-profile` in visitor mode ("Back to Discover" bar). Owner state is fully restored by
   `renderProfileView()` on next open.
@@ -151,7 +160,8 @@ MEMBERS / FRAMES          // mock directory + problem frames (staking)
 SURVEY_SEED / SURVEY_POOL_KEY  // Civic & Elections seed + 'olos.surveyPool.v1'
 
 renderDiscover()          // all Discover sections (called by showAppView('discover'))
-commitToFrame(id,intent,e) / openProjectCanvas()   // staking + ignition
+renderCycleFrames()       // pod problem frames on panel-cycles (called by showAppView('cycles'))
+inPod() / commitToFrame(id,intent,e) / openProjectCanvas()   // membership gate + staking + ignition
 showMemberProfile(id)     // directory → visitor-mode profile
 postUpdate() / renderProfUpdates(list)             // social updates
 seedTriangulatorPool() / appendSurveyObservation() // shared survey pool
