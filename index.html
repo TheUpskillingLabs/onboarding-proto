@@ -307,8 +307,8 @@ button,input,select,textarea { font-family:inherit; }
   .tabbar { display:none; }
   #app-scroll { padding-bottom:0; }
 
-  .cards { grid-template-columns:repeat(3,1fr); gap:24px; }
-  .cards.two { grid-template-columns:repeat(2,1fr); }
+  .cards { grid-template-columns:repeat(2,1fr); gap:24px; }
+  .cards.two { grid-template-columns:1fr; }
 
   /* dashboard two-column */
   .dash { display:grid; grid-template-columns:1fr 340px; gap:48px; align-items:start; }
@@ -320,10 +320,6 @@ button,input,select,textarea { font-family:inherit; }
   .detail-aside { display:block; position:sticky; top:96px; }
   .detail-bottom { display:none; }
 }
-@media (min-width:700px) and (max-width:1023px) {
-  .cards { grid-template-columns:repeat(2,1fr); }
-}
-
 /* ════════ v8 — public browse, labs, profile, open-source ════════ */
 
 /* public sticky nav (over landing/about) */
@@ -492,13 +488,13 @@ button,input,select,textarea { font-family:inherit; }
 }
 
 /* dense experiences grid (workshops / events) — many columns, compact tiles */
-.cards.dense { grid-template-columns:repeat(2,1fr); gap:14px; align-items:start; }
+.cards.dense { grid-template-columns:1fr; gap:14px; align-items:start; }
 .cards.dense .card-body { padding:12px 14px; }
 .cards.dense .media { aspect-ratio:4/3; }
 .cards.dense .t-h4 { font-size:15px; line-height:20px; }
 .cards.dense .heart { width:32px; height:32px; }
-@media (min-width:700px) { .cards.dense { grid-template-columns:repeat(3,1fr); } }
-@media (min-width:1024px) { .cards.dense { grid-template-columns:repeat(7,1fr); gap:20px; } .cards.dense > .card:nth-child(n+8) { display:none; } }
+@media (min-width:700px) { .cards.dense { grid-template-columns:repeat(2,1fr); } }
+@media (min-width:1024px) { .cards.dense { grid-template-columns:repeat(6,1fr); gap:20px; } .cards.dense > .card:nth-child(n+7) { display:none; } }
 /* compact expand inside dense tiles: stacked key/value, tighter padding */
 .cards.dense .card-expand { padding:0 14px; }
 .cards.dense .card.expanded .card-expand { padding:4px 14px 14px; }
@@ -516,18 +512,21 @@ button,input,select,textarea { font-family:inherit; }
 /* One row that always ends in the CTA card: story cards beyond the breakpoint's
    column count are hidden via nth-child; .story-cta is a different class so the
    hiding never touches it and it always holds the rightmost cell. The media
-   blocks below OVERRIDE each other in source order — keep them ascending. */
-.story-row { display:grid; gap:16px; grid-template-columns:repeat(2,1fr); align-items:stretch; }
-.story-card { display:flex; }
-.story-card .card-body { display:flex; gap:16px; align-items:stretch; width:100%; }
-.story-media { flex:0 0 96px; border-radius:var(--r); overflow:hidden; position:relative; min-height:140px; }
+   blocks below OVERRIDE each other in source order — keep them ascending.
+   Below 700px the grid drops to a single column: a side-by-side image+text
+   card can't fit two-up on a phone, so the lone story card and the CTA stack
+   instead of sharing a row — still exactly one story below 1024px. */
+.story-row { display:grid; gap:16px; grid-template-columns:1fr; align-items:stretch; }
+.story-card { display:flex; align-items:stretch; }
+.story-media { flex:0 0 110px; position:relative; overflow:hidden; }
 .story-media::after { content:""; position:absolute; inset:0; background-image:var(--grain); mix-blend-mode:overlay; opacity:.45; pointer-events:none; }
 .story-media .m-orb { position:absolute; left:10%; top:16%; width:80%; height:80%; opacity:.95; }
+.story-card .card-body { display:flex; flex-direction:column; flex:1; min-width:0; }
 .story-quote { display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical; overflow:hidden; }
 .story-row > .story-card:nth-child(n+2) { display:none; }
-@media (min-width:700px)  { .story-row { grid-template-columns:repeat(3,1fr); } .story-row > .story-card:nth-child(-n+2) { display:flex; } .story-row > .story-card:nth-child(n+3) { display:none; } }
-@media (min-width:1024px) { .story-row { grid-template-columns:repeat(4,1fr); } .story-row > .story-card:nth-child(-n+3) { display:flex; } .story-row > .story-card:nth-child(n+4) { display:none; } }
-@media (min-width:1440px) { .story-row { grid-template-columns:repeat(5,1fr); } .story-row > .story-card:nth-child(-n+4) { display:flex; } .story-row > .story-card:nth-child(n+5) { display:none; } }
+@media (min-width:700px)  { .story-row { grid-template-columns:repeat(2,1fr); } }
+@media (min-width:1024px) { .story-row { grid-template-columns:repeat(3,1fr); } .story-row > .story-card:nth-child(-n+2) { display:flex; } .story-row > .story-card:nth-child(n+3) { display:none; } }
+@media (min-width:1440px) { .story-row { grid-template-columns:repeat(4,1fr); } .story-row > .story-card:nth-child(-n+3) { display:flex; } .story-row > .story-card:nth-child(n+4) { display:none; } }
 </style>
 </head>
 <body>
@@ -1736,14 +1735,14 @@ const STORIES=[
 ];
 function renderLandingStories(){
   const row=document.getElementById('story-row'); if(!row) return;
-  row.innerHTML=STORIES.map(st=>'<div class="card tappable story-card" onclick="location.href=\'stories.html#s-'+st.id+'\'"><div class="card-body">'
+  row.innerHTML=STORIES.map(st=>'<div class="card tappable story-card" onclick="location.href=\'stories.html#s-'+st.id+'\'">'
     +'<div class="story-media '+(st.grad||'m-teal')+'" aria-hidden="true">'+ORB+'</div>'
-    +'<div style="display:flex;flex-direction:column;min-width:0;flex:1;">'
+    +'<div class="card-body">'
     +'<p class="t-body story-quote" style="margin-bottom:14px;">\u201c'+escHTML(st.quote)+'\u201d</p>'
     +'<div class="t-h4" style="margin-top:auto;">'+escHTML(st.name)+'</div>'
     +'<div class="lbl" style="margin-top:4px;">'+escHTML(st.tag)+'</div>'
     +'<a class="see" style="display:inline-block;margin-top:12px;" href="stories.html#s-'+st.id+'" onclick="event.stopPropagation()">Read more \u2192</a>'
-    +'</div></div></div>').join('')
+    +'</div></div>').join('')
     +'<div class="card tappable story-cta" onclick="location.href=\'stories.html\'">'
     +'<div class="card-body" style="display:flex;flex-direction:column;height:100%;">'
     +'<div class="lbl lbl-teal" style="margin-bottom:10px;">Your turn</div>'
