@@ -449,6 +449,14 @@ button,input,select,textarea { font-family:inherit; }
   .pubnav .pub-cta { display:flex; }
 }
 
+/* avatar menu (View as) */
+.avatar-wrap { position:relative; }
+#avatar-menu { position:absolute; top:calc(100% + 10px); right:0; min-width:230px; background:var(--white); border:1px solid var(--rule); border-radius:var(--r); box-shadow:var(--shadow-lg); padding:8px; z-index:210; color:var(--ink); }
+.menu-item { display:flex; align-items:center; gap:10px; width:100%; text-align:left; background:none; border:none; border-radius:var(--r); padding:11px 12px; font-size:14px; font-weight:500; color:var(--ink); cursor:pointer; }
+.menu-item:hover, .menu-item:focus-visible { background:rgba(0,148,160,.08); outline:none; }
+.menu-item .dot { width:16px; height:16px; border-radius:50%; border:2px solid var(--meta-soft); flex-shrink:0; }
+.menu-item .dot.on { border-color:var(--teal); background:radial-gradient(circle at center, var(--teal) 0 4px, transparent 5px); }
+.menu-rule { height:1px; background:var(--rule); margin:6px 4px; }
 /* dark nav — the logo only ever sits on dark navy */
 .pubnav { position:fixed; top:0; left:0; right:0; z-index:60; transition:transform .35s ease, opacity .35s ease; }
 .topnav { background:var(--ink); border-bottom:1px solid rgba(255,255,255,.08); }
@@ -1077,7 +1085,19 @@ button,input,select,textarea { font-family:inherit; }
           <a class="nav-link" id="nav-dashboard" onclick="goApp('dashboard')">Dashboard</a>
           <a class="nav-link" id="nav-profile" onclick="showProfile()">Profile</a>
         </nav>
-        <div class="avatar appbar-avatar" id="header-avatar" onclick="showProfile()" title="Your profile" style="margin-left:auto;">AR</div>
+        <div class="avatar-wrap" style="margin-left:auto;">
+          <div class="avatar appbar-avatar" id="header-avatar" onclick="toggleAvatarMenu(event)" title="Account menu" role="button" tabindex="0" aria-haspopup="menu" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAvatarMenu(event)}">AR</div>
+          <div id="avatar-menu" role="menu" aria-label="Account menu" style="display:none;">
+            <button class="menu-item" role="menuitem" onclick="closeAvatarMenu();showProfile()">Your profile</button>
+            <div class="menu-rule"></div>
+            <div class="lbl" style="padding:8px 12px 4px;">View as</div>
+            <button class="menu-item" role="menuitemradio" aria-checked="true" onclick="viewAs('upskiller')"><span class="dot on"></span>Upskiller</button>
+            <button class="menu-item" role="menuitemradio" aria-checked="false" onclick="viewAs('poderator')"><span class="dot"></span>Poderator</button>
+            <button class="menu-item" role="menuitemradio" aria-checked="false" onclick="viewAs('admin')"><span class="dot"></span>Admin</button>
+            <div class="menu-rule"></div>
+            <button class="menu-item" role="menuitem" onclick="closeAvatarMenu();setViewAsRole('upskiller');logout()">Sign out</button>
+          </div>
+        </div>
       </div>
     </header>
 

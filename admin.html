@@ -55,6 +55,14 @@ button,input,select,textarea { font-family:inherit; }
 .status.risk::before { background:var(--red); box-shadow:0 0 0 3px rgba(225,29,42,.14); }
 .avatar { width:38px; height:38px; border-radius:50%; background:var(--teal); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:600; font-size:13px; cursor:pointer; flex-shrink:0; }
 
+/* avatar menu (View as) */
+.avatar-wrap { position:relative; }
+#avatar-menu { position:absolute; top:calc(100% + 10px); right:0; min-width:230px; background:var(--white); border:1px solid var(--rule); border-radius:var(--r); box-shadow:var(--shadow-lg); padding:8px; z-index:210; color:var(--ink); }
+.menu-item { display:flex; align-items:center; gap:10px; width:100%; text-align:left; background:none; border:none; border-radius:var(--r); padding:11px 12px; font-size:14px; font-weight:500; color:var(--ink); cursor:pointer; }
+.menu-item:hover, .menu-item:focus-visible { background:rgba(0,148,160,.08); outline:none; }
+.menu-item .dot { width:16px; height:16px; border-radius:50%; border:2px solid var(--meta-soft); flex-shrink:0; }
+.menu-item .dot.on { border-color:var(--teal); background:radial-gradient(circle at center, var(--teal) 0 4px, transparent 5px); }
+.menu-rule { height:1px; background:var(--rule); margin:6px 4px; }
 /* dark admin nav — the logo only ever sits on dark navy */
 .topnav { position:sticky; top:0; z-index:50; background:var(--ink); border-bottom:1px solid rgba(255,255,255,.08); flex-shrink:0; }
 .topnav-inner { max-width:var(--maxw); margin:0 auto; padding:12px var(--pad); display:flex; align-items:center; gap:16px; color:var(--od1); }
@@ -113,7 +121,19 @@ button,input,select,textarea { font-family:inherit; }
     <span class="persona-lbl">Admin</span>
     <div style="margin-left:auto;display:flex;align-items:center;gap:14px;">
       <a class="btn btn-ghost btn-sm" href="index.html" id="exit-member">Exit to member view</a>
-      <div class="avatar" id="header-avatar" title="Your profile">AR</div>
+      <div class="avatar-wrap">
+        <div class="avatar" id="header-avatar" onclick="toggleAvatarMenu(event)" title="Account menu" role="button" tabindex="0" aria-haspopup="menu" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAvatarMenu(event)}">AR</div>
+        <div id="avatar-menu" role="menu" aria-label="Account menu" style="display:none;">
+          <button class="menu-item" role="menuitem" onclick="closeAvatarMenu();location.href='index.html'">Your profile</button>
+          <div class="menu-rule"></div>
+          <div class="lbl" style="padding:8px 12px 4px;">View as</div>
+          <button class="menu-item" role="menuitemradio" aria-checked="false" onclick="viewAs('upskiller')"><span class="dot"></span>Upskiller</button>
+          <button class="menu-item" role="menuitemradio" aria-checked="false" onclick="viewAs('poderator')"><span class="dot"></span>Poderator</button>
+          <button class="menu-item" role="menuitemradio" aria-checked="true" onclick="viewAs('admin')"><span class="dot on"></span>Admin</button>
+          <div class="menu-rule"></div>
+          <button class="menu-item" role="menuitem" onclick="setViewAsRole('upskiller');location.href='index.html'">Sign out</button>
+        </div>
+      </div>
     </div>
   </div>
 </header>
@@ -233,6 +253,9 @@ button,input,select,textarea { font-family:inherit; }
 
 <script src="shared.js"></script>
 <script>
+/* Soft-redirect guard (click-through, not auth): this lens is chosen from the
+   avatar menu — plain members land back on the member app. */
+if(getViewAsRole()==='upskiller') location.replace('index.html');
 /* ── Admin mock data — lives in this file (established per-file duplication
    pattern). Only olos.cycleState.v1 + olos.viewAsRole.v1 cross file boundaries. ── */
 const CYCLE_STATE_KEY='olos.cycleState.v1';

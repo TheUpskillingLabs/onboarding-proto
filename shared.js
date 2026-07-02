@@ -19,3 +19,33 @@ document.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ')&&e.ta
 const VIEW_AS_KEY='olos.viewAsRole.v1';
 function getViewAsRole(){ try{ return localStorage.getItem(VIEW_AS_KEY)||'upskiller'; }catch(e){ return 'upskiller'; } }
 function setViewAsRole(role){ try{ localStorage.setItem(VIEW_AS_KEY,role); }catch(e){} }
+
+/* ── Avatar menu — shared wiring; each file supplies its own #avatar-menu markup
+   with the current lens's dot pre-selected. ── */
+function toggleAvatarMenu(e){
+  if(e) e.stopPropagation();
+  const m=document.getElementById('avatar-menu'); if(!m) return;
+  if(m.style.display!=='none'){ closeAvatarMenu(); return; }
+  m.style.display='block';
+  const av=document.getElementById('header-avatar'); if(av) av.setAttribute('aria-expanded','true');
+  const first=m.querySelector('.menu-item'); if(first) first.focus();
+}
+function closeAvatarMenu(){
+  const m=document.getElementById('avatar-menu'); if(!m||m.style.display==='none') return;
+  m.style.display='none';
+  const av=document.getElementById('header-avatar'); if(av) av.setAttribute('aria-expanded','false');
+}
+document.addEventListener('click', e=>{ const m=document.getElementById('avatar-menu'); if(m&&m.style.display!=='none'&&!(e.target.closest&&e.target.closest('.avatar-wrap'))) closeAvatarMenu(); });
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape'){ closeAvatarMenu(); return; }
+  const m=document.getElementById('avatar-menu'); if(!m||m.style.display==='none') return;
+  if(e.key==='ArrowDown'||e.key==='ArrowUp'){ e.preventDefault(); const items=[...m.querySelectorAll('.menu-item')]; const i=items.indexOf(document.activeElement); const n=e.key==='ArrowDown'?(i+1)%items.length:(i-1+items.length)%items.length; items[n].focus(); }
+});
+/* Choosing a lens navigates to that persona's file (no-op if already there). */
+function viewAs(role){
+  setViewAsRole(role); closeAvatarMenu();
+  const target=role==='admin'?'admin.html':role==='poderator'?'moderator.html':'index.html';
+  // Static hosts may serve clean URLs (/admin for admin.html) — compare stems.
+  const stem=p=>(p.split('/').pop()||'index').replace(/\.html$/,'');
+  if(stem(location.pathname)!==stem(target)) location.href=target;
+}
