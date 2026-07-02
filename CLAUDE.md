@@ -239,10 +239,11 @@ Journal**, then the demoted public composer, then dismissible "Up next" cards.
   button on directory cards + "Recognize someone this week →" under the journal card →
   `FLOWS('nominate')` (nominee preloaded from the card; a name step appears via `step.when`
   when entered from the journal) → `userState.nominations[]` → stub confirmation.
-- **Feedback (every screen, signed in or out):** the fixed circular launcher (`#fb-launcher`,
-  a genuine-circle exception; offset above the mobile tabbar in index.html) opens `#fb-modal` —
+- **Feedback (signed-in nav bar only):** a "Send feedback" row in `#avatar-menu`, right above
+  Sign out (`index.html`, `admin.html`, `moderator.html`) → `openFeedback()` opens `#fb-modal` —
   Bug/Idea/Confusing/Love-it chips + textarea → `FEEDBACK_LOG` entries carry
-  `{category, body, at, screen}`. Mirrored on both persona pages and `stories.html`.
+  `{category, body, at, screen}`. Not present on public pages (landing/about, `stories.html`) —
+  those have no signed-in nav bar to hold it.
 - **Upskiller Spotlights:** the landing row's cards and CTA deep-link into `stories.html`
   (public, no auth). `SPOTLIGHTS` (full set) renders a filterable grid (All/Builders/Mentors/
   Career changers); cards expand in place; `#s-{id}` hashes auto-expand; "Share your story"
