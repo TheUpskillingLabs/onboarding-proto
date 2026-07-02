@@ -95,8 +95,8 @@ its own **panels** (`.panel`), a sticky dark top nav, and a mobile bottom tab ba
 | `view-stub` | Generic "you're all set" |
 | `view-survey-share` | Post-survey share screen (copy link; `?survey=` deep-links back into the flow) |
 | `view-triangulator` | Slim chrome + same-origin `<iframe src="triangulator.html">` |
-| `view-team-ignition` | Full-screen "Team initialized" interstitial (staking threshold reached) |
-| `view-project-canvas` | Project instance mockup — 5-seat roster + 2 locked facilitator-override seats + case-study pending-approval UI |
+| `view-team-ignition` | Full-screen "Team initialized" interstitial (a project team reaches `projectMin` registrations) |
+| `view-project-canvas` | Project instance mockup — roster from `CYCLE_PROJECTS[].members` (filled + open seats to `projectMax`) + case-study pending-approval UI |
 | `app-shell` | Signed-in app — includes `panel-profile` (the public portfolio: trust badges, citation chips, updates feed, testimonials, case-study peer-approval) |
 
 ### Signed-in navigation: Discover · Dashboard · Profile
@@ -111,15 +111,21 @@ arrays (`EVENTS`, `RESOURCES`, `MEMBERS`, `LABS`) so production swaps the data s
 markup. Legacy panels (`panel-cycles/events/event/labs/resources/bookmarks`) are retained as
 "View all →" drill-ins only — no nav entries.
 
-**Two-tier formation (institutional model) — neither tier is Discover content.** Both live on
-`panel-cycles`, cycle-scoped:
+**Formation (mirrors OLOS's real pipeline) — never Discover content.** All on `panel-cycles`,
+cycle-scoped, phase-driven from `olos.cycleState.v1` (`CYCLE.formationPhase`, read at boot +
+via the `storage` event; admin.html's Testing Controls step it):
 - **Problem Situations** (`SITUATIONS`, `renderCycleSituations()`, Month 1 · Problem Sprint):
-  communities of *inquiry*, mapped in the Triangulator; pods form/adopt around these. Cards
-  show the Triangulator provenance line and an adopted-by pod pill — no project staking.
-- **Project Proposals** (`PROPOSALS`, `renderCycleProposals()`, Month 2 · Hackathon):
-  communities of *action* — each pairs the situation's Problem Owner with a new **frame** +
-  intervention + metrics + evidence. Staking (3 min · 5 max · +2 override) happens HERE,
-  gated on cycle membership (`inPod()`), always through the `#commit-confirm` sheet.
+  read-only history — the problem statements this cycle voted in, mapped in the Triangulator
+  ("Voting closed" badge; no actions).
+- **Solution Proposals → Projects** (`SOLUTION_PROPOSALS` → `CYCLE_PROJECTS`,
+  `renderCycleFormation()` dispatching per phase): **submission** (one proposal per member,
+  UPSERT via `FLOWS('solutionProposal')`, edit re-enters pre-filled) → **voting**
+  (`renderSolutionBallot()`: budget ballot — submitters 5 / others 3 votes, threshold 5 to
+  form; ballot locks through `#ballot-confirm`) → **tallied** (`tallyAndFormProjects()` +
+  deterministic `generateProjectName()` — the "✨ naming" beat; OLOS does this with an LLM) →
+  **registration** (`renderProjectRegistration()`: self-serve `registerForProject()`, one
+  project per member, teams real at `projectMin` 3, cap `projectMax` 5 — reaching min fires
+  the ignition interstitial). Gating helpers: `inCycle()` (membership) and `inProject()`.
 
 **The cycle's public rhythm is the six anchor events** (Kickoff Summit, Meet the Pods,
 Hackathon, Meet the Projects, Showcase Summit) — they lead the `EVENTS` array (`anchor:true`,
@@ -142,11 +148,11 @@ Journal**, then the demoted public composer, then dismissible "Up next" cards.
   badges (`.badge-locked`, dashed, with how-to-earn tooltips); established mock members show
   the earned pills. Citation chips anchor inline after the claims they substantiate
   (`bioWithCitations`), falling back to end-of-bio for custom text.
-- **Post-ignition continuity:** ignition sets `frame.status='matched'`; the frame card flips
-  to "Team formed → Open the project canvas", a non-dismissible "Your project" card pins
-  first in Dashboard "Up next", and the ignition interstitial has a "Later — back to your
-  cycle" escape. Committing always passes through the `#commit-confirm` sheet (builder vs
-  lead expectations) — never commit directly.
+- **Post-ignition continuity:** when your registration tips a team past `projectMin`, the
+  ignition interstitial fires (with a "Later — back to your cycle" escape), the team card
+  flips to "Open the project canvas", and a non-dismissible "Your project" card pins first
+  in Dashboard "Up next". Casting a ballot always passes through the `#ballot-confirm`
+  sheet (ballots lock once cast) — never mutate votes directly.
 - **Concept before pool:** `triangulator.html`'s `pickInitialScreen()` routes a pre-seeded
   first-timer to the concept screen (the method needs a named concept for evidence to push
   against); the pool waits behind it. Mobile (<700px) gets a one-time "canvas works best on
@@ -168,10 +174,11 @@ Journal**, then the demoted public composer, then dismissible "Up next" cards.
   straight into the flow, no account needed) → `openTriangulator()` → the iframe ingests the
   pool on boot and live via the `storage` event. **Prototype limit (by design):** single-browser
   aggregation only — real cross-user pooling is the OLOS `survey_responses` API.
-- **Staking → ignition (pod members only):** on the Cycles panel, commit to a project
-  *proposal* as builder or lead (buttons, not swipe); at 3 commits it ignites →
-  `view-team-ignition` → `view-project-canvas` (canvas shows frame/intervention/metrics/
-  evidence + a "Request a mentor" JIT-support block). Caps: 3 min, 5 max, +2 override.
+- **Formation (cycle members only):** submit one solution proposal (flow UPSERT) → budget-
+  vote on the ballot (locks on cast) → admin tallies (winners named, become `CYCLE_PROJECTS`)
+  → self-register for exactly one team; at `projectMin` (3) registrations the team ignites →
+  `view-team-ignition` → `view-project-canvas` (frame/intervention/metrics/evidence + a
+  "Request a mentor" JIT-support block). Caps: 3 min · 5 max per team, `maxProjects` 4.
 - **Practice Journal (replaces the Pulse):** `#journal-card` on the dashboard — phase-evolving
   prompt (`JOURNAL_PROMPTS` keyed by `CYCLE.phase`), visibility Just me / My pod, optional
   "also post publicly" (a second, explicit write to `userState.updates`). Entries are never
@@ -221,12 +228,16 @@ startFlow(name, backFn)  renderFlowStep()  flowAdvance()  renderFlowInput(step)
 ```js
 userState                 // name, initials, fullName, roles, completed{}, saved[], updates[], lab
 EVENTS / RESOURCES        // mock data shaped like Luma API / OLOS resources CMS responses
-MEMBERS / FRAMES          // mock directory + problem frames (staking)
+MEMBERS                   // mock directory
+CYCLE_CONFIG / SOLUTION_PROPOSALS / CYCLE_PROJECTS  // formation data (submit → vote → tally → register)
 SURVEY_SEED / SURVEY_POOL_KEY  // Civic & Elections seed + 'olos.surveyPool.v1'
 
 renderDiscover()          // all Discover sections (called by showAppView('discover'))
-renderCycleSituations() / renderCycleProposals()   // two formation tiers on panel-cycles
-inPod() / commitToProposal(id,intent,e) / confirmCommit() / openProjectCanvas(id)  // gate + confirm sheet + staking + ignition
+renderCycleSituations() / renderCycleFormation()   // read-only situations + phase-dispatched formation
+renderSolutionBallot() / voteStep() / confirmBallot()  // budget ballot (locks on cast)
+tallyAndFormProjects() / generateProjectName()     // tally + the deterministic naming beat
+renderProjectRegistration() / registerForProject(id) / openProjectCanvas(id)  // self-serve teams + ignition at min
+inCycle() / inProject() / applyCycleState()        // gates + olos.cycleState.v1 (boot + storage event)
 renderJournal() / saveJournalEntry()               // Practice Journal (phase-evolving prompts)
 openRsvp(ctx,e) / submitRsvp()                     // email-only public event RSVP
 toggleFollow(id,e) / isFollowing(id)               // follow system (updates feed filter payoff)
@@ -246,8 +257,9 @@ renderTodos() / dismissTodo(id)                    // dismissible "Up next"
 ```
 
 The prototype is otherwise no-persistence by design; `olos.surveyPool.v1` is the **only**
-localStorage key `index.html` writes (it exists to hand data to the iframe). `triangulator.html`
-keeps its own `olos.sensemaking.v2` state key.
+localStorage key `index.html` writes (it exists to hand data to the iframe); it also *reads*
+`olos.cycleState.v1` (`{formationPhase, projects?}`, written by admin.html) at boot and via
+the `storage` event. `triangulator.html` keeps its own `olos.sensemaking.v2` state key.
 
 ---
 

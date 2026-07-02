@@ -1021,7 +1021,7 @@ button,input,select,textarea { font-family:inherit; }
       <div class="container" style="max-width:520px;text-align:center;padding:48px 24px;">
         <div class="lbl lbl-teal" style="margin-bottom:18px;">Team initialized</div>
         <h1 class="t-display" style="margin-bottom:16px;">You're in. The team is real.</h1>
-        <p class="t-lede" id="ignition-copy" style="margin-bottom:36px;">Three builders committed — this problem frame just became a project.</p>
+        <p class="t-lede" id="ignition-copy" style="margin-bottom:36px;">Enough builders registered — this proposal just became a project.</p>
         <button class="btn btn-red btn-lg btn-block" onclick="openProjectCanvas()">Open the project canvas →</button>
         <button class="btn-link" style="color:var(--od2);margin-top:16px;" onclick="goApp('cycles')">Later — back to your cycle</button>
       </div>
@@ -1038,6 +1038,7 @@ button,input,select,textarea { font-family:inherit; }
       <div class="container" style="max-width:920px;padding-top:32px;padding-bottom:48px;">
         <div class="lbl lbl-teal" style="margin-bottom:8px;">Scoping · from &ldquo;<span id="pc-situation">the problem situation</span>&rdquo;</div>
         <h1 class="t-h1" id="pc-title" style="margin-bottom:8px;">New project</h1>
+        <div style="margin-bottom:10px;"><span class="status active" id="pc-teamname"></span></div>
         <p class="t-lede" id="pc-frame" style="max-width:60ch;margin-bottom:24px;"></p>
         <div style="margin-bottom:36px;">
           <div style="display:flex;gap:16px;padding:12px 0;border-bottom:1px solid var(--rule);"><span class="lbl" style="width:110px;flex-shrink:0;padding-top:2px;">Intervention</span><span class="t-body" style="flex:1;" id="pc-intervention"></span></div>
@@ -1046,7 +1047,7 @@ button,input,select,textarea { font-family:inherit; }
           <div style="display:flex;gap:16px;padding:12px 0;"><span class="lbl" style="width:110px;flex-shrink:0;padding-top:2px;">Owner</span><span class="t-body" style="flex:1;" id="pc-owner"></span></div>
         </div>
 
-        <div class="section-head" style="padding-bottom:12px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Team roster</div><h2 class="t-h3">3–5 builders · 2 facilitator-override seats</h2></div></div>
+        <div class="section-head" style="padding-bottom:12px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Team roster</div><h2 class="t-h3">3–5 builders · self-serve registration</h2></div></div>
         <div id="pc-roster" style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:44px;"></div>
 
         <div class="section-head" style="padding-bottom:12px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Case study</div><h2 class="t-h3">The public record of this project</h2></div></div>
@@ -1243,12 +1244,12 @@ button,input,select,textarea { font-family:inherit; }
           <div class="week-scroll"><div class="week-rail" id="week-rail"></div></div>
           <div class="cards two" style="margin-top:36px;">
             <div class="lcard" style="padding:24px;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;"><span class="live-dot"></span><span class="lbl lbl-teal">Next window</span></div><div class="t-h4" style="margin-bottom:6px;">Pod Registration</div><p class="t-small" style="margin-bottom:16px;">Opens Mar 30 · Weeks 4–5. Join a pod and ship something real.</p><button class="btn btn-teal btn-sm" onclick="startFlow('cycle', ()=>goApp('cycles'))">Join a pod</button></div>
-            <div class="lcard" style="padding:24px;"><div class="lbl" style="margin-bottom:14px;">Later window</div><div class="t-h4" style="margin-bottom:6px;">Project Registration</div><p class="t-small" style="margin-bottom:16px;">Opens May 4 · Week 9. Join a project team building toward Showcase.</p><button class="btn btn-ghost btn-sm" disabled>Opens May 4</button></div>
+            <div class="lcard" style="padding:24px;"><div class="lbl" style="margin-bottom:14px;">Later window</div><div class="t-h4" style="margin-bottom:6px;">Project Registration</div><p class="t-small" style="margin-bottom:16px;">Opens May 4 · Week 9. Register for a team formed from the winning proposals.</p><button class="btn btn-ghost btn-sm" disabled>Opens May 4</button></div>
           </div>
 
-          <!-- Pod problem frames — cycle-specific, pod-scoped. Frames are born from the
-               pod's Triangulator sensemaking (each is a mapped Problem Situation);
-               staking a seat is a pod-member action, never public discovery. -->
+          <!-- Cycle formation — cycle-specific, pod-scoped. Situations are born from the
+               pod's Triangulator sensemaking; proposals and voting are member actions,
+               never public discovery. -->
           <!-- TIER 1 · Problem Situations — communities of INQUIRY. Mapped in the
                Triangulator during the Problem Sprint; PODS form around these (12–30 people).
                They ask: what is really going on here? -->
@@ -1258,14 +1259,14 @@ button,input,select,textarea { font-family:inherit; }
             <div class="cards two" id="cycle-situations"></div>
           </div>
 
-          <!-- TIER 2 · Project Proposals — communities of ACTION. Born at the Hackathon
-               (Frame Sprint): Problem Owner + a new Frame + a proposed intervention.
-               Staking a seat here forms a project (3 min · 5 max · +2 override). -->
-          <div id="cycle-proposals-wrap" style="margin-top:44px;">
-            <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">From the Hackathon · project proposals</div><h2 class="t-h2">Given what we now understand, what should we build?</h2></div></div>
-            <p class="t-body" style="max-width:62ch;margin-bottom:20px;">Every proposal pairs a Problem Owner with a new frame — a fresh way of understanding the situation that opens better possibilities for action. Commit as a builder or lead; at 3 commits the proposal ignites into a project team.</p>
-            <div id="cycle-proposals-note"></div>
-            <div class="cards two" id="cycle-proposals"></div>
+          <!-- FORMATION · submit → budget-vote → tally → register (mirrors OLOS).
+               The phase comes from olos.cycleState.v1 — admin.html's Testing Controls
+               step it live; this section re-renders on the storage event. -->
+          <div id="cycle-formation-wrap" style="margin-top:44px;">
+            <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;" id="formation-eyebrow">From the Hackathon · solution proposals</div><h2 class="t-h2" id="formation-head">Given what we now understand, what should we build?</h2></div></div>
+            <p class="t-body" id="formation-sub" style="max-width:62ch;margin-bottom:20px;"></p>
+            <div id="formation-note"></div>
+            <div id="formation-body"></div>
           </div>
         </div>
       </div>
@@ -1611,16 +1612,17 @@ button,input,select,textarea { font-family:inherit; }
   </div>
 </div>
 
-<!-- Commit confirm — staking a seat is a promise; state the expectations first. -->
-<div class="gate-modal" id="commit-confirm" onclick="if(event.target===this)closeCommitConfirm()">
+<!-- Ballot confirm — casting locks the ballot; say so before the click. -->
+<div class="gate-modal" id="ballot-confirm" onclick="if(event.target===this)closeBallotConfirm()">
   <div class="gate-sheet s-paper">
-    <button class="gate-close" onclick="closeCommitConfirm()" aria-label="Close">
+    <button class="gate-close" onclick="closeBallotConfirm()" aria-label="Close">
       <svg width="20" height="20" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 5L17 17M17 5L5 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
     </button>
-    <h3 class="t-h3" id="commit-title" style="margin-bottom:10px;padding-right:32px;">Commit to this frame</h3>
-    <p class="t-body" id="commit-expect" style="margin-bottom:20px;"></p>
-    <button class="btn btn-teal btn-block" style="margin-bottom:10px;" onclick="confirmCommit()">I'm in — stake my seat</button>
-    <button class="btn-link" style="color:var(--meta);width:100%;" onclick="closeCommitConfirm()">Not yet</button>
+    <h3 class="t-h3" style="margin-bottom:10px;padding-right:32px;">Cast your ballot</h3>
+    <div id="ballot-summary" style="margin-bottom:14px;"></div>
+    <p class="t-small" style="color:var(--meta);margin-bottom:20px;">Ballots lock once cast — allocations can’t be changed after.</p>
+    <button class="btn btn-teal btn-block" style="margin-bottom:10px;" onclick="confirmBallot()">Cast my ballot</button>
+    <button class="btn-link" style="color:var(--meta);width:100%;" onclick="closeBallotConfirm()">Not yet</button>
   </div>
 </div>
 
@@ -1662,7 +1664,7 @@ button,input,select,textarea { font-family:inherit; }
 
 <script src="shared.js"></script>
 <script>
-const userState = {name:'Alex', initials:'AR', roles:[], isMentor:false, signedIn:false, completed:{}, profileAnswers:{}, mentorAnswers:{}, volunteerAnswers:{}, saved:[], lab:{name:'',status:''}, updates:[], journal:[], mentorRequests:[], testimonials:[], testimonialRequests:[], following:[]};
+const userState = {name:'Alex', initials:'AR', roles:[], isMentor:false, signedIn:false, completed:{}, profileAnswers:{}, mentorAnswers:{}, volunteerAnswers:{}, saved:[], lab:{name:'',status:''}, updates:[], journal:[], mentorRequests:[], testimonials:[], testimonialRequests:[], following:[], ballot:null, projectId:null};
 const FLOW_ROLES=['mentor','volunteer','cycle']; // roles with a deferrable setup flow ('events' is passive)
 const ROLE_ITEMS={
   mentor:{title:'Complete the mentor section of your profile', sub:'Tell pods what you bring and how to reach you.'},
@@ -1738,23 +1740,42 @@ const MEMBERS=[
   {id:'m5', name:'Sam Whitfield', initials:'SW', headline:'Builder · writer', metro:'Washington, DC', roles:['upskiller'], followers:7, expertise:['Writing','Policy'], bio:'Policy writer learning to prototype. Words first, then working software.', updates:[{body:'Drafted the case study for our pod’s voting-info project.', at:Date.now()-5*DAY}], projects:[{title:'Voting info cards', tag:'Build Cycle', summary:'Scannable local-election explainers.'}]},
   {id:'m6', name:'Aisha Karim', initials:'AK', headline:'Design mentor · volunteer', metro:'Washington, DC', roles:['mentor','volunteer'], verified:true, followers:33, expertise:['Design','Facilitation'], bio:'Service designer. I run the design crits and keep the showcase honest.', updates:[{body:'Design crit #4 done — six projects reviewed, all sharper for it.', at:Date.now()-2*DAY}], testimonials:[{quote:'Aisha\u2019s crits are the reason our showcase demo landed.', from:'Sam Whitfield · Pod 4'}], projects:[{title:'Design crit series', tag:'Mentor', summary:'Recurring community design reviews.'}]}
 ];
-/* ── Two-tier formation, per the institutional model.
-   SITUATIONS (Month 1 · Problem Sprint): communities of INQUIRY. Mapped in the
-   Triangulator from the cycle's observations; PODS (12–30) form around these.
-   PROPOSALS (Month 2 · Hackathon / Frame Sprint): communities of ACTION. Each pairs
-   a Problem Owner with a new FRAME + intervention + metrics + evidence; staking a
-   seat here forms a PROJECT (3 min · 5 max · +2 facilitator-override, 7 absolute).
-   Production: problem_situations / project_proposals / instance_members. */
-const FRAME_MIN=3, FRAME_MAX=5;
+/* ── Formation — mirrors OLOS's real pipeline: submit → budget-vote → tally
+   (projects named) → self-serve registration. No staking, no commit-to-ignite.
+   SITUATIONS (Month 1 · Problem Sprint): the problem statements this cycle voted
+   in — read-only history, mapped in the Triangulator.
+   SOLUTION_PROPOSALS (Month 2 · Hackathon / Frame Sprint): each pairs a problem
+   statement with a new FRAME + intervention + metrics + evidence. Members budget-
+   vote; winners are named and become project teams (3 min · 5 max); members
+   register for exactly one. Eligibility choice (deliberate, easily flipped):
+   everyone in the pod votes, submitters get the larger budget — mirrors OLOS's
+   problem-statement vote. Production: solution_proposals + votes + projects
+   (docs/OLOS_BACKEND_CHANGES.md §2). */
+const CYCLE_CONFIG={ submitterVotes:5, nonSubmitterVotes:3, voteThreshold:5, projectMin:3, projectMax:5, maxProjects:4 };
 const SITUATIONS=[
   {id:'s1', title:'Benefits navigation dead-ends', owner:'DC Public Library', origin:'Mapped in the Triangulator · Pod 4 sensemaking, Week 3', context:'Residents abandon benefits applications mid-way. Frontline librarians field the fallout daily but the failure points are invisible to the agencies upstream.', adoptedBy:'Pod 4 · Civic AI'},
   {id:'s2', title:'First-time voter information gap', owner:'League of Women Voters DC', origin:'Mapped in the Triangulator · Pod 2 sensemaking, Week 3', context:'First-time voters can find national coverage everywhere and local ballot information almost nowhere. The gap is worst exactly where votes matter most.', adoptedBy:'Pod 2 · Voting Access'},
   {id:'s3', title:'Volunteer knowledge walks out the door', owner:'Civic Tech DC', origin:'Mapped in the Triangulator · open sensemaking, Week 4', context:'Local civic groups run on a few overloaded volunteers. When leadership turns over, everything they knew leaves with them.', adoptedBy:null}
 ];
-const PROPOSALS=[
-  {id:'p1', situationId:'s1', title:'BenefitsBot', frame:'Treat benefits enrollment as a wayfinding problem, not a paperwork problem.', intervention:'A plain-language guide that walks residents through SNAP + Medicaid in one calm flow, piloted at library help desks.', metrics:'Completion rate at 3 pilot branches; intake questions per application.', evidence:'12 resident interviews · 3 librarian shadow shifts · journey map', committed:[{ref:'m3', intent:'builder'},{ref:'m5', intent:'builder'}], status:'open'},
-  {id:'p2', situationId:'s2', title:'Ballot Basics', frame:'First-time voting is a social act — information travels through trusted peers, not portals.', intervention:'Peer-shareable local ballot explainers distributed through school and library networks.', metrics:'Share rate; % of recipients who report feeling prepared to vote.', evidence:'Survey of 40 first-time voters · precinct data review', committed:[{ref:'m4', intent:'builder'}], status:'open'}
+const SOLUTION_PROPOSALS=[
+  {id:'p1', problemStatementId:'s1', title:'BenefitsBot', frame:'Treat benefits enrollment as a wayfinding problem, not a paperwork problem.', intervention:'A plain-language guide that walks residents through SNAP + Medicaid in one calm flow, piloted at library help desks.', metrics:'Completion rate at 3 pilot branches; intake questions per application.', evidence:'12 resident interviews · 3 librarian shadow shifts · journey map', submittedBy:'m3', votes:[{voterRef:'m4',count:3},{voterRef:'m5',count:2}], status:'open'},
+  {id:'p2', problemStatementId:'s2', title:'Ballot Basics', frame:'First-time voting is a social act — information travels through trusted peers, not portals.', intervention:'Peer-shareable local ballot explainers distributed through school and library networks.', metrics:'Share rate; % of recipients who report feeling prepared to vote.', evidence:'Survey of 40 first-time voters · precinct data review', submittedBy:'m4', votes:[{voterRef:'m3',count:2}], status:'open'}
 ];
+let CYCLE_PROJECTS=[];
+/* Cross-file cycle state — written by admin.html's Testing Controls, read here at
+   boot and live via the storage event. Shape: {formationPhase, projects?}. */
+const CYCLE_STATE_KEY='olos.cycleState.v1';
+function readCycleState(){ try{ return JSON.parse(localStorage.getItem(CYCLE_STATE_KEY)||'{}')||{}; }catch(e){ return {}; } }
+function applyCycleState(){
+  const st=readCycleState();
+  CYCLE.formationPhase=st.formationPhase||'submission';
+  if(Array.isArray(st.projects)&&st.projects.length) CYCLE_PROJECTS=st.projects;
+  else if(['tallied','registration','closed'].includes(CYCLE.formationPhase)&&!CYCLE_PROJECTS.length) tallyAndFormProjects();
+  const panel=document.getElementById('panel-cycles');
+  if(panel&&panel.classList.contains('active')) renderCycleFormation();
+  renderTodos();
+}
+window.addEventListener('storage', e=>{ if(e.key===CYCLE_STATE_KEY) applyCycleState(); });
 function situationById(id){ return SITUATIONS.find(s=>s.id===id); }
 let peopleFilter='all';
 
@@ -1848,106 +1869,222 @@ function renderDiscSaved(){
   c.innerHTML=items.map(s=>'<div class="card tappable" onclick="goApp(\'bookmarks\')"><div class="card-body"><div class="lbl lbl-teal" style="margin-bottom:6px;">'+escHTML(s.kind||'Saved')+'</div><div class="t-h4">'+escHTML(s.title)+'</div>'+(s.meta?'<p class="t-small" style="margin-top:4px;">'+escHTML(s.meta)+'</p>':'')+'</div></div>').join('');
 }
 
-/* ── Two-tier formation rendering + staking (proposals only) ── */
-function inPod(){ return !!(userState.signedIn&&userState.completed&&userState.completed.cycle); }
-let ignitedProposal=null;
-function seatHTML(p){
-  const seats=[];
-  for(let i=0;i<FRAME_MAX;i++){
-    const c=p.committed[i];
-    if(c){ const isYou=c.ref==='you'; const m=isYou?userState:memberById(c.ref); seats.push('<span class="avatar" title="'+escHTML((isYou?userState.name+' (you)':m.name)+' · '+c.intent)+'" style="width:32px;height:32px;font-size:12px;'+(c.intent!=='builder'?'box-shadow:0 0 0 2px var(--red);':'')+'">'+(isYou?userState.initials:m.initials)+'</span>'); }
-    else seats.push('<span style="width:32px;height:32px;border-radius:50%;border:2px dashed var(--meta-soft);display:inline-block;flex-shrink:0;"></span>');
-  }
-  return seats.join('');
-}
+/* ── Formation engine — the phase (from olos.cycleState.v1) picks the renderer:
+   submission → proposal upsert · voting → budget ballot · tallied → naming beat ·
+   registration/closed → team cards. Teams become real when registration reaches
+   projectMin — that is the only ignition. */
+function inCycle(){ return !!(userState.signedIn&&userState.completed&&userState.completed.cycle); }
+function inProject(){ return !!userState.projectId; }
+function myProposal(){ return SOLUTION_PROPOSALS.find(p=>p.submittedBy==='you'); }
+function sumVotes(p){ return (p.votes||[]).reduce((a,v)=>a+v.count,0); }
+function myVoteBudget(){ return myProposal()?CYCLE_CONFIG.submitterVotes:CYCLE_CONFIG.nonSubmitterVotes; }
+const CHEV='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
 function renderCycleSituations(){
   const c=document.getElementById('cycle-situations'); if(!c) return;
   c.innerHTML=SITUATIONS.map(s=>{
     return '<div class="card expandable tappable" onclick="toggleExpand(this,event)"><div class="card-body">'
-      +'<div class="card-row"><div class="lbl lbl-teal">Problem owner · '+escHTML(s.owner)+'</div><span class="card-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>'
+      +'<div class="card-row"><div class="lbl lbl-teal">Problem owner · '+escHTML(s.owner)+'</div><span class="card-chev">'+CHEV+'</span></div>'
       +'<div class="t-h3" style="margin:8px 0 10px;">'+escHTML(s.title)+'</div>'
       +'<p class="t-small" style="color:var(--meta);margin-bottom:10px;">'+escHTML(s.origin)+'</p>'
-      +(s.adoptedBy?'<span class="status active">'+escHTML(s.adoptedBy)+' · adopted inquiry</span>':'<span class="status soon">Awaiting a pod</span>')
+      +'<span class="status">Voting closed</span>'
       +'</div><div class="card-expand"><div class="kv"><span class="k lbl">Situation</span><span class="t-small">'+escHTML(s.context)+'</span></div>'
-      +(s.adoptedBy?'<p class="t-small" style="color:var(--teal-deep);font-weight:600;">'+escHTML(s.adoptedBy)+' is researching this — stakeholder mapping, interviews, paradoxes. Frames emerge at the Hackathon.</p>'
-        :'<p class="t-small" style="color:var(--meta);">Pods form around situations at the Problem Sprint. This one is open for the next cohort.</p>')
+      +'<p class="t-small" style="color:var(--meta);">This cycle\u2019s problem statements are settled — solution proposals build on them at the Hackathon.</p>'
       +'</div></div>';
   }).join('');
   enhanceTappables();
 }
-function renderCycleProposals(){
-  const c=document.getElementById('cycle-proposals'); const note=document.getElementById('cycle-proposals-note'); if(!c) return;
-  const member=inPod();
-  if(note) note.innerHTML=member?'':'<div class="lcard" style="padding:16px 20px;margin-bottom:20px;background:var(--tint);"><span class="t-small" style="color:var(--teal-deep);font-weight:600;">Staking is for pod members.</span> <span class="t-small">Register for this cycle to join a pod, run the sensemaking together, and stake a seat when proposals emerge from the Hackathon.</span> <a class="see" style="display:inline-block;margin-left:6px;" onclick="'+(userState.signedIn?'startFlow(\'cycle\', ()=>goApp(\'cycles\'))':'gateCreateAccount(\'the Civic & Elections Cycle\',event)')+'">'+(userState.signedIn?'Register for the cycle →':'Create an account →')+'</a></div>';
-  c.innerHTML=PROPOSALS.map(p=>{
-    const s=situationById(p.situationId)||{};
-    const n=p.committed.length; const youIn=p.committed.some(x=>x.ref==='you'); const full=n>=FRAME_MAX;
-    return '<div class="card expandable tappable" onclick="toggleExpand(this,event)"><div class="card-body">'
-      +'<div class="card-row"><div class="lbl lbl-teal">From \u201c'+escHTML(s.title||'')+'\u201d · '+escHTML(s.owner||'')+'</div><span class="card-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>'
-      +'<div class="t-h3" style="margin:8px 0 6px;">'+escHTML(p.title)+'</div>'
-      +'<p class="t-body" style="color:var(--teal-deep);font-weight:600;margin-bottom:10px;">'+escHTML(p.frame)+'</p>'
-      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><div style="display:flex;gap:6px;">'+seatHTML(p)+'</div><span class="lbl" style="margin-left:6px;">'+n+' of '+FRAME_MIN+' to ignite · '+FRAME_MAX+' seats</span></div>'
-      +(p.status!=='matched'&&member&&!youIn&&!full?'<a class="see" style="display:inline-block;margin-top:8px;" onclick="event.stopPropagation();this.closest(\'.card\').classList.add(\'expanded\')">Stake a seat →</a>':'')
-      +'</div><div class="card-expand">'
-      +'<div class="kv"><span class="k lbl">Intervention</span><span class="t-small">'+escHTML(p.intervention)+'</span></div>'
-      +'<div class="kv"><span class="k lbl">Metrics</span><span class="t-small">'+escHTML(p.metrics)+'</span></div>'
-      +'<div class="kv"><span class="k lbl">Evidence</span><span class="t-small">'+escHTML(p.evidence)+'</span></div>'
-      +(p.status==='matched'?'<p class="t-small" style="color:var(--teal-deep);font-weight:600;margin-bottom:10px;">Team formed — this proposal is now a project.</p><button class="btn btn-teal btn-block" onclick="event.stopPropagation();openProjectCanvas(\''+p.id+'\')">Open the project canvas →</button>'
-        : youIn?'<p class="t-small" style="color:var(--teal-deep);font-weight:600;">You\u2019re committed. The team ignites at '+FRAME_MIN+'.</p>'
-        : full?'<p class="t-small" style="color:var(--meta);">Team full ('+FRAME_MAX+'). Seats 6\u20137 need a facilitator override.</p>'
-        : member?'<div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn btn-teal" style="flex:1;" onclick="commitToProposal(\''+p.id+'\',\'builder\',event)">Commit as builder</button><button class="btn btn-ghost-teal" style="flex:1;" onclick="commitToProposal(\''+p.id+'\',\'dri\',event)">Commit as lead</button></div>'
-        : '<p class="t-small" style="color:var(--meta);">Pod members can stake a seat once proposals emerge from their sensemaking.</p>')
-      +'</div></div>';
-  }).join('');
+const FORMATION_COPY={
+  submission:{eyebrow:'From the Hackathon · solution proposals', head:'Given what we now understand, what should we build?', sub:'Every proposal pairs a problem statement with a new frame — a fresh way of seeing that opens better action. Submit yours before voting opens: submitters vote with '+CYCLE_CONFIG.submitterVotes+' votes, everyone else with '+CYCLE_CONFIG.nonSubmitterVotes+'.'},
+  voting:{eyebrow:'Budget voting · one ballot per member', head:'Back the proposals you believe in', sub:'Spread your votes or stack them — a proposal needs '+CYCLE_CONFIG.voteThreshold+' votes to form a project. Your ballot locks when you cast it.'},
+  tallied:{eyebrow:'Votes are in', head:'\u2728 Naming the winning proposals\u2026', sub:'The tally is done. Winning proposals become named project teams — registration opens next.'},
+  registration:{eyebrow:'Project registration · self-serve', head:'Join a project team', sub:'Teams are real at '+CYCLE_CONFIG.projectMin+' members and cap at '+CYCLE_CONFIG.projectMax+'. One project per member — pick where you\u2019ll build.'},
+  closed:{eyebrow:'Cycle formation · closed', head:'Teams are formed', sub:'Registration has closed for this cycle. The teams below are building toward Showcase.'}
+};
+function renderCycleFormation(){
+  const body=document.getElementById('formation-body'); if(!body) return;
+  const phase=CYCLE.formationPhase||'submission';
+  const copy=FORMATION_COPY[phase]||FORMATION_COPY.submission;
+  document.getElementById('formation-eyebrow').textContent=copy.eyebrow;
+  document.getElementById('formation-head').textContent=copy.head;
+  document.getElementById('formation-sub').textContent=copy.sub;
+  const note=document.getElementById('formation-note');
+  note.innerHTML=(!inCycle()&&phase!=='tallied')
+    ? '<div class="lcard" style="padding:16px 20px;margin-bottom:20px;background:var(--tint);"><span class="t-small" style="color:var(--teal-deep);font-weight:600;">Formation is for cycle members.</span> <span class="t-small">Register for this cycle to submit a proposal, vote on the ballot, and join a project team.</span> <a class="see" style="display:inline-block;margin-left:6px;" onclick="'+(userState.signedIn?'startFlow(\'cycle\', ()=>goApp(\'cycles\'))':'gateCreateAccount(\'the Civic &amp; Elections Cycle\',event)')+'">'+(userState.signedIn?'Register for the cycle →':'Create an account →')+'</a></div>' : '';
+  // Preserve expanded cards across re-renders (the ballot re-renders on every stepper tap).
+  const expanded=[...body.querySelectorAll('.card.expanded')].map(el=>el.dataset.pid).filter(Boolean);
+  if(phase==='submission') renderProposalSubmission(body);
+  else if(phase==='voting') renderSolutionBallot(body);
+  else if(phase==='tallied') renderTallied(body);
+  else renderProjectRegistration(body, phase==='closed');
+  expanded.forEach(pid=>{ const el=body.querySelector('.card[data-pid="'+pid+'"]'); if(el) el.classList.add('expanded'); });
   enhanceTappables();
 }
-/* Committing is a promise to a team — confirm with expectations before staking. */
-let pendingCommit=null;
-function commitToProposal(id,intent,e){
+function proposalCardHTML(p, extra, expandExtra){
+  const s=situationById(p.problemStatementId)||{};
+  return '<div class="card expandable tappable" data-pid="'+p.id+'" onclick="toggleExpand(this,event)"><div class="card-body">'
+    +'<div class="card-row"><div class="lbl lbl-teal">From \u201c'+escHTML(s.title||'')+'\u201d · '+escHTML(s.owner||'')+'</div><span class="card-chev">'+CHEV+'</span></div>'
+    +'<div class="t-h3" style="margin:8px 0 6px;">'+escHTML(p.title)+'</div>'
+    +'<p class="t-body" style="color:var(--teal-deep);font-weight:600;margin-bottom:10px;">'+escHTML(p.frame)+'</p>'
+    +(extra||'')
+    +'</div><div class="card-expand">'
+    +'<div class="kv"><span class="k lbl">Intervention</span><span class="t-small">'+escHTML(p.intervention)+'</span></div>'
+    +'<div class="kv"><span class="k lbl">Metrics</span><span class="t-small">'+escHTML(p.metrics)+'</span></div>'
+    +'<div class="kv"><span class="k lbl">Evidence</span><span class="t-small">'+escHTML(p.evidence)+'</span></div>'
+    +(expandExtra||'')
+    +'</div></div>';
+}
+/* Phase: submission — one proposal per member, UPSERT via the flow engine. */
+function renderProposalSubmission(body){
+  const mine=myProposal();
+  const mineCard = inCycle() ? (mine
+    ? '<div class="lcard" style="padding:20px 24px;margin-bottom:20px;"><div class="lbl lbl-teal" style="margin-bottom:6px;">Your proposal · submitted</div><div class="t-h4" style="margin-bottom:4px;">'+escHTML(mine.title)+'</div><p class="t-small" style="margin-bottom:12px;">'+escHTML(mine.frame)+'</p><button class="btn btn-ghost-teal btn-sm" onclick="editMyProposal()">Edit proposal</button></div>'
+    : '<div class="lcard" style="padding:20px 24px;margin-bottom:20px;"><div class="lbl lbl-teal" style="margin-bottom:6px;">Your proposal</div><p class="t-small" style="margin-bottom:12px;">One proposal per member. Submitters vote with '+CYCLE_CONFIG.submitterVotes+' votes when voting opens.</p><button class="btn btn-teal btn-sm" onclick="startProposalFlow()">Submit a proposal</button></div>') : '';
+  const others=SOLUTION_PROPOSALS.filter(p=>p.submittedBy!=='you');
+  body.innerHTML=mineCard
+    +(others.length?'<div class="cards two">'+others.map(p=>proposalCardHTML(p,'<span class="status soon">Awaiting the vote</span>')).join('')+'</div>'
+      :'<div class="lcard" style="padding:18px 20px;"><p class="t-small" style="color:var(--meta);">No proposals yet — the Hackathon is where they emerge.</p></div>');
+}
+function startProposalFlow(){ startFlow('solutionProposal', ()=>goApp('cycles')); }
+function editMyProposal(){ const m=myProposal(); if(m) startFlow('solutionProposal', ()=>goApp('cycles'), {title:m.title, frame:m.frame, intervention:m.intervention, metrics:m.metrics, evidence:m.evidence}); }
+/* Phase: voting — a budget ballot. pendingVotes holds the draft; casting locks it. */
+let pendingVotes={};
+function pendingTotal(){ return Object.values(pendingVotes).reduce((a,b)=>a+b,0); }
+function renderSolutionBallot(body){
+  const member=inCycle(); const cast=userState.ballot; const budget=myVoteBudget(); const remaining=budget-pendingTotal();
+  const bar=!member?'':(cast
+    ? '<div class="lcard" style="padding:16px 20px;margin-bottom:20px;background:var(--tint);" aria-live="polite"><span class="t-small" style="color:var(--teal-deep);font-weight:600;">Ballot cast ✓</span> <span class="t-small">Your '+budget+' votes are in — ballots lock once cast. The tally lands when the window closes.</span></div>'
+    : '<div class="lcard" id="ballot-bar" style="padding:16px 20px;margin-bottom:20px;position:sticky;top:12px;z-index:5;display:flex;align-items:center;gap:16px;flex-wrap:wrap;" aria-live="polite"><div style="flex:1;min-width:200px;"><div class="t-h4" style="margin-bottom:2px;"><span id="votes-remaining">'+remaining+'</span> of '+budget+' votes left</div><p class="t-small" style="color:var(--meta);">'+(myProposal()?'Submitters vote with '+CYCLE_CONFIG.submitterVotes:'Members vote with '+CYCLE_CONFIG.nonSubmitterVotes)+' · a proposal needs '+CYCLE_CONFIG.voteThreshold+' votes to form</p></div><button class="btn btn-teal" id="ballot-submit" '+(pendingTotal()===0?'disabled':'')+' onclick="openBallotConfirm()">Cast ballot</button></div>');
+  if(!SOLUTION_PROPOSALS.length){ body.innerHTML='<div class="lcard" style="padding:18px 20px;"><p class="t-small" style="color:var(--meta);">No proposals made it to the ballot — the Hackathon is where they emerge.</p></div>'; return; }
+  body.innerHTML=bar+'<div class="cards two">'+SOLUTION_PROPOSALS.map(p=>{
+    const yours=cast?(cast.allocations[p.id]||0):(pendingVotes[p.id]||0);
+    const total=sumVotes(p)+(cast?0:yours);
+    const pct=Math.min(100, Math.round(total/CYCLE_CONFIG.voteThreshold*100));
+    const gauge='<div style="height:6px;background:var(--rule-soft);overflow:hidden;margin:12px 0 6px;"><div style="height:100%;width:'+pct+'%;background:var(--teal);"></div></div><span class="lbl">'+total+' of '+CYCLE_CONFIG.voteThreshold+' votes to form</span>';
+    const minePill=p.submittedBy==='you'?'<span class="status active" style="margin-left:8px;">Yours</span>':'';
+    const stepper=(!member||cast)
+      ? (yours?'<p class="t-small" style="color:var(--teal-deep);font-weight:600;margin-top:10px;">Your allocation: '+yours+' vote'+(yours>1?'s':'')+'</p>':'')
+      : '<div style="display:flex;align-items:center;gap:10px;margin-top:12px;" onclick="event.stopPropagation()"><button class="btn btn-ghost-teal btn-sm" aria-label="Remove a vote from '+escHTML(p.title)+'" '+(yours===0?'disabled':'')+' onclick="voteStep(\''+p.id+'\',-1,event)">−</button><span class="t-h4" style="min-width:24px;text-align:center;">'+yours+'</span><button class="btn btn-ghost-teal btn-sm" aria-label="Add a vote to '+escHTML(p.title)+'" '+(remaining===0?'disabled':'')+' onclick="voteStep(\''+p.id+'\',1,event)">+</button><span class="t-small" style="color:var(--meta);">your votes</span></div>';
+    return proposalCardHTML(p, minePill+gauge+stepper);
+  }).join('')+'</div>';
+}
+function voteStep(id,delta,e){
   if(e) e.stopPropagation();
-  if(!userState.signedIn){ gateCreateAccount('a project team', e); return; }
-  if(!inPod()){ startFlow('cycle', ()=>goApp('cycles')); return; }
-  const p=PROPOSALS.find(x=>x.id===id); if(!p||p.committed.some(x=>x.ref==='you')||p.committed.length>=FRAME_MAX) return;
-  pendingCommit={id:id, intent:intent};
-  document.getElementById('commit-title').textContent=(intent==='dri'?'Commit as lead':'Commit as builder')+' — '+p.title;
-  document.getElementById('commit-expect').textContent=intent==='dri'
-    ? 'You\u2019d be the directly responsible individual: scoping the work, unblocking the team, and owning the Showcase demo. Plan for the heavier share of the ~5 hrs/week.'
-    : 'A real seat on a real team: plan for ~5 hrs/week through Showcase, showing up for the weekly build sessions.';
-  document.getElementById('commit-confirm').classList.add('open');
+  if(userState.ballot||!inCycle()) return;
+  const cur=pendingVotes[id]||0;
+  if(delta>0&&pendingTotal()>=myVoteBudget()) return;
+  const next=Math.max(0,cur+delta); if(next===cur) return;
+  if(next===0) delete pendingVotes[id]; else pendingVotes[id]=next;
+  renderCycleFormation();
 }
-function closeCommitConfirm(){ document.getElementById('commit-confirm').classList.remove('open'); pendingCommit=null; }
-function confirmCommit(){
-  if(!pendingCommit) return;
-  const p=PROPOSALS.find(x=>x.id===pendingCommit.id); const intent=pendingCommit.intent;
-  document.getElementById('commit-confirm').classList.remove('open'); pendingCommit=null;
-  if(!p||p.committed.some(x=>x.ref==='you')||p.committed.length>=FRAME_MAX) return;
-  p.committed.push({ref:'you', intent:intent});
-  if(p.committed.length>=FRAME_MIN){
-    ignitedProposal=p; p.status='matched';
-    document.getElementById('ignition-copy').textContent=p.committed.length+' seats filled — \u201c'+p.title+'\u201d just became a project.';
-    renderTodos();
+function openBallotConfirm(){
+  if(!pendingTotal()) return;
+  document.getElementById('ballot-summary').innerHTML=Object.entries(pendingVotes).map(([id,n])=>{
+    const p=SOLUTION_PROPOSALS.find(x=>x.id===id);
+    return '<div style="display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--rule);"><span class="t-small" style="color:var(--ink);">'+escHTML(p?p.title:id)+'</span><span class="t-small" style="font-weight:600;">'+n+' vote'+(n>1?'s':'')+'</span></div>';
+  }).join('');
+  document.getElementById('ballot-confirm').classList.add('open');
+}
+function closeBallotConfirm(){ document.getElementById('ballot-confirm').classList.remove('open'); }
+function confirmBallot(){
+  if(!pendingTotal()) return;
+  Object.entries(pendingVotes).forEach(([id,n])=>{ const p=SOLUTION_PROPOSALS.find(x=>x.id===id); if(p) p.votes.push({voterRef:'you',count:n}); });
+  userState.ballot={allocations:{...pendingVotes}, at:Date.now()};
+  pendingVotes={};
+  closeBallotConfirm();
+  renderCycleFormation(); renderTodos();
+}
+/* Phase: tallied — the naming beat. OLOS names new projects with an LLM at tally
+   time (lib/llm/names.ts); the prototype fakes it deterministically. */
+const TEAM_WORDS=['Wayfinder','Beacon','Relay','Lantern','Compass','Cairn','Meridian','Prism'];
+function generateProjectName(p){ let h=0; for(const ch of p.title) h=(h*31+ch.charCodeAt(0))%997; return 'Team '+TEAM_WORDS[h%TEAM_WORDS.length]; }
+function tallyAndFormProjects(){
+  const podSize=MEMBERS.length+1;
+  const cap=Math.min(CYCLE_CONFIG.maxProjects, Math.floor(podSize/CYCLE_CONFIG.projectMin));
+  const winners=SOLUTION_PROPOSALS.filter(p=>sumVotes(p)>=CYCLE_CONFIG.voteThreshold)
+    .sort((a,b)=>sumVotes(b)-sumVotes(a)).slice(0,cap);
+  SOLUTION_PROPOSALS.forEach(p=>{ p.status=winners.includes(p)?'formed':'tallied'; });
+  const taken=new Set();
+  CYCLE_PROJECTS=winners.map(p=>{
+    // Seed two already-registered pod members per team so self-serve registration
+    // has real momentum (and your join can tip a team past projectMin).
+    const candidates=[p.submittedBy, ...(p.votes||[]).map(v=>v.voterRef), ...MEMBERS.map(m=>m.id)]
+      .filter(r=>r&&r!=='you'&&!taken.has(r)&&memberById(r));
+    const seed=[...new Set(candidates)].slice(0,2);
+    seed.forEach(r=>taken.add(r));
+    return { id:'proj-'+p.id, proposalId:p.id, name:generateProjectName(p), title:p.title,
+      frame:p.frame, intervention:p.intervention, metrics:p.metrics, evidence:p.evidence,
+      problemStatementId:p.problemStatementId, members:seed.map(r=>({ref:r})),
+      min:CYCLE_CONFIG.projectMin, max:CYCLE_CONFIG.projectMax };
+  });
+  return CYCLE_PROJECTS;
+}
+function renderTallied(body){
+  const ranked=SOLUTION_PROPOSALS.slice().sort((a,b)=>sumVotes(b)-sumVotes(a));
+  body.innerHTML='<div class="lcard" style="padding:20px 24px;margin-bottom:20px;background:var(--tint);"><span class="t-small" style="color:var(--teal-deep);font-weight:600;">\u2728 Naming projects\u2026</span> <span class="t-small">Winning proposals get named and become project teams. Registration opens when the Labs team flips the window.</span></div>'
+    +ranked.map(p=>{ const v=sumVotes(p); const formed=v>=CYCLE_CONFIG.voteThreshold;
+      return '<div class="lcard" style="padding:18px 22px;margin-bottom:12px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;"><div style="flex:1;min-width:200px;"><div class="t-h4">'+escHTML(p.title)+'</div><p class="t-small" style="color:var(--meta);">'+v+' vote'+(v===1?'':'s')+(p.submittedBy==='you'?' · yours':'')+'</p></div>'+(formed?'<span class="status active">Forms a project</span>':'<span class="status">Below threshold</span>')+'</div>'; }).join('');
+}
+/* Phase: registration/closed — self-serve team cards. Ignition fires the first
+   time a team reaches projectMin. */
+function renderProjectRegistration(body, closed){
+  if(!CYCLE_PROJECTS.length){ body.innerHTML='<div class="lcard" style="padding:18px 20px;"><p class="t-small" style="color:var(--meta);">Voting didn\u2019t form any projects this round — the Labs team will re-open proposals.</p></div>'; return; }
+  body.innerHTML='<div class="cards two">'+CYCLE_PROJECTS.map(pr=>{
+    const n=pr.members.length; const youIn=pr.members.some(m=>m.ref==='you'); const full=n>=pr.max;
+    const roster=pr.members.map(m=>{ const isYou=m.ref==='you'; const mm=isYou?userState:memberById(m.ref); return avatarSm(isYou?userState.initials:(mm?mm.initials:'?'), isYou?userState.name+' (you)':(mm?mm.name:'Member')); }).join('');
+    const state = youIn?'<p class="t-small" style="color:var(--teal-deep);font-weight:600;">You\u2019re on this team'+(n>=pr.min?' — it\u2019s real.':' · '+(pr.min-n)+' more to reach '+pr.min+'.')+'</p><button class="btn btn-teal btn-block" style="margin-top:10px;" onclick="event.stopPropagation();openProjectCanvas(\''+pr.id+'\')">Open the project canvas →</button>'
+      : closed?'<p class="t-small" style="color:var(--meta);">Registration closed.</p>'
+      : full?'<p class="t-small" style="color:var(--meta);">Team full ('+pr.max+').</p>'
+      : inProject()?'<p class="t-small" style="color:var(--meta);">One project per member — you\u2019re on '+escHTML((CYCLE_PROJECTS.find(x=>x.id===userState.projectId)||{}).name||'a team')+'.</p>'
+      : inCycle()?'<button class="btn btn-teal btn-block" onclick="event.stopPropagation();registerForProject(\''+pr.id+'\')">Join this team</button>'
+      : '<p class="t-small" style="color:var(--meta);">Cycle members can register.</p>';
+    return '<div class="card expandable tappable" data-pid="'+pr.id+'" onclick="toggleExpand(this,event)"><div class="card-body">'
+      +'<div class="card-row"><div class="lbl lbl-teal">'+escHTML(pr.name)+'</div><span class="card-chev">'+CHEV+'</span></div>'
+      +'<div class="t-h3" style="margin:8px 0 6px;">'+escHTML(pr.title)+'</div>'
+      +'<p class="t-body" style="color:var(--teal-deep);font-weight:600;margin-bottom:10px;">'+escHTML(pr.frame)+'</p>'
+      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;"><div style="display:flex;gap:6px;">'+roster+'</div><span class="lbl" style="margin-left:6px;">'+n+' of '+pr.max+' · real at '+pr.min+'</span></div>'
+      +state
+      +'</div><div class="card-expand">'
+      +'<div class="kv"><span class="k lbl">Intervention</span><span class="t-small">'+escHTML(pr.intervention)+'</span></div>'
+      +'<div class="kv"><span class="k lbl">Metrics</span><span class="t-small">'+escHTML(pr.metrics)+'</span></div>'
+      +'<div class="kv"><span class="k lbl">Evidence</span><span class="t-small">'+escHTML(pr.evidence)+'</span></div>'
+      +'</div></div>';
+  }).join('')+'</div>';
+}
+function registerForProject(id){
+  const pr=CYCLE_PROJECTS.find(x=>x.id===id);
+  if(!pr||pr.members.some(m=>m.ref==='you')||pr.members.length>=pr.max) return;
+  if(!userState.signedIn){ gateCreateAccount('a project team', null); return; }
+  if(!inCycle()){ startFlow('cycle', ()=>goApp('cycles')); return; }
+  if(userState.projectId) return; // one project per member
+  pr.members.push({ref:'you'});
+  userState.projectId=pr.id;
+  renderTodos();
+  if(pr.members.length>=pr.min&&!pr.ignited){
+    pr.ignited=true;
+    document.getElementById('ignition-copy').textContent='\u201c'+pr.title+'\u201d reached '+pr.members.length+' members — '+pr.name+' is live.';
     showView('team-ignition');
-  } else { renderCycleProposals(); }
+  } else renderCycleFormation();
 }
 function openProjectCanvas(id){
-  const p=(id&&PROPOSALS.find(x=>x.id===id))||ignitedProposal||PROPOSALS[0];
-  const s=situationById(p.situationId)||{};
+  const pr=(id&&CYCLE_PROJECTS.find(x=>x.id===id))||CYCLE_PROJECTS.find(x=>x.members.some(m=>m.ref==='you'))||CYCLE_PROJECTS[0];
+  if(!pr){ goApp('cycles'); return; }
+  const s=situationById(pr.problemStatementId)||{};
   document.getElementById('pc-situation').textContent=s.title||'';
-  document.getElementById('pc-title').textContent=p.title;
-  document.getElementById('pc-frame').textContent=p.frame;
-  document.getElementById('pc-intervention').textContent=p.intervention;
-  document.getElementById('pc-metrics').textContent=p.metrics;
-  document.getElementById('pc-evidence').textContent=p.evidence;
+  document.getElementById('pc-title').textContent=pr.title;
+  document.getElementById('pc-teamname').textContent=pr.name;
+  document.getElementById('pc-frame').textContent=pr.frame;
+  document.getElementById('pc-intervention').textContent=pr.intervention;
+  document.getElementById('pc-metrics').textContent=pr.metrics;
+  document.getElementById('pc-evidence').textContent=pr.evidence;
   document.getElementById('pc-owner').textContent=s.owner||'';
   const roster=document.getElementById('pc-roster');
   const cells=[];
-  for(let i=0;i<FRAME_MAX;i++){
-    const c=p.committed[i];
-    if(c){ const isYou=c.ref==='you'; const m=isYou?userState:memberById(c.ref);
-      cells.push('<div class="lcard" style="padding:16px;display:flex;align-items:center;gap:12px;min-width:200px;">'+avatarSm(isYou?userState.initials:m.initials, isYou?userState.name:m.name)+'<div><div class="t-h4" style="font-size:14px;">'+escHTML(isYou?userState.name+' (you)':m.name)+'</div><div class="t-small" style="color:var(--teal-deep);font-weight:600;">'+(c.intent==='builder'?'Builder':c.intent==='dri'?'Lead (DRI)':'Mentor')+'</div></div></div>'); }
+  for(let i=0;i<pr.max;i++){
+    const c=pr.members[i];
+    if(c){ const isYou=c.ref==='you'; const m=isYou?userState:(memberById(c.ref)||{initials:'?',name:'Member'});
+      cells.push('<div class="lcard" style="padding:16px;display:flex;align-items:center;gap:12px;min-width:200px;">'+avatarSm(isYou?userState.initials:m.initials, isYou?userState.name:m.name)+'<div><div class="t-h4" style="font-size:14px;">'+escHTML(isYou?userState.name+' (you)':m.name)+'</div><div class="t-small" style="color:var(--teal-deep);font-weight:600;">Builder</div></div></div>'); }
     else cells.push('<div class="lcard" style="padding:16px;display:flex;align-items:center;gap:12px;min-width:200px;border-style:dashed;opacity:.7;"><span style="width:32px;height:32px;border-radius:50%;border:2px dashed var(--meta-soft);flex-shrink:0;"></span><div class="t-small">Open seat</div></div>');
   }
-  for(let i=0;i<2;i++) cells.push('<div class="lcard" style="padding:16px;display:flex;align-items:center;gap:12px;min-width:200px;opacity:.55;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--meta)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><div class="t-small">Seat '+(FRAME_MAX+i+1)+' \u00b7 Requires Facilitator Override</div></div>');
   roster.innerHTML=cells.join('');
   showView('project-canvas');
 }
@@ -2176,8 +2313,8 @@ function showAppView(id){
   const panel=document.getElementById('panel-'+id); if(panel) panel.classList.add('active');
   if(id==='bookmarks') renderBookmarks();
   if(id==='discover') renderDiscover();
-  if(id==='dashboard') renderJournal();
-  if(id==='cycles'){ renderCycleSituations(); renderCycleProposals(); }
+  if(id==='dashboard'){ renderJournal(); renderTodos(); } // todos are phase-aware — refresh on every visit
+  if(id==='cycles'){ renderCycleSituations(); renderCycleFormation(); }
   // Drill-in panels (cycles/events/labs/resources/bookmarks) are browse content —
   // keep Discover highlighted so the user stays oriented in the 3-item nav. Your own
   // profile highlights Profile; a directory member's profile keeps Discover lit.
@@ -2264,6 +2401,19 @@ function FLOWS(name){
       {id:'evidenceLinks',type:'textarea',q:'Link your evidence',help:'Practice Journal entries, interview summaries, failed experiments, prototype screenshots, research synthesis.',ph:'e.g. journal entries from weeks 3–5, the interview synthesis doc, prototype v1 screenshots...',required:true},
       {id:'challenge',type:'textarea',q:'Where do you want your thinking challenged?',help:'The sharper the question, the more leverage the conversation has.',ph:'e.g. We\u2019re convinced the barrier is language complexity — challenge that.',required:true},
       {id:'expertiseNeeded',type:'tags',q:'What kind of expertise would help?',options:EXPERTISE,required:true} ]};
+  if(name==='solutionProposal') return { eyebrow:'Solution proposal · '+CYCLE.name, finalLabel:(myProposal()?'Update proposal':'Submit proposal'), finalClass:'btn-teal',
+    onComplete:()=>{
+      // UPSERT — one proposal per member; re-entering the flow pre-fills for edit.
+      let mine=myProposal();
+      if(!mine){ mine={id:'p-you', problemStatementId:'s3', submittedBy:'you', votes:[], status:'open'}; SOLUTION_PROPOSALS.push(mine); }
+      mine.title=fans.title; mine.frame=fans.frame; mine.intervention=fans.intervention; mine.metrics=fans.metrics; mine.evidence=fans.evidence;
+      renderTodos(); goApp('cycles');
+    },
+    steps:[ {id:'title',type:'text',q:'Name the proposal',help:'Short and memorable — this is what the pod votes on.',ph:'e.g. BenefitsBot',required:true},
+      {id:'frame',type:'textarea',q:'What\u2019s the new frame?',help:'A fresh way of understanding the situation that opens better possibilities for action.',ph:'e.g. Treat benefits enrollment as a wayfinding problem, not a paperwork problem.',required:true},
+      {id:'intervention',type:'textarea',q:'What would you build?',help:'The intervention — concrete enough to register a team around.',ph:'e.g. A plain-language guide piloted at library help desks...',required:true},
+      {id:'metrics',type:'text',q:'How would you know it\u2019s working?',help:'One or two measurable signals.',ph:'e.g. Completion rate at 3 pilot branches',required:true},
+      {id:'evidence',type:'textarea',q:'What evidence backs the frame?',help:'Interviews, observations, data — from the Problem Sprint.',ph:'e.g. 12 resident interviews · journey map',required:true} ]};
   if(name==='cycle') return { eyebrow:'Spring 2026', finalLabel:'Submit registration', finalClass:'btn-teal', onComplete:()=>finishRoleFlow('cycle'),
     steps:[ {id:'problem',type:'textarea',q:'What problem area excites you most?',help:'A sentence or two is plenty.',ph:'e.g. how AI can help DC residents navigate benefits eligibility...',required:true},
       {id:'level',type:'choice',q:'Where are you at in your primary area?',options:LEVELS.map(l=>({v:l[0],label:l[0],sub:l[1]}))},
@@ -2402,14 +2552,25 @@ function renderProfileChecklist(){ const box=document.getElementById('role-items
 function renderTodos(){
   // Prominent-but-skippable: the survey + Triangulator lead the list and are
   // dismissible; everything here is a suggestion, never a gate. Your live
-  // project (if a frame you staked has ignited) always pins first.
+  // project (once you’ve registered onto a team) always pins first.
   const todos=[];
-  const myProj=PROPOSALS.find(p=>p.status==='matched'&&p.committed.some(x=>x.ref==='you'));
-  if(myProj) todos.push({label:'Your project',title:myProj.title,body:'Scoping · your team is assembled. Keep the momentum going.',cta:'Open the project canvas',action:()=>openProjectCanvas(myProj.id)});
+  const myProj=CYCLE_PROJECTS.find(p=>p.members&&p.members.some(m=>m.ref==='you'));
+  if(myProj) todos.push({label:'Your project',title:myProj.name+' — '+myProj.title,body:'Scoping · your team is assembled. Keep the momentum going.',cta:'Open the project canvas',action:()=>openProjectCanvas(myProj.id)});
+  // The formation card morphs with the cycle phase — submit → vote → results → register.
+  if(inCycle()&&!myProj){
+    const f={
+      submission:(myProposal()?{title:'Your proposal is in',body:'Voting opens next — submitters vote with '+CYCLE_CONFIG.submitterVotes+' votes.',cta:'Review proposals'}:{title:'Submit your solution proposal',body:'Pair a problem statement with a new frame before voting opens.',cta:'Start a proposal',start:true}),
+      voting:(userState.ballot?{title:'Ballot cast ✓',body:'The tally lands at the end of the voting window.',cta:'See the proposals'}:{title:'Cast your ballot',body:'You have '+myVoteBudget()+' votes — back the proposals you believe in.',cta:'Open the ballot'}),
+      tallied:{title:'Voting closed — results soon',body:'Winning proposals are being named. Registration opens next.',cta:'See the results'},
+      registration:{title:'Join a project team',body:'Teams are real at '+CYCLE_CONFIG.projectMin+' members. One project per member.',cta:'Pick your team'},
+      closed:{title:'Teams are formed',body:'Registration has closed for this cycle.',cta:'See the teams'}
+    }[CYCLE.formationPhase||'submission'];
+    if(f) todos.push({label:'Cycle formation',title:f.title,body:f.body,cta:f.cta,action:f.start?()=>startProposalFlow():()=>goApp('cycles')});
+  }
   if(!userState.journal.length) todos.push({id:'journal',label:'Practice Journal',title:'Write your first entry',body:'Reflection builds judgment — two minutes on what you noticed this week.',cta:'Open the journal',action:()=>{ goApp('dashboard'); const t=document.getElementById('journal-entry'); if(t) t.focus(); },dismiss:true});
   if(!userState.completed.surveyFill) todos.push({id:'survey',label:'Field survey',title:'Add your observations',body:'Feed the Civic & Elections problem map — a few raw observations from your world.',cta:'Start the survey',action:()=>startFlow('survey',()=>goApp('dashboard')),dismiss:true});
   todos.push({id:'triangulator',label:'The Triangulator',title:'Make sense of the signal pool',body:'Sort the community’s observations, triangulate the signals, map the problem situation.',cta:'Open the Triangulator',action:()=>openTriangulator(),dismiss:true});
-  todos.push({label:'Cycles',title:'Build Cycle is forming',body:'Pod registration opens Mar 30.',cta:'Learn more',action:()=>goApp('cycles')});
+  if(!inCycle()) todos.push({label:'Cycles',title:'Build Cycle is forming',body:'Pod registration opens Mar 30.',cta:'Learn more',action:()=>goApp('cycles')});
   todos.push({label:'Profile',title:'Make your work public',body:'Add a bio and your first project to your profile.',cta:'Open profile',action:()=>showProfile()});
   const c=document.getElementById('todos-container'); if(!c)return; c.innerHTML='';
   todos.filter(t=>!t.id||!dismissedTodos.has(t.id)).forEach(t=>{ const d=document.createElement('div'); d.className='lcard'; d.style.padding='20px 22px'; d.style.position='relative'; d.innerHTML=(t.dismiss?'<button title="Dismiss" style="position:absolute;top:10px;right:12px;background:none;border:none;color:var(--meta);cursor:pointer;font-size:16px;line-height:1;" onclick="dismissTodo(\''+t.id+'\',event)">×</button>':'')+'<div class="lbl lbl-teal" style="margin-bottom:8px;">'+t.label+'</div><div class="t-h4" style="margin-bottom:6px;">'+t.title+'</div><p class="t-small" style="margin-bottom:'+(t.cta?'14px':'0')+';">'+t.body+'</p>'+(t.cta?'<button class="btn btn-ghost-teal btn-sm">'+t.cta+'</button>':''); if(t.action){ const b=d.querySelector('.btn.btn-ghost-teal'); if(b) b.onclick=t.action; } c.appendChild(d); });
@@ -2716,7 +2877,7 @@ function initHeroScroll(){
   update();
 }
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeSaveGate(); });
-document.addEventListener('DOMContentLoaded',()=>{ initEventCats(); renderTodos(); buildWeekRail(); renderActivity(); renderJournal(); initHeroScroll(); enhanceTappables();
+document.addEventListener('DOMContentLoaded',()=>{ initEventCats(); applyCycleState(); buildWeekRail(); renderActivity(); renderJournal(); initHeroScroll(); enhanceTappables();
   // Shared survey links (?survey=...) deep-link straight into the fill flow — no account needed.
   if(new URLSearchParams(location.search).get('survey')){ startFlow('survey', ()=>showView('landing')); }
 });
