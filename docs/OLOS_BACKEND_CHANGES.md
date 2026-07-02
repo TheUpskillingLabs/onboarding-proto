@@ -312,13 +312,30 @@ in `SCHEMA.md`/migrations first.
 **Recommendation: a separate `mentor_profiles` table.**
 
 ```
-participant_id FK (1:1), status enum('pending','active','inactive'),
+participant_id FK (1:1), status enum('active','inactive') default 'active',
 expertise text[], availability_notes text,
-pods_mentored text, outcome text, testimonial text,
-timezone text, booking_url text, artifact_url text
+pods_mentored text,
+timezone text, booking_url text, artifact_url text,
+verified_by_labs boolean default false, verified_at timestamp NULL
 ```
 
-(The field list mirrors the prototype's `FLOWS('mentor')` answers.) Rationale: mentorship is a
+**Self-service publish:** completing the mentor intake creates the row `active` immediately —
+no `pending` review gate, no application queue (`inactive` exists only for self-pausing; any
+moderation is post-hoc). **`verified_by_labs`** is the admin-granted "Vouched by The Labs"
+badge — settable only via `PATCH /api/admin/mentor-profiles/[id]` (`withAdminAuth`), never
+self-serve, and never a precondition for appearing in the directory (verified mentors simply
+sort first under the mentor filter). `outcome` and `testimonial` columns are intentionally
+absent: outcomes live in project case studies, and testimonials are **never self-authored**
+— see `mentor_testimonials` below.
+
+**`mentor_testimonials`** — `id, mentor_participant_id FK, author_participant_id FK,
+quote text NULL, status enum('requested','submitted','hidden'), created_at`, with a CHECK
+that `author_participant_id != mentor_participant_id`. The mentor *requests* a testimonial
+from a specific member (`POST /api/mentor-testimonials/requests`); the **author** submits the
+quote (`PATCH /api/mentor-testimonials/[id]`, author-only for `quote`/`submitted`); the
+mentor may only set `hidden`. Evidence about you, not by you.
+
+(The field list mirrors the prototype's six-step `FLOWS('mentor')` intake: expertise, engage, pods-mentored, timezone, booking link, artifact link.) Rationale: mentorship is a
 public-facing offering/intent, not an elevated-permission grant like `user_roles` /
 `participant_permissions` model — it doesn't belong in the `Role` union in `lib/auth/roles.ts`.
 If a route guard ever needs "is this user a mentor," derive it cheaply
@@ -368,6 +385,18 @@ reflect — *then* request, with evidence attached. New table:
   `PATCH /api/mentor-requests/[id]` (match/close).
 - The mentor directory remains for community browsing, but the *help pathway* runs through
   requests, not booking links.
+
+**The two-sided marketplace:** supply = self-published mentor profiles (above); demand =
+evidence-backed `mentor_requests`; matching = **mentor-claimed by default**
+(`PATCH /api/mentor-requests/[id]` by the mentor). Staff have visibility (entity-explorer
+registration + admin surfaces) and **may concierge** — match a request or make an
+introduction when useful — an ability, not a workflow step anything waits on.
+
+**`follows`** — compound PK `(follower_id FK, followed_id FK)`, `created_at`, CHECK
+`follower_id != followed_id`. Routes: `POST/DELETE /api/follows/[participant_id]`
+(authenticated, self-only); follower/following counts join the public profile payload; the
+updates feed endpoint gains `?following=true`. Following is the marketplace's attention
+primitive — follow mentors and builders, see their work first.
 
 **Mentor recruitment path (product decision):** recruited, known-experienced mentors register
 through the **same signup as everyone else** — the role-intent step keeps its Mentor option,
@@ -459,6 +488,7 @@ Confirm the head number first (see §1 preamble), then land in this order:
    decision (separate tables vs. `formed_via` column on the existing `projects` tables)**
 9. `narrative_revisions` + `citations` + RLS — same gate as (8)
 10. `mentor_requests` + `event_rsvps` + `events.kind`/`cycle_week` + `participants.referral_source`/`referred_by`
+11. `follows` + `mentor_testimonials` + `mentor_profiles.verified_by_labs`/`verified_at`
 
 ---
 

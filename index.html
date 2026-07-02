@@ -958,7 +958,7 @@ button,input,select,textarea { font-family:inherit; }
       <div class="vscroll pad">
         <div id="ms1">
           <div class="lbl lbl-teal" style="margin-bottom:16px;">For mentors</div>
-          <h2 class="t-h1" style="margin-bottom:24px;">Two ways to plug in</h2>
+          <h2 class="t-h1" style="margin-bottom:24px;">Two ways to mentor</h2>
           <div style="display:flex;flex-direction:column;gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:var(--r);overflow:hidden;margin-bottom:20px;">
             <div style="padding:22px 20px;background:var(--white);"><div class="lbl lbl-teal" style="margin-bottom:10px;">Cycle workshops</div><div class="t-h4" style="margin-bottom:8px;">Lead structured sessions</div><p class="t-small">Run workshops and skill sprints that support the current Build Cycle theme.</p></div>
             <div style="padding:22px 20px;background:var(--white);"><div class="lbl lbl-teal" style="margin-bottom:10px;">Pod support</div><div class="t-h4" style="margin-bottom:8px;">Step in on-demand</div><p class="t-small">Advice and unblocking when pods raise their hand — as much or as little as you like.</p></div>
@@ -969,7 +969,8 @@ button,input,select,textarea { font-family:inherit; }
           <div class="lbl lbl-teal" style="margin-bottom:16px;">What upskilling means here</div>
           <h2 class="t-h1" style="margin-bottom:20px;">Not a curriculum. Real work.</h2>
           <p class="t-lede" style="margin-bottom:20px;">We're not a course platform. Upskilling here means learning through real, collaborative work — building things, making decisions, iterating with peers.</p>
-          <p class="t-body">As a mentor, you support that process — not teach a subject. You bring your judgment; participants bring their problems.</p>
+          <p class="t-body" style="margin-bottom:20px;">As a mentor, you support that process — not teach a subject. You bring your judgment; participants bring their problems.</p>
+          <div class="lcard" style="padding:16px 20px;background:var(--tint);"><div class="lbl lbl-teal" style="margin-bottom:6px;">Where your answers go</div><p class="t-small">The next few questions <b>publish your public mentor profile</b> — upskillers find you in the community directory, and project teams reach you through evidence-backed requests you choose to pick up. The Labs team sees new mentor profiles too and can make introductions. Live immediately — no application, no review queue.</p></div>
         </div>
       </div>
       <div class="actionbar light-bar"><button class="btn btn-teal btn-block" id="me-next" onclick="mentorSlideNext()">Next</button></div>
@@ -1179,6 +1180,7 @@ button,input,select,textarea { font-family:inherit; }
           <div class="cards" id="disc-people"></div>
 
           <div class="section-head" id="disc-sec-updates" style="margin-top:40px;"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Community updates</div><h2 class="t-h2">What people are shipping</h2></div></div>
+          <div id="disc-updates-chips" style="display:flex;gap:8px;margin-bottom:16px;"></div>
           <div class="cards two" id="disc-updates"></div>
 
           <div class="section-head" id="disc-sec-labs" style="margin-top:40px;"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Local labs · library-hosted</div><h2 class="t-h2">Find your city</h2></div><span class="see" onclick="goApp('labs')">View all →</span></div>
@@ -1221,6 +1223,22 @@ button,input,select,textarea { font-family:inherit; }
           <div class="dash">
             <div>
               <div id="dash-cycle" style="display:none;margin-bottom:40px;"></div>
+              <!-- Setup leads for new members; it collapses to a strip once complete
+                   so the journal takes the top slot for established members. -->
+              <div id="setup-section" style="margin-bottom:40px;">
+                <div id="setup-full">
+              <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Your profile</div><h2 class="t-h2">Complete your profile</h2></div><span id="checklist-count" class="lbl">2 left</span></div>
+              <div id="checklist-items">
+                <div class="check-row"><input type="checkbox" onchange="tickChecklist(this)"><div><div class="t-h4" style="margin-bottom:2px;">Confirm your email</div><div class="t-small">Click the link we sent to your inbox</div></div></div>
+                <div class="check-row"><input type="checkbox" onchange="tickChecklist(this)"><div><div class="t-h4" style="margin-bottom:2px;">Join our Slack workspace</div><div class="t-small">Accept the invite — that's where the community lives</div></div></div>
+                <div class="check-row" id="profile-checklist-row" style="cursor:pointer;" onclick="onProfileChecklistClick(this)"><input type="checkbox" id="profile-checklist-cb" onchange="tickChecklist(this)" onclick="event.stopPropagation()"><div style="flex:1;"><div class="t-h4" style="margin-bottom:2px;">Complete your public profile</div><div class="t-small">Add a bio so pods can find you</div></div><button class="btn btn-ghost-teal btn-sm" style="flex-shrink:0;align-self:center;">Start →</button></div>
+                <div id="role-items"></div>
+                </div>
+                <div id="setup-done-strip" style="display:none;align-items:center;justify-content:space-between;gap:12px;background:var(--white);border:1px solid var(--rule);border-radius:var(--r);padding:14px 18px;">
+                  <span class="t-small" style="font-weight:600;color:var(--teal-deep);">Setup · All done ✓</span>
+                  <a class="see" style="font-size:12px;" onclick="toggleSetupSection()">Show</a>
+                </div>
+              </div>
               <!-- Practice Journal — the Upskiller's core reflective practice. Three
                    audiences: yourself, your pod, and OLOS synthesis. Prompts evolve with
                    the cycle phase. Replaces the weekly Pulse (see docs/OLOS_BACKEND_CHANGES.md §journal). -->
@@ -1251,12 +1269,7 @@ button,input,select,textarea { font-family:inherit; }
                   <button class="btn btn-teal btn-sm" onclick="postUpdate()">Post update</button>
                 </div>
               </div>
-              <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Your profile</div><h2 class="t-h2">Complete your profile</h2></div><span id="checklist-count" class="lbl">2 left</span></div>
-              <div id="checklist-items">
-                <div class="check-row"><input type="checkbox" onchange="tickChecklist(this)"><div><div class="t-h4" style="margin-bottom:2px;">Confirm your email</div><div class="t-small">Click the link we sent to your inbox</div></div></div>
-                <div class="check-row"><input type="checkbox" onchange="tickChecklist(this)"><div><div class="t-h4" style="margin-bottom:2px;">Join our Slack workspace</div><div class="t-small">Accept the invite — that's where the community lives</div></div></div>
-                <div class="check-row" id="profile-checklist-row" style="cursor:pointer;" onclick="onProfileChecklistClick(this)"><input type="checkbox" id="profile-checklist-cb" onchange="tickChecklist(this)" onclick="event.stopPropagation()"><div><div class="t-h4" style="margin-bottom:2px;">Complete your public profile</div><div class="t-small">Add a bio so pods can find you</div></div></div>
-                <div id="role-items"></div>
+
               </div>
               <div class="section-head" style="margin-top:40px;"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Up next</div><h2 class="t-h2">Up next for you</h2></div><span class="see" onclick="goApp('events')">See all →</span></div>
               <div class="cards two" id="todos-container"></div>
@@ -1662,7 +1675,7 @@ button,input,select,textarea { font-family:inherit; }
 
 
 <script>
-const userState = {name:'Alex', initials:'AR', roles:[], isMentor:false, signedIn:false, completed:{}, profileAnswers:{}, mentorAnswers:{}, volunteerAnswers:{}, saved:[], lab:{name:'',status:''}, updates:[], journal:[], mentorRequests:[]};
+const userState = {name:'Alex', initials:'AR', roles:[], isMentor:false, signedIn:false, completed:{}, profileAnswers:{}, mentorAnswers:{}, volunteerAnswers:{}, saved:[], lab:{name:'',status:''}, updates:[], journal:[], mentorRequests:[], testimonials:[], testimonialRequests:[], following:[]};
 const FLOW_ROLES=['mentor','volunteer','cycle']; // roles with a deferrable setup flow ('events' is passive)
 const ROLE_ITEMS={
   mentor:{title:'Complete the mentor section of your profile', sub:'Tell pods what you bring and how to reach you.'},
@@ -1736,12 +1749,12 @@ const RESOURCES=[
 /* ── Community directory — mock members. Production swap: GET /api/directory. */
 const DAY=86400000;
 const MEMBERS=[
-  {id:'m1', name:'Priya Shah', initials:'PS', headline:'Product & AI mentor', metro:'Washington, DC', roles:['mentor'], expertise:['AI tools','Product','Facilitation'], bio:'Product lead turned mentor. I help pods scope small and ship weekly.', updates:[{body:'Ran office hours with two pods on scoping their Discovery readouts.', at:Date.now()-2*DAY},{body:'Published a prompt-pattern cheat sheet for the cohort.', at:Date.now()-9*DAY}], projects:[{title:'Mentoring — Civic AI pods', tag:'Mentor', summary:'Weekly office hours on scoping and shipping.'}]},
-  {id:'m2', name:'Marcus Bell', initials:'MB', headline:'Data mentor · analyst', metro:'Baltimore', roles:['mentor'], expertise:['Data','Research','Strategy'], bio:'Fifteen years in public-sector data. Ask me about messy spreadsheets.', updates:[{body:'Helped Pod 2 untangle their benefits-eligibility dataset.', at:Date.now()-4*DAY}], projects:[{title:'Mentoring — data pods', tag:'Mentor', summary:'Deep dives on data cleaning and analysis.'}]},
-  {id:'m3', name:'Jordan Okafor', initials:'JO', headline:'Builder · Civic AI cycle', metro:'Washington, DC', roles:['upskiller'], expertise:['Engineering','AI tools'], bio:'Shipping my first civic tool this cycle — a plain-language permit guide.', updates:[{body:'Permit guide prototype is live in test with 5 residents.', at:Date.now()-1*DAY},{body:'First user interview done. Everything I assumed was wrong. Great.', at:Date.now()-6*DAY}], projects:[{title:'Permit guide', tag:'Build Cycle', summary:'Plain-language DC permit navigation.'}]},
-  {id:'m4', name:'Elena Ruiz', initials:'ER', headline:'Volunteer · community research', metro:'Philadelphia', roles:['volunteer','upskiller'], expertise:['Research','Outreach & community'], bio:'Helping stand up the Philadelphia lab. Field researcher by instinct.', updates:[{body:'Collected 14 field observations for the Civic & Elections survey.', at:Date.now()-3*DAY}], projects:[{title:'Philly lab formation', tag:'Volunteer', summary:'Groundwork for the Philadelphia lab.'}]},
-  {id:'m5', name:'Sam Whitfield', initials:'SW', headline:'Builder · writer', metro:'Washington, DC', roles:['upskiller'], expertise:['Writing','Policy'], bio:'Policy writer learning to prototype. Words first, then working software.', updates:[{body:'Drafted the case study for our pod’s voting-info project.', at:Date.now()-5*DAY}], projects:[{title:'Voting info cards', tag:'Build Cycle', summary:'Scannable local-election explainers.'}]},
-  {id:'m6', name:'Aisha Karim', initials:'AK', headline:'Design mentor · volunteer', metro:'Washington, DC', roles:['mentor','volunteer'], expertise:['Design','Facilitation'], bio:'Service designer. I run the design crits and keep the showcase honest.', updates:[{body:'Design crit #4 done — six projects reviewed, all sharper for it.', at:Date.now()-2*DAY}], projects:[{title:'Design crit series', tag:'Mentor', summary:'Recurring community design reviews.'}]}
+  {id:'m1', name:'Priya Shah', initials:'PS', headline:'Product & AI mentor', metro:'Washington, DC', roles:['mentor'], verified:true, followers:48, expertise:['AI tools','Product','Facilitation'], bio:'Product lead turned mentor. I help pods scope small and ship weekly.', updates:[{body:'Ran office hours with two pods on scoping their Discovery readouts.', at:Date.now()-2*DAY},{body:'Published a prompt-pattern cheat sheet for the cohort.', at:Date.now()-9*DAY}], testimonials:[{quote:'Priya unblocked us every single week — she asks the question we were avoiding.', from:'Jordan Okafor · Pod 4'},{quote:'Our scoping went from mush to shippable in one session.', from:'Sam Whitfield · Pod 4'}], projects:[{title:'Mentoring — Civic AI pods', tag:'Mentor', summary:'Weekly office hours on scoping and shipping.'}]},
+  {id:'m2', name:'Marcus Bell', initials:'MB', headline:'Data mentor · analyst', metro:'Baltimore', roles:['mentor'], followers:21, expertise:['Data','Research','Strategy'], bio:'Fifteen years in public-sector data. Ask me about messy spreadsheets.', updates:[{body:'Helped Pod 2 untangle their benefits-eligibility dataset.', at:Date.now()-4*DAY}], testimonials:[{quote:'Marcus made our messy spreadsheet make sense in an afternoon.', from:'Elena Ruiz · Pod 2'}], projects:[{title:'Mentoring — data pods', tag:'Mentor', summary:'Deep dives on data cleaning and analysis.'}]},
+  {id:'m3', name:'Jordan Okafor', initials:'JO', headline:'Builder · Civic AI cycle', metro:'Washington, DC', roles:['upskiller'], followers:9, expertise:['Engineering','AI tools'], bio:'Shipping my first civic tool this cycle — a plain-language permit guide.', updates:[{body:'Permit guide prototype is live in test with 5 residents.', at:Date.now()-1*DAY},{body:'First user interview done. Everything I assumed was wrong. Great.', at:Date.now()-6*DAY}], projects:[{title:'Permit guide', tag:'Build Cycle', summary:'Plain-language DC permit navigation.'}]},
+  {id:'m4', name:'Elena Ruiz', initials:'ER', headline:'Volunteer · community research', metro:'Philadelphia', roles:['volunteer','upskiller'], followers:14, expertise:['Research','Outreach & community'], bio:'Helping stand up the Philadelphia lab. Field researcher by instinct.', updates:[{body:'Collected 14 field observations for the Civic & Elections survey.', at:Date.now()-3*DAY}], projects:[{title:'Philly lab formation', tag:'Volunteer', summary:'Groundwork for the Philadelphia lab.'}]},
+  {id:'m5', name:'Sam Whitfield', initials:'SW', headline:'Builder · writer', metro:'Washington, DC', roles:['upskiller'], followers:7, expertise:['Writing','Policy'], bio:'Policy writer learning to prototype. Words first, then working software.', updates:[{body:'Drafted the case study for our pod’s voting-info project.', at:Date.now()-5*DAY}], projects:[{title:'Voting info cards', tag:'Build Cycle', summary:'Scannable local-election explainers.'}]},
+  {id:'m6', name:'Aisha Karim', initials:'AK', headline:'Design mentor · volunteer', metro:'Washington, DC', roles:['mentor','volunteer'], verified:true, followers:33, expertise:['Design','Facilitation'], bio:'Service designer. I run the design crits and keep the showcase honest.', updates:[{body:'Design crit #4 done — six projects reviewed, all sharper for it.', at:Date.now()-2*DAY}], testimonials:[{quote:'Aisha\u2019s crits are the reason our showcase demo landed.', from:'Sam Whitfield · Pod 4'}], projects:[{title:'Design crit series', tag:'Mentor', summary:'Recurring community design reviews.'}]}
 ];
 /* ── Two-tier formation, per the institutional model.
    SITUATIONS (Month 1 · Problem Sprint): communities of INQUIRY. Mapped in the
@@ -1764,6 +1777,25 @@ function situationById(id){ return SITUATIONS.find(s=>s.id===id); }
 let peopleFilter='all';
 
 function memberById(id){ return MEMBERS.find(m=>m.id===id); }
+/* ── Follow — the marketplace's attention primitive. Production: follows table
+   (follower_id, followed_id) + ?following=true on the updates feed. ── */
+function isFollowing(id){ return userState.following.includes(id); }
+function followBtnHTML(m){ const on=isFollowing(m.id); return '<button class="btn '+(on?'btn-ghost-teal':'btn-teal')+' btn-sm" onclick="toggleFollow(\''+m.id+'\',event)">'+(on?'Following ✓':'Follow')+'</button>'; }
+function memberMetaText(m){ return m.metro+' · Joined Spring 2026 · '+((m.followers||0)+(isFollowing(m.id)?1:0))+' followers'; }
+function verifiedPill(m){ return m.verified?'<span class="status active" title="Vouched for by The Labs — added by the Labs team, not self-serve">✓ Vouched by The Labs</span>':''; }
+function toggleFollow(id,e){
+  if(e) e.stopPropagation();
+  const i=userState.following.indexOf(id);
+  if(i>=0) userState.following.splice(i,1); else userState.following.push(id);
+  const m=memberById(id);
+  // Refresh whichever surface the toggle lives on.
+  if(document.getElementById('view-profile').classList.contains('active')&&document.getElementById('prof-name').textContent===m.name){
+    const act=document.getElementById('prof-actions'); if(act) act.innerHTML=followBtnHTML(m)+' <button class="btn btn-ghost-teal btn-sm" onclick="showView(\'stub\')">Say hi in Slack</button>';
+    const meta=document.getElementById('prof-meta'); if(meta) meta.textContent=memberMetaText(m);
+  }
+  if(document.getElementById('panel-discover').classList.contains('active')){ renderDiscPeople(); renderDiscUpdates(); }
+}
+let updatesFilter='all';
 function avatarSm(initials,title){ return '<span class="avatar" title="'+escHTML(title||'')+'" style="width:32px;height:32px;font-size:12px;flex-shrink:0;">'+escHTML(initials)+'</span>'; }
 function isSaved(title){ return (userState.saved||[]).some(s=>s.title===title); }
 function mediaHTML(item, title){ return '<div class="media '+(item.img?'':(item.grad||'m-teal'))+'" style="aspect-ratio:16/10;">'+(item.img?'<img src="'+item.img+'" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">':ORB)+'<button class="heart'+(isSaved(title)?' saved':'')+'" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg></button><div class="m-tag">'+escHTML(item.tag||'')+'</div></div>'; }
@@ -1801,9 +1833,9 @@ function renderDiscPeople(){
   const chips=document.getElementById('disc-people-chips'); const c=document.getElementById('disc-people'); if(!c) return;
   const cats=[['all','All'],['mentor','Mentors'],['volunteer','Volunteers'],['upskiller','Builders']];
   if(chips) chips.innerHTML=cats.map(([v,l])=>'<button class="chip'+(peopleFilter===v?' active':'')+'" onclick="peopleFilter=\''+v+'\';renderDiscPeople()">'+l+'</button>').join('');
-  const list=MEMBERS.filter(m=>peopleFilter==='all'||m.roles.includes(peopleFilter));
+  const list=MEMBERS.filter(m=>peopleFilter==='all'||m.roles.includes(peopleFilter)).slice().sort((a,b)=>peopleFilter==='mentor'?((b.verified?1:0)-(a.verified?1:0)):0);
   const jitNote=peopleFilter==='mentor'?'<div class="lcard" style="padding:14px 18px;margin-bottom:16px;background:var(--tint);"><span class="t-small"><b>Working on a project?</b> Mentors respond to evidence-backed requests, not cold asks — <a class="see" onclick="startFlow(\'mentorRequest\', ()=>goApp(\'discover\'))">request a mentor →</a></span></div>':'';
-  c.innerHTML=jitNote+list.map(m=>'<div class="card tappable" onclick="showMemberProfile(\''+m.id+'\')"><div class="card-body"><div style="display:flex;align-items:center;gap:14px;margin-bottom:12px;"><span class="avatar-lg" style="width:52px;height:52px;font-size:18px;flex-shrink:0;">'+m.initials+'</span><div style="min-width:0;"><div class="t-h4">'+escHTML(m.name)+'</div><p class="t-small" style="color:var(--teal-deep);font-weight:600;">'+escHTML(m.headline)+'</p></div></div><p class="t-small" style="margin-bottom:12px;">'+escHTML(m.metro)+'</p><div class="tag-wrap">'+m.roles.map(r=>'<span class="tag-btn active" style="pointer-events:none;">'+(r==='upskiller'?'Builder':r[0].toUpperCase()+r.slice(1))+'</span>').join('')+'</div></div></div>').join('');
+  c.innerHTML=jitNote+list.map(m=>'<div class="card tappable" onclick="showMemberProfile(\''+m.id+'\')"><div class="card-body"><div style="display:flex;align-items:center;gap:14px;margin-bottom:12px;"><span class="avatar-lg" style="width:52px;height:52px;font-size:18px;flex-shrink:0;">'+m.initials+'</span><div style="min-width:0;flex:1;"><div class="t-h4">'+escHTML(m.name)+(m.verified?' <span title="Vouched for by The Labs" style="color:var(--teal-deep);">✓</span>':'')+'</div><p class="t-small" style="color:var(--teal-deep);font-weight:600;">'+escHTML(m.headline)+'</p></div>'+followBtnHTML(m)+'</div><p class="t-small" style="margin-bottom:12px;">'+escHTML(m.metro)+' · '+((m.followers||0)+(isFollowing(m.id)?1:0))+' followers</p><div class="tag-wrap">'+m.roles.map(r=>'<span class="tag-btn active" style="pointer-events:none;">'+(r==='upskiller'?'Builder':r[0].toUpperCase()+r.slice(1))+'</span>').join('')+'</div></div></div>').join('');
   enhanceTappables();
 }
 function allUpdates(){
@@ -1814,7 +1846,12 @@ function allUpdates(){
 }
 function renderDiscUpdates(){
   const c=document.getElementById('disc-updates'); if(!c) return;
-  c.innerHTML=allUpdates().slice(0,6).map(u=>'<div class="lcard" style="padding:18px 20px;'+(u.memberId?'cursor:pointer;':'')+'" '+(u.memberId?'onclick="showMemberProfile(\''+u.memberId+'\')"':'')+'><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">'+avatarSm(u.initials,u.who)+'<div><div class="t-h4" style="font-size:14px;">'+escHTML(u.who)+'</div><div class="t-small" style="color:var(--meta);">'+relDate(u.at)+'</div></div></div><p class="t-small">'+escHTML(u.body)+'</p></div>').join('');
+  const chips=document.getElementById('disc-updates-chips');
+  if(chips) chips.innerHTML=[['all','All'],['following','Following']].map(([v,l])=>'<button class="chip'+(updatesFilter===v?' active':'')+'" onclick="updatesFilter=\''+v+'\';renderDiscUpdates()">'+l+'</button>').join('');
+  let list=allUpdates();
+  if(updatesFilter==='following'){ list=list.filter(u=>u.memberId&&isFollowing(u.memberId));
+    if(!list.length){ c.innerHTML='<div class="lcard" style="padding:18px 20px;"><p class="t-small" style="color:var(--meta);">You\u2019re not following anyone yet — follow mentors and builders from the community directory to see their work here first.</p></div>'; return; } }
+  c.innerHTML=list.slice(0,6).map(u=>'<div class="lcard" style="padding:18px 20px;'+(u.memberId?'cursor:pointer;':'')+'" '+(u.memberId?'onclick="showMemberProfile(\''+u.memberId+'\')"':'')+'><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">'+avatarSm(u.initials,u.who)+'<div><div class="t-h4" style="font-size:14px;">'+escHTML(u.who)+'</div><div class="t-small" style="color:var(--meta);">'+relDate(u.at)+'</div></div></div><p class="t-small">'+escHTML(u.body)+'</p></div>').join('');
 }
 function renderDiscLabs(){
   const c=document.getElementById('disc-labs'); if(!c) return;
@@ -1941,11 +1978,12 @@ function showMemberProfile(id){
   document.getElementById('prof-avatar').textContent=m.initials;
   document.getElementById('prof-name').textContent=m.name;
   document.getElementById('prof-headline').textContent=m.headline;
-  document.getElementById('prof-meta').textContent=m.metro+' · Joined Spring 2026';
+  document.getElementById('prof-meta').textContent=memberMetaText(m);
   const bio=document.getElementById('prof-bio'); if(bio) bio.innerHTML=escHTML(m.bio);
   renderBadges(true); // established mock members show the earned treatment
+  if(m.verified){ const b=document.getElementById('prof-badges'); if(b) b.insertAdjacentHTML('afterbegin', verifiedPill(m)); }
   document.getElementById('prof-roles').innerHTML=m.roles.map(r=>'<span class="tag-btn active" style="pointer-events:none;cursor:default;">'+(r==='upskiller'?'Builder':r[0].toUpperCase()+r.slice(1))+'</span>').join('');
-  document.getElementById('prof-actions').innerHTML='<button class="btn btn-teal btn-sm" onclick="showView(\'stub\')">Say hi in Slack</button>';
+  document.getElementById('prof-actions').innerHTML=followBtnHTML(m)+' <button class="btn btn-ghost-teal btn-sm" onclick="showView(\'stub\')">Say hi in Slack</button>';
   const cred=document.getElementById('prof-cred'); if(cred){ cred.style.display='none'; cred.innerHTML=''; }
   const ce=document.getElementById('prof-case-edit'); if(ce) ce.style.display='none';
   const mc=document.getElementById('prof-mentor-cta'); if(mc) mc.style.display='none';
@@ -1954,7 +1992,7 @@ function showMemberProfile(id){
   renderProfUpdates(m.updates||[], false);
   const bm=document.getElementById('prof-bookmarks'); if(bm) bm.innerHTML='';
   document.getElementById('prof-skills').innerHTML='<div class="tag-wrap">'+(m.expertise||[]).map(t=>'<span class="tag-btn active" style="pointer-events:none;">'+escHTML(t)+'</span>').join('')+'</div>';
-  const rd=document.getElementById('prof-roledetail'); if(rd) rd.innerHTML='';
+  const rd=document.getElementById('prof-roledetail'); if(rd){ rd.innerHTML=(m.testimonials&&m.testimonials.length)?'<div class="cards two"><div class="lcard" style="padding:24px;"><div class="lbl lbl-teal" style="margin-bottom:8px;">As a mentor</div>'+testimonialBlockHTML(m.testimonials, false)+'</div></div>':''; rd.style.display=rd.innerHTML?'block':'none'; }
   const so=document.getElementById('prof-signout-wrap'); if(so) so.style.display='none';
   const pv=document.getElementById('prof-preview-bar');
   if(pv){ pv.style.display='block'; pv.innerHTML='<div style="background:var(--ink);color:var(--od1);padding:11px var(--pad);display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;"><span class="t-small" style="color:var(--od2);">Viewing '+escHTML(m.name)+'’s public profile.</span><button class="btn-link" style="color:#fff;font-weight:600;font-size:13px;" onclick="goApp(\'discover\')">Back to Discover</button></div>'; }
@@ -2243,15 +2281,13 @@ function FLOWS(name){
       {id:'level',type:'choice',q:'Where are you at in your primary area?',options:LEVELS.map(l=>({v:l[0],label:l[0],sub:l[1]}))},
       {id:'goals',type:'textarea',q:'What do you most want from this cycle?',ph:'What would make this time well spent?',required:true},
       {id:'hours',type:'choice',q:'How much time can you commit?',options:HOURS.map(h=>({v:h,label:h}))} ]};
-  if(name==='mentor') return { eyebrow:'Mentor profile', finalLabel:'Save profile', finalClass:'btn-teal', onComplete:()=>finishRoleFlow('mentor'),
-    steps:[ {id:'expertise',type:'tags',q:'What do you bring?',help:'Pick the areas where you can help. Choose as many as fit.',options:EXPERTISE,required:true},
+  if(name==='mentor') return { eyebrow:'Mentor profile', finalLabel:'Publish mentor profile', finalClass:'btn-teal', onComplete:()=>finishRoleFlow('mentor'),
+    steps:[ {id:'expertise',type:'tags',q:'What do you bring?',help:'Pick the areas where you can help — everything here shows on your public mentor profile, which is how upskillers and project teams find you.',options:EXPERTISE,required:true},
       {id:'engage',type:'checks',q:'How would you like to engage?',help:'Select all that work for you.',options:ENGAGE,required:true},
-      {id:'pods',type:'textarea',q:'Who have you mentored, and how?',help:'No names needed — pods or people, and what you helped with.',ph:'e.g. 3 pods in the Civic AI cycle — weekly office hours on scoping and shipping.',required:true},
-      {id:'outcome',type:'textarea',q:'What did they achieve?',help:'Something concrete a recruiter could check.',ph:'e.g. All 3 pods shipped a working demo at the Spring showcase.',required:true},
+      {id:'pods',type:'textarea',q:'Who have you mentored, and how?',help:'Tell us where, when, and how you\u2019ve mentored — inside or outside The Labs. No names needed.',ph:'e.g. 3 pods in the Civic AI cycle — weekly office hours on scoping and shipping.',required:true},
       {id:'tz',type:'choice',q:'What time zone are you in?',options:TZ.map(t=>({v:t,label:t}))},
       {id:'booking',type:'text',q:'Share a booking link',help:'Optional — makes it easy for pods to grab time with you.',ph:'calendly.com/your-link',required:false},
-      {id:'artifact',type:'text',q:'Link to something you made as a mentor',help:'Optional — a framework, a workshop, a recap. Shows up on your profile.',ph:'labs.org/showcase/civic-ai',required:false},
-      {id:'testimonial',type:'textarea',q:'A line from someone you mentored',help:'Optional — the one piece of evidence about you, not just by you.',ph:'"Alex unblocked us every single week." — Pod 2',required:false} ]};
+      {id:'artifact',type:'text',q:'Link to something you made as a mentor',help:'Optional — a framework, a workshop, a recap. Shows up on your profile.',ph:'labs.org/showcase/civic-ai',required:false} ]};
   if(name==='volunteer') return { eyebrow:'Volunteer profile', finalLabel:'Save profile', finalClass:'btn-teal', onComplete:()=>finishRoleFlow('volunteer'),
     steps:[ {id:'areas',type:'tags',q:'Where would you like to help?',help:'Pick the areas that fit. Choose as many as you like.',options:VOL_AREAS,required:true},
       {id:'ways',type:'checks',q:'How would you like to pitch in?',help:'Select all that work for you.',options:VOL_WAYS,required:true},
@@ -2367,9 +2403,14 @@ function renderActivity(){
   pat.forEach((v,i)=>{ const boost=byWeek[i]||0; const lvl=Math.min(4, v+boost); const s=document.createElement('div'); s.className='act-sq'; if(boost) s.title=boost+' update'+(boost>1?'s':'')+' this week'; s.style.background='rgba(0,148,160,'+op[lvl]+')'; g.appendChild(s); });
 }
 
-function updateChecklistCount(){ const total=document.querySelectorAll('#checklist-items input[type=checkbox]').length; const done=document.querySelectorAll('#checklist-items input[type=checkbox]:checked').length; const rem=total-done; const c=document.getElementById('checklist-count'); if(c) c.textContent=rem===0?'All done':rem+' left'; }
-function tickChecklist(el){ if(el.checked){ const l=el.closest('.check-row').querySelector('.t-h4'); if(l){ l.style.textDecoration='line-through'; l.style.color='var(--meta)'; } } updateChecklistCount(); }
-function renderProfileChecklist(){ const box=document.getElementById('role-items'); if(!box) return; box.innerHTML=''; userState.roles.filter(r=>FLOW_ROLES.includes(r)).forEach(role=>{ const meta=ROLE_ITEMS[role]; if(!meta) return; const done=!!userState.completed[role]; const row=document.createElement('div'); row.className='check-row role-row'; if(!done){ row.style.cursor='pointer'; row.onclick=()=>startRoleFlow(role, ()=>showView('dashboard')); } const strike=done?'color:var(--meta);text-decoration:line-through;':''; row.innerHTML='<input type="checkbox" '+(done?'checked ':'')+'disabled><div><div class="t-h4" style="margin-bottom:2px;'+strike+'">'+meta.title+'</div>'+(done?'':'<div class="t-small">'+meta.sub+'</div>')+'</div>'; box.appendChild(row); }); updateChecklistCount(); }
+function updateChecklistCount(){ const total=document.querySelectorAll('#checklist-items input[type=checkbox]').length; const done=document.querySelectorAll('#checklist-items input[type=checkbox]:checked').length; const rem=total-done; const c=document.getElementById('checklist-count'); if(c) c.textContent=rem===0?'All done':rem+' left';
+  // Complete setup collapses to a strip — the journal becomes the dashboard's lead card.
+  const full=document.getElementById('setup-full'), strip=document.getElementById('setup-done-strip');
+  if(full&&strip&&rem===0&&full.style.display!=='none'){ full.style.display='none'; strip.style.display='flex'; }
+}
+function toggleSetupSection(){ const full=document.getElementById('setup-full'), strip=document.getElementById('setup-done-strip'); if(!full||!strip) return; full.style.display='block'; strip.style.display='none'; }
+function tickChecklist(el){ if(el.checked){ const row=el.closest('.check-row'); const l=row.querySelector('.t-h4'); if(l){ l.style.textDecoration='line-through'; l.style.color='var(--meta)'; } const b=row.querySelector('.btn'); if(b) b.style.display='none'; } updateChecklistCount(); }
+function renderProfileChecklist(){ const box=document.getElementById('role-items'); if(!box) return; box.innerHTML=''; userState.roles.filter(r=>FLOW_ROLES.includes(r)).forEach(role=>{ const meta=ROLE_ITEMS[role]; if(!meta) return; const done=!!userState.completed[role]; const row=document.createElement('div'); row.className='check-row role-row'; if(!done){ row.style.cursor='pointer'; row.onclick=()=>startRoleFlow(role, ()=>showView('dashboard')); } const strike=done?'color:var(--meta);text-decoration:line-through;':''; row.innerHTML='<input type="checkbox" '+(done?'checked ':'')+'disabled><div style="flex:1;"><div class="t-h4" style="margin-bottom:2px;'+strike+'">'+meta.title+'</div>'+(done?'':'<div class="t-small">'+meta.sub+'</div>')+'</div>'+(done?'':'<button class="btn btn-ghost-teal btn-sm" style="flex-shrink:0;align-self:center;">Start →</button>'); box.appendChild(row); }); updateChecklistCount(); }
 function renderTodos(){
   // Prominent-but-skippable: the survey + Triangulator lead the list and are
   // dismissible; everything here is a suggestion, never a gate. Your live
@@ -2513,7 +2554,7 @@ function renderProfileView(isOwner=true){
   renderProfUpdates(userState.updates, isOwner);
   const ce=document.getElementById('prof-case-edit'); if(ce) ce.style.display=isOwner?'block':'none';
   const mc=document.getElementById('prof-mentor-cta'); if(mc) mc.style.display=(isOwner&&!(userState.completed&&userState.completed.mentor))?'block':'none';
-  const meta=document.getElementById('prof-meta'); if(meta) meta.textContent=(pa.location||userState.lab.name||'Washington, DC')+' · Joined Spring 2026';
+  const meta=document.getElementById('prof-meta'); if(meta) meta.textContent=(pa.location||userState.lab.name||'Washington, DC')+' · Joined Spring 2026 · '+userState.following.length+' following';
   const head=document.getElementById('prof-headline'); if(head){ const sk=mergedSkills(); head.textContent=pa.headline||(sk.length?sk.slice(0,2).map(s=>s.label).join(' · '):'Practitioner · building in the open'); }
   const rb=document.getElementById('prof-roles'); if(rb) rb.innerHTML=profRoleList().map(r=>'<span class="tag-btn active" style="pointer-events:none;cursor:default;">'+r.label+'</span>').join('');
   const act=document.getElementById('prof-actions');
@@ -2554,7 +2595,7 @@ function renderCredBand(){
 }
 function buildPortfolio(){
   const list=PROJECTS.slice();
-  if(userState.completed&&userState.completed.mentor){ const m=userState.mentorAnswers||{}; list.push({ title:'Mentoring — '+((m.expertise&&m.expertise[0])||'pods'), roleType:'mentor', featured:false, tag:'Mentor', role:'Mentor'+(m.tz?' · '+m.tz:''), summary:(m.pods||'Guided pods through scoping and shipping.'), outcome:(m.outcome||''), testimonial:(m.testimonial||''), artifact:m.artifact?{label:'View artifact',href:linkify(m.artifact)}:null }); }
+  if(userState.completed&&userState.completed.mentor){ const m=userState.mentorAnswers||{}; list.push({ title:'Mentoring — '+((m.expertise&&m.expertise[0])||'pods'), roleType:'mentor', featured:false, tag:'Mentor', role:'Mentor'+(m.tz?' · '+m.tz:''), summary:(m.pods||'Guided pods through scoping and shipping.'), outcome:(m.outcome||''), testimonial:(userState.testimonials&&userState.testimonials[0]?'\u201c'+userState.testimonials[0].quote+'\u201d — '+userState.testimonials[0].from:''), artifact:m.artifact?{label:'View artifact',href:linkify(m.artifact)}:null }); }
   if(userState.completed&&userState.completed.volunteer){ const v=userState.volunteerAnswers||{}; list.push({ title:'Volunteering — '+((v.areas&&v.areas[0])||'community'), roleType:'volunteer', featured:false, tag:'Volunteer', role:'Volunteer', summary:((v.ways&&v.ways.join(', '))||'Pitched in on community operations.'), outcome:(v.hours?('Committing '+v.hours):'') }); }
   return list;
 }
@@ -2597,11 +2638,35 @@ function renderSkills(){
   el.style.display='block';
   el.innerHTML='<div class="tag-wrap">'+sk.map(s=>'<span class="tag-btn active" title="From '+s.source+'" style="pointer-events:none;cursor:default;">'+s.label+'</span>').join('')+'</div>';
 }
+/* ── Testimonials — evidence about you, not by you. Mentors REQUEST them from
+   people they've mentored; they can hide a received quote or cancel a pending
+   request, but can never write or edit one. Production: mentor_testimonials
+   (author ≠ mentor enforced). ── */
+function testimonialBlockHTML(list, owner){
+  let h='<div class="lbl" style="margin:14px 0 6px;">Testimonials</div>';
+  const items=(list||[]);
+  if(items.length) h+=items.map((t,i)=>'<div style="border-left:3px solid var(--teal);padding:2px 0 2px 12px;margin-bottom:10px;"><p class="t-small" style="font-style:italic;">\u201c'+escHTML(t.quote)+'\u201d</p><div style="display:flex;justify-content:space-between;gap:10px;"><span class="t-small" style="color:var(--meta);">— '+escHTML(t.from)+'</span>'+(owner?'<a class="see" style="font-size:12px;color:var(--meta);" onclick="hideTestimonial('+i+')">Hide</a>':'')+'</div></div>').join('');
+  else if(!owner) h+='<p class="t-small" style="color:var(--meta);">No testimonials yet.</p>';
+  if(owner){
+    h+=(userState.testimonialRequests||[]).map(id=>{ const mm=memberById(id); return mm?'<span class="tag-btn" style="pointer-events:auto;cursor:default;margin:0 6px 6px 0;">Requested from '+escHTML(mm.name)+' · awaiting reply <a style="cursor:pointer;font-weight:700;margin-left:4px;" onclick="cancelTestimonialRequest(\''+id+'\')" title="Cancel request">×</a></span>':''; }).join('');
+    h+='<div style="margin-top:8px;"><button class="btn btn-ghost-teal btn-sm" onclick="toggleTestimonialPicker(event)">Request a testimonial</button><div id="testi-picker" style="display:none;margin-top:10px;">'
+      +'<p class="t-small" style="margin-bottom:8px;color:var(--meta);">Ask someone you\u2019ve mentored — they write it, you can\u2019t. Evidence about you, not by you.</p>'
+      +MEMBERS.filter(mm=>!(userState.testimonialRequests||[]).includes(mm.id)).map(mm=>'<button class="tag-btn" style="margin:0 6px 6px 0;cursor:pointer;" onclick="requestTestimonial(\''+mm.id+'\')">'+escHTML(mm.name)+'</button>').join('')
+      +'</div></div>';
+  }
+  return h;
+}
+function toggleTestimonialPicker(e){ if(e) e.stopPropagation(); const p=document.getElementById('testi-picker'); if(p) p.style.display=p.style.display==='none'?'block':'none'; }
+function requestTestimonial(id){ if(!userState.testimonialRequests.includes(id)) userState.testimonialRequests.push(id); renderRoleDetail(true); const p=document.getElementById('testi-picker'); if(p) p.style.display='block'; }
+function cancelTestimonialRequest(id){ const i=userState.testimonialRequests.indexOf(id); if(i>=0) userState.testimonialRequests.splice(i,1); renderRoleDetail(true); }
+function hideTestimonial(i){ userState.testimonials.splice(i,1); renderRoleDetail(true); }
 function renderRoleDetail(isOwner){
   const el=document.getElementById('prof-roledetail'); if(!el) return; const blocks=[];
   if(userState.completed&&userState.completed.mentor){ const m=userState.mentorAnswers||{}; let h='<div class="lcard" style="padding:24px;"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;"><div class="lbl lbl-teal">As a mentor</div>'+(isOwner?'<button class="btn-link" style="color:var(--teal-deep);font-size:13px;" onclick="editMentorProfile()">Edit</button>':'')+'</div>';
     if(m.engage&&m.engage.length){ h+='<div class="lbl" style="margin-bottom:6px;">How I engage</div><div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;">'+m.engage.map(e=>'<span class="t-small">· '+e+'</span>').join('')+'</div>'; }
     const bits=[]; if(m.tz) bits.push('<span class="t-small" style="color:var(--meta);">'+m.tz+'</span>'); if(m.booking) bits.push('<a class="t-small" style="color:var(--teal-deep);" href="'+linkify(m.booking)+'" target="_blank" rel="noopener">'+m.booking+'</a>'); if(bits.length) h+='<div style="display:flex;flex-wrap:wrap;gap:16px;">'+bits.join('')+'</div>';
+    if(isOwner) h+='<p class="t-small" style="color:var(--meta);margin-top:12px;">Verification (\u201cVouched by The Labs\u201d) is added by the Labs team for mentors they\u2019ve worked with — nothing to apply for.</p>';
+    h+=testimonialBlockHTML(userState.testimonials, isOwner);
     h+='</div>'; blocks.push(h); }
   if(userState.completed&&userState.completed.volunteer){ const v=userState.volunteerAnswers||{}; let h='<div class="lcard" style="padding:24px;"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;"><div class="lbl lbl-teal">As a volunteer</div>'+(isOwner?'<button class="btn-link" style="color:var(--teal-deep);font-size:13px;" onclick="editVolunteerProfile()">Edit</button>':'')+'</div>';
     if(v.ways&&v.ways.length){ h+='<div class="lbl" style="margin-bottom:6px;">How I pitch in</div><div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;">'+v.ways.map(w=>'<span class="t-small">· '+w+'</span>').join('')+'</div>'; }

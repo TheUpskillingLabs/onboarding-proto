@@ -119,10 +119,10 @@ Hackathon, Meet the Projects, Showcase Summit) — they lead the `EVENTS` array 
 `kind`), appear ✦-marked on the week rail, and drive `CYCLE.milestones`. Phases are
 `Problem Sprint / Frame Sprint / Building`.
 
-**`panel-dashboard`** is the admin view of your own presence: condensed identity header
-(avatar + greeting + "View your full profile"), the **update composer** (posts to your profile's
-activity feed), setup checklist, and dismissible "Up next" cards — the field survey and the
-Triangulator lead that list (prominent but skippable, never a gate).
+**`panel-dashboard`** is the admin view of your own presence, in this order: **setup checklist
+first** (actionable rows carry visible "Start →" buttons — no hover-only affordances; the
+whole section collapses to a "Setup · All done ✓" strip once complete), then the **Practice
+Journal**, then the demoted public composer, then dismissible "Up next" cards.
 
 ### Journey rules (added in the UX-improvements pass — keep these invariants)
 
@@ -172,10 +172,23 @@ Triangulator lead that list (prominent but skippable, never a gate).
 - **Evidence precedes assistance:** `FLOWS('mentorRequest')` — required tried/evidence/
   challenge steps; entry points on the project canvas and the directory's mentor filter.
   Public event RSVPs are email-only (`#rsvp-modal`, `openRsvp()`) — never account-gated.
-- **Mentor pathways:** role-intent keeps Mentor (recruited mentors use the same signup);
-  signup asks "How did you hear about us?" (+ conditional "Who referred you?" →
-  `userState.referral`); the profile's "I have experience to offer" card starts the mentor
-  flow anytime (`#prof-mentor-cta`, owner-only, hidden once `completed.mentor`).
+- **Mentor pathways (self-service marketplace):** role-intent keeps Mentor (recruited mentors
+  use the same signup); signup asks "How did you hear about us?" (+ conditional "Who referred
+  you?" → `userState.referral`); the profile's "I have experience to offer" card starts the
+  mentor flow anytime (`#prof-mentor-cta`, owner-only, hidden once `completed.mentor`). The
+  6-step mentor intake (expertise/engage/pods/tz/booking/artifact) **publishes immediately** —
+  no review queue; the explainer says exactly where answers go. Staff can concierge, never
+  gate.
+- **Testimonials are requested, never self-written:** `testimonialBlockHTML()` — mentors
+  request quotes from members (pending chips, cancellable), authors write them, mentors can
+  only hide. Received quotes render with attribution on the mentor's profile and directory
+  visitor view.
+- **Follow + verified:** `toggleFollow(id,e)` / `isFollowing(id)`; follower counts on member
+  meta lines, "N following" on the owner's; Discover's Community updates has All/Following
+  chips (`updatesFilter`). `verified:true` mock mentors carry the admin-granted
+  **"✓ Vouched by The Labs"** pill (profile) and ✓ (directory card), sort first under the
+  mentor filter; never self-serve, no locked state — one explanatory line in the mentor
+  detail card.
 - **Directory:** Discover → member card → `showMemberProfile(id)` renders that member into
   `view-profile` in visitor mode ("Back to Discover" bar). Owner state is fully restored by
   `renderProfileView()` on next open.
@@ -209,6 +222,9 @@ renderCycleSituations() / renderCycleProposals()   // two formation tiers on pan
 inPod() / commitToProposal(id,intent,e) / confirmCommit() / openProjectCanvas(id)  // gate + confirm sheet + staking + ignition
 renderJournal() / saveJournalEntry()               // Practice Journal (phase-evolving prompts)
 openRsvp(ctx,e) / submitRsvp()                     // email-only public event RSVP
+toggleFollow(id,e) / isFollowing(id)               // follow system (updates feed filter payoff)
+testimonialBlockHTML(list,owner) / requestTestimonial(id)  // requested-only testimonials
+toggleSetupSection()                               // re-expand the collapsed setup strip
 openEvent(id)             // data-driven event detail (EVENTS lookup; no id = static default)
 renderBadges(earned) / bioWithCitations(text)      // trust states + anchored citations
 exitSurveyShare() / exitTriangulator()             // auth-aware exits
