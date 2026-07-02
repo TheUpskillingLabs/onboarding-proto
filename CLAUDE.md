@@ -88,16 +88,18 @@ its own **panels** (`.panel`), a sticky dark top nav, and a mobile bottom tab ba
 | `view-flow` | One-question-per-screen engine (signup / cycle / mentor / volunteer / profile / **survey**) |
 | `view-mentor-explainer` | 2-step mentor briefing |
 | `view-stub` | Generic "you're all set" |
-| `view-profile` | Public portfolio profile — trust badges, citation chips, updates feed, case-study peer-approval banner |
 | `view-survey-share` | Post-survey share screen (copy link; `?survey=` deep-links back into the flow) |
 | `view-triangulator` | Slim chrome + same-origin `<iframe src="triangulator.html">` |
 | `view-team-ignition` | Full-screen "Team initialized" interstitial (staking threshold reached) |
 | `view-project-canvas` | Project instance mockup — 5-seat roster + 2 locked facilitator-override seats + case-study pending-approval UI |
-| `app-shell` | Signed-in app |
+| `app-shell` | Signed-in app — includes `panel-profile` (the public portfolio: trust badges, citation chips, updates feed, testimonials, case-study peer-approval) |
 
 ### Signed-in navigation: Discover · Dashboard · Profile
 
-Top nav and bottom tab bar both carry exactly three destinations. **`panel-discover`** is the
+Top nav and bottom tab bar both carry exactly three destinations and **persist on every
+signed-in page, profile included** (LinkedIn model — the profile is `panel-profile` inside the
+shell, not a separate view; no bespoke back-bar). Your own profile highlights Profile; a
+directory member's profile keeps Discover highlighted (`viewingMemberProfile`). **`panel-discover`** is the
 single browse destination — cycle banner, events, library, community directory
 (mentor-filterable chips), community updates, labs, saved. Every section renders from JS data
 arrays (`EVENTS`, `RESOURCES`, `MEMBERS`, `LABS`) so production swaps the data source, not
@@ -230,7 +232,7 @@ renderBadges(earned) / bioWithCitations(text)      // trust states + anchored ci
 exitSurveyShare() / exitTriangulator()             // auth-aware exits
 deleteUpdate(at) / editUpdate(at)                  // owner controls on profile updates
 enhanceTappables()        // keyboard access for dynamic cards
-showMemberProfile(id)     // directory → visitor-mode profile
+showMemberProfile(id)     // directory → visitor-mode profile (Discover stays highlighted)
 postUpdate() / renderProfUpdates(list)             // social updates
 seedTriangulatorPool() / appendSurveyObservation() // shared survey pool
 openTriangulator()        // seeds pool, lazy-sets iframe src, shows view

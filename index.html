@@ -990,68 +990,6 @@ button,input,select,textarea { font-family:inherit; }
   </div>
 
   <!-- ════════ PROFILE ════════ -->
-  <div id="view-profile" class="view light s-paper">
-    <div class="prof-bar">
-      <button class="icon-btn" id="prof-back" onclick="goApp('dashboard')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></button>
-      <span class="lbl" style="margin-left:4px;">Public profile</span>
-      <button class="icon-btn" style="margin-left:auto;" title="Share"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></button>
-    </div>
-    <div class="vscroll">
-      <div id="prof-preview-bar" style="display:none;"></div>
-      <div class="container" style="padding-top:32px;padding-bottom:48px;max-width:920px;">
-        <div class="prof-head" style="margin-bottom:18px;align-items:flex-start;">
-          <div class="avatar-lg" id="prof-avatar">AR</div>
-          <div style="flex:1;min-width:0;">
-            <h1 class="t-h1" id="prof-name" style="margin-bottom:4px;">Alex Rivera</h1>
-            <p class="t-body" id="prof-headline" style="color:var(--teal-deep);font-weight:600;margin-bottom:6px;"></p>
-            <p class="t-body" id="prof-meta" style="margin-bottom:12px;">Washington, DC · Joined Spring 2026</p>
-            <!-- Immutable trust badges — set by the org / clients, never self-attested.
-                 Rendered by renderBadges(): locked until earned, so verification means something. -->
-            <div id="prof-badges" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;"></div>
-            <div id="prof-roles" class="tag-wrap"></div>
-          </div>
-          <div id="prof-actions" style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;flex-shrink:0;"></div>
-        </div>
-        <p class="t-lede" id="prof-bio" style="max-width:60ch;margin-bottom:36px;">Product-minded generalist learning by shipping. Currently in the Civic AI Build Cycle, focused on benefits navigation for DC residents.</p>
-
-        <div id="prof-cred" style="margin-bottom:44px;"></div>
-
-        <div class="section-head" style="padding-bottom:12px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Portfolio</div><h2 class="t-h3">Evidence, shipped in the open</h2></div></div>
-        <div id="prof-featured" style="margin-bottom:24px;"></div>
-        <!-- Published case-study edits require peer sign-off before going live. -->
-        <div id="prof-case-edit" style="margin-bottom:24px;">
-          <div id="prof-pending-banner" style="display:none;background:var(--tint);border:1px solid var(--rule);border-radius:var(--r);padding:12px 16px;margin-bottom:12px;"><span class="t-small" style="color:var(--teal-deep);font-weight:600;">Changes pending. Requires +2 peer approvals to publish live.</span></div>
-          <button class="btn btn-ghost-teal btn-sm" onclick="document.getElementById('prof-pending-banner').style.display='block'">Edit case study</button>
-        </div>
-        <div class="cards" id="prof-projects" style="margin-bottom:48px;"></div>
-
-        <div class="section-head" style="padding-bottom:12px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Activity</div><h2 class="t-h3">Showing up, week over week</h2></div></div>
-        <div id="prof-updates" style="margin-bottom:20px;"></div>
-        <div class="lcard" style="padding:24px;margin-bottom:44px;">
-          <div class="act-grid" id="act-grid" style="margin-bottom:16px;"></div>
-          <div id="act-legend" style="display:flex;flex-wrap:wrap;gap:8px 18px;margin-bottom:12px;"></div>
-          <p class="t-small">Contributions across every active role — building, mentoring, and volunteering — over the last few months.</p>
-        </div>
-
-        <div id="prof-bookmarks" style="margin-bottom:44px;"></div>
-
-        <div class="section-head" style="padding-bottom:12px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Skills & detail</div><h2 class="t-h3">What I bring</h2></div></div>
-        <div id="prof-skills" style="margin-bottom:24px;"></div>
-        <div id="prof-roledetail" style="margin-bottom:36px;"></div>
-
-        <!-- Leadership grows from within: any member can raise their hand from here. -->
-        <div id="prof-mentor-cta" class="lcard" style="padding:20px 24px;margin-bottom:36px;">
-          <div class="lbl lbl-teal" style="margin-bottom:6px;">Grow into leadership</div>
-          <div class="t-h4" style="margin-bottom:4px;">Have experience to offer?</div>
-          <p class="t-small" style="margin-bottom:14px;">Mentors, facilitators, and workshop instructors grow from within the community. Set up a mentor profile whenever you're ready.</p>
-          <button class="btn btn-ghost-teal btn-sm" onclick="startRoleFlow('mentor', ()=>showProfile())">I have experience to offer</button>
-        </div>
-        <div id="prof-signout-wrap"><button class="btn-link" style="color:var(--meta);padding:0;" onclick="logout()">Sign out</button></div>
-      </div>
-      <footer class="osfooter grain"><div class="osfooter-inner"><div class="os-pill"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3.5 9h17M3.5 15h17M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg> Open by default</div><p class="t-body" style="color:var(--od2);max-width:54ch;margin-top:18px;">Every member's profile and projects are public, so the whole community can learn from and build on each other's work.</p></div></footer>
-    </div>
-  </div>
-
   <!-- ════════ SURVEY SHARE ════════ -->
   <div id="view-survey-share" class="view light s-paper">
     <div class="vscroll">
@@ -1549,6 +1487,62 @@ button,input,select,textarea { font-family:inherit; }
         </div>
       </div>
 
+      <!-- PROFILE — one persistent global nav across the whole app (LinkedIn model):
+           your profile is just another page under Discover · Dashboard · Profile. -->
+      <div id="panel-profile" class="panel">
+      <div id="prof-preview-bar" style="display:none;"></div>
+      <div class="container" style="padding-top:32px;padding-bottom:48px;max-width:920px;">
+        <div class="prof-head" style="margin-bottom:18px;align-items:flex-start;">
+          <div class="avatar-lg" id="prof-avatar">AR</div>
+          <div style="flex:1;min-width:0;">
+            <h1 class="t-h1" id="prof-name" style="margin-bottom:4px;">Alex Rivera</h1>
+            <p class="t-body" id="prof-headline" style="color:var(--teal-deep);font-weight:600;margin-bottom:6px;"></p>
+            <p class="t-body" id="prof-meta" style="margin-bottom:12px;">Washington, DC · Joined Spring 2026</p>
+            <!-- Immutable trust badges — set by the org / clients, never self-attested.
+                 Rendered by renderBadges(): locked until earned, so verification means something. -->
+            <div id="prof-badges" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;"></div>
+            <div id="prof-roles" class="tag-wrap"></div>
+          </div>
+          <div id="prof-actions" style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;flex-shrink:0;"></div>
+        </div>
+        <p class="t-lede" id="prof-bio" style="max-width:60ch;margin-bottom:36px;">Product-minded generalist learning by shipping. Currently in the Civic AI Build Cycle, focused on benefits navigation for DC residents.</p>
+
+        <div id="prof-cred" style="margin-bottom:44px;"></div>
+
+        <div class="section-head" style="padding-bottom:12px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Portfolio</div><h2 class="t-h3">Evidence, shipped in the open</h2></div></div>
+        <div id="prof-featured" style="margin-bottom:24px;"></div>
+        <!-- Published case-study edits require peer sign-off before going live. -->
+        <div id="prof-case-edit" style="margin-bottom:24px;">
+          <div id="prof-pending-banner" style="display:none;background:var(--tint);border:1px solid var(--rule);border-radius:var(--r);padding:12px 16px;margin-bottom:12px;"><span class="t-small" style="color:var(--teal-deep);font-weight:600;">Changes pending. Requires +2 peer approvals to publish live.</span></div>
+          <button class="btn btn-ghost-teal btn-sm" onclick="document.getElementById('prof-pending-banner').style.display='block'">Edit case study</button>
+        </div>
+        <div class="cards" id="prof-projects" style="margin-bottom:48px;"></div>
+
+        <div class="section-head" style="padding-bottom:12px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Activity</div><h2 class="t-h3">Showing up, week over week</h2></div></div>
+        <div id="prof-updates" style="margin-bottom:20px;"></div>
+        <div class="lcard" style="padding:24px;margin-bottom:44px;">
+          <div class="act-grid" id="act-grid" style="margin-bottom:16px;"></div>
+          <div id="act-legend" style="display:flex;flex-wrap:wrap;gap:8px 18px;margin-bottom:12px;"></div>
+          <p class="t-small">Contributions across every active role — building, mentoring, and volunteering — over the last few months.</p>
+        </div>
+
+        <div id="prof-bookmarks" style="margin-bottom:44px;"></div>
+
+        <div class="section-head" style="padding-bottom:12px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Skills & detail</div><h2 class="t-h3">What I bring</h2></div></div>
+        <div id="prof-skills" style="margin-bottom:24px;"></div>
+        <div id="prof-roledetail" style="margin-bottom:36px;"></div>
+
+        <!-- Leadership grows from within: any member can raise their hand from here. -->
+        <div id="prof-mentor-cta" class="lcard" style="padding:20px 24px;margin-bottom:36px;">
+          <div class="lbl lbl-teal" style="margin-bottom:6px;">Grow into leadership</div>
+          <div class="t-h4" style="margin-bottom:4px;">Have experience to offer?</div>
+          <p class="t-small" style="margin-bottom:14px;">Mentors, facilitators, and workshop instructors grow from within the community. Set up a mentor profile whenever you're ready.</p>
+          <button class="btn btn-ghost-teal btn-sm" onclick="startRoleFlow('mentor', ()=>showProfile())">I have experience to offer</button>
+        </div>
+        <div id="prof-signout-wrap"><button class="btn-link" style="color:var(--meta);padding:0;" onclick="logout()">Sign out</button></div>
+      </div>
+      </div>
+
       <!-- shared footer — same as the public site, wired to app navigation -->
       <footer class="osfooter grain">
         <div class="osfooter-inner">
@@ -1789,7 +1783,7 @@ function toggleFollow(id,e){
   if(i>=0) userState.following.splice(i,1); else userState.following.push(id);
   const m=memberById(id);
   // Refresh whichever surface the toggle lives on.
-  if(document.getElementById('view-profile').classList.contains('active')&&document.getElementById('prof-name').textContent===m.name){
+  if(document.getElementById('panel-profile').classList.contains('active')&&document.getElementById('prof-name').textContent===m.name){
     const act=document.getElementById('prof-actions'); if(act) act.innerHTML=followBtnHTML(m)+' <button class="btn btn-ghost-teal btn-sm" onclick="showView(\'stub\')">Say hi in Slack</button>';
     const meta=document.getElementById('prof-meta'); if(meta) meta.textContent=memberMetaText(m);
   }
@@ -1974,6 +1968,7 @@ function openProjectCanvas(id){
 /* ── Member profiles (directory → visitor view) ── */
 function showMemberProfile(id){
   const m=memberById(id); if(!m) return;
+  viewingMemberProfile=true;
   renderActivity();
   document.getElementById('prof-avatar').textContent=m.initials;
   document.getElementById('prof-name').textContent=m.name;
@@ -1996,7 +1991,6 @@ function showMemberProfile(id){
   const so=document.getElementById('prof-signout-wrap'); if(so) so.style.display='none';
   const pv=document.getElementById('prof-preview-bar');
   if(pv){ pv.style.display='block'; pv.innerHTML='<div style="background:var(--ink);color:var(--od1);padding:11px var(--pad);display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;"><span class="t-small" style="color:var(--od2);">Viewing '+escHTML(m.name)+'’s public profile.</span><button class="btn-link" style="color:#fff;font-weight:600;font-size:13px;" onclick="goApp(\'discover\')">Back to Discover</button></div>'; }
-  const back=document.getElementById('prof-back'); if(back) back.onclick=()=>goApp('discover');
   showView('profile');
 }
 /* ── Profile updates feed (real content behind the activity strip) ── */
@@ -2160,7 +2154,7 @@ let mentorStep = 1; let gateContext = ''; let mentorBack=()=>showView('role-inte
 function scrollTop(){ const v=document.querySelector('.view.active .vscroll'); if(v) v.scrollTop=0; else window.scrollTo(0,0); }
 function scrollToSection(id){ const el=document.getElementById(id); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); }
 
-const APP_PANELS=['discover','dashboard','cycles','events','resources','event','labs','bookmarks'];
+const APP_PANELS=['discover','dashboard','profile','cycles','events','resources','event','labs','bookmarks'];
 function showView(id){
   closeHamMenu();
   // Auth guard: the app shell is members-only. Signed-out visitors (e.g. arriving
@@ -2182,7 +2176,13 @@ function closeHamMenu(){
   if(btn) btn.classList.remove('open'); if(menu) menu.classList.remove('open');
 }
 function goApp(id){ showView(id); }
-function showProfile(isOwner=true){ renderActivity(); renderProfileView(isOwner); showView('profile'); }
+function copyProfileLink(btn){
+  const url=location.href.split(/[?#]/)[0]+'#u/alex-rivera';
+  const done=()=>{ const t=btn.textContent; btn.textContent='Link copied ✓'; setTimeout(()=>btn.textContent=t,1600); };
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(url).then(done,done); } else done();
+}
+let viewingMemberProfile=false;
+function showProfile(isOwner=true){ viewingMemberProfile=false; renderActivity(); renderProfileView(isOwner); showView('profile'); }
 function showAppView(id){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-link,.tab').forEach(t=>t.classList.remove('active'));
@@ -2192,8 +2192,9 @@ function showAppView(id){
   if(id==='dashboard') renderJournal();
   if(id==='cycles'){ renderCycleSituations(); renderCycleProposals(); }
   // Drill-in panels (cycles/events/labs/resources/bookmarks) are browse content —
-  // keep Discover highlighted so the user stays oriented in the 3-item nav.
-  const k=(id==='dashboard')?'dashboard':'discover';
+  // keep Discover highlighted so the user stays oriented in the 3-item nav. Your own
+  // profile highlights Profile; a directory member's profile keeps Discover lit.
+  const k=(id==='dashboard')?'dashboard':(id==='profile')?(viewingMemberProfile?'discover':'profile'):'discover';
   ['nav-','tab-'].forEach(pre=>{ const e=document.getElementById(pre+k); if(e) e.classList.add('active'); });
   if(!document.getElementById('app-shell').classList.contains('active')){ document.querySelectorAll('#screens > .view').forEach(v=>v.classList.remove('active')); document.getElementById('app-shell').classList.add('active'); }
   const sc=document.getElementById('app-scroll'); if(sc) sc.scrollTop=0;
@@ -2559,7 +2560,7 @@ function renderProfileView(isOwner=true){
   const rb=document.getElementById('prof-roles'); if(rb) rb.innerHTML=profRoleList().map(r=>'<span class="tag-btn active" style="pointer-events:none;cursor:default;">'+r.label+'</span>').join('');
   const act=document.getElementById('prof-actions');
   if(act){
-    if(isOwner){ act.innerHTML='<button class="btn btn-ghost-teal btn-sm" onclick="editProfile()">Edit profile</button><button class="btn-link" style="color:var(--meta);font-size:13px;" onclick="showProfile(false)">Preview as visitor →</button>'; }
+    if(isOwner){ act.innerHTML='<button class="btn btn-ghost-teal btn-sm" onclick="editProfile()">Edit profile</button><button class="btn btn-ghost-teal btn-sm" onclick="copyProfileLink(this)">Share profile</button><button class="btn-link" style="color:var(--meta);font-size:13px;" onclick="showProfile(false)">Preview as visitor →</button>'; }
     else { const li=pa.linkedin||'', ws=pa.website||''; let h='';
       if(li||ws) h+='<a class="btn btn-teal btn-sm" href="'+linkify(li||ws)+'" target="_blank" rel="noopener">Connect</a>';
       if(li&&ws) h+='<a class="btn-link" style="color:var(--teal-deep);font-size:13px;" href="'+linkify(ws)+'" target="_blank" rel="noopener">Website →</a>';
@@ -2568,7 +2569,6 @@ function renderProfileView(isOwner=true){
   }
   const pv=document.getElementById('prof-preview-bar');
   if(pv){ if(isOwner){ pv.style.display='none'; pv.innerHTML=''; } else { pv.style.display='block'; pv.innerHTML='<div style="background:var(--ink);color:var(--od1);padding:11px var(--pad);display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;"><span class="t-small" style="color:var(--od2);">Previewing how recruiters and visitors see your profile.</span><button class="btn-link" style="color:#fff;font-weight:600;font-size:13px;" onclick="showProfile(true)">Back to my view</button></div>'; } }
-  const back=document.getElementById('prof-back'); if(back) back.onclick=isOwner?()=>goApp('dashboard'):()=>showProfile(true);
   const so=document.getElementById('prof-signout-wrap'); if(so) so.style.display=isOwner?'block':'none';
   renderCredBand(); renderPortfolio(); renderActLegend(); renderProfBookmarks(); renderSkills(); renderRoleDetail(isOwner);
 }
