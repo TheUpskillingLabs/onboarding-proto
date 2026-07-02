@@ -21,8 +21,8 @@ land in the OLOS repo until implementation starts.
   that never touch `cycle_enrollments`.
 
 **Frontend source of truth:** `index.html` (the prototype) and `triangulator.html` (the embedded
-sensemaking tool) in this repo. Every mock data shape in `index.html` (`EVENTS`, `RESOURCES`,
-`MEMBERS`, `FRAMES`, `SURVEY_SEED`, `userState.updates`) is deliberately shaped like the API
+sensemaking tool) in this repo. Every mock data shape in `index.html` (`EVENTS`, `RESOURCES`, `MEMBERS`,
+`SITUATIONS`, `PROPOSALS`, `SURVEY_SEED`, `userState.journal`, `userState.updates`) is deliberately shaped like the API
 response the production endpoint should return — the production swap is a data-source change,
 not a markup rewrite.
 
@@ -127,7 +127,13 @@ status enum('draft','published','archived') default 'draft',
 author_id FK participants, published_at, created_at, updated_at
 ```
 
-Custom OLOS-native CMS — no third-party vendor. **Forward-compat for basic courses (a later
+Custom OLOS-native CMS — no third-party vendor. **Commons provenance:** add a nullable
+`project_instance_id FK` and `'playbook'` to `content_type` — project outputs (playbooks,
+kits, case studies) return to the Living Library with visible provenance ("From the commons ·
+BenefitsBot, Spring 2026 Cycle"). Publishing a project's approved case study to the library is
+the flywheel's return path; the Showcase is the moment it happens.
+
+**Forward-compat for basic courses (a later
 phase, not built now):** `content_type` is an extensible enum (adding `'course'` is one
 migration), and nothing may assume a resource is a single flat item — if courses need structure,
 that's a follow-on `course_modules` table referencing `resources` by FK.
@@ -147,37 +153,53 @@ batch-adding columns rather than a satellite table. Reuses the existing `profile
 ### 1.9 `profile_updates` (social layer)
 
 ```
-id, participant_id FK, cycle_id FK NULL, pulse_check_id FK NULL,
+id, participant_id FK, cycle_id FK NULL, journal_entry_id FK NULL,
 body text, visibility enum('public','labs_only') default 'public', created_at
 ```
 
-Backs the "Share an update" composer and the profile activity feed. The nullable
-`pulse_check_id` only logs which pulse-check moment (if any) prompted the post — it is **not**
-how content is sourced. See §6 for why this is a separate table from `pulse_checks`.
+Backs the "Share a public update" composer and the profile activity feed. The nullable
+`journal_entry_id` only logs which journal moment (if any) prompted the post — it is **not**
+how content is sourced. See §6: journal entries are never public; a public post is always a
+separate, explicit write to this table.
 
 ### 1.10 Team formation & governance (selected Open Labs OS elements)
 
-**Product decision (confirmed): problem frames are cycle-specific, pod-scoped objects,
+**Naming update (institutional model):** what earlier drafts called `problem_frames` splits
+into two objects matching the two formation moments — **`problem_situations`** (Month 1,
+Problem Sprint: communities of *inquiry*; in the full model **pods form around situations**)
+and **`project_proposals`** (Month 2, Hackathon/Frame Sprint: communities of *action*; each
+pairs the situation's Problem Owner with a new **frame**, a proposed intervention, success
+metrics, and collected evidence — **projects form around Owner + Frame**, staked at 3–5+2).
+The prototype's Cycles panel renders both tiers.
+
+**Product decision (confirmed): situations are cycle-specific, pod-scoped objects,
 created from the pod's Triangulator sensemaking.** They are not public discovery content, and
 staking a seat is a pod-member action. The lifecycle:
 
 ```
 pod forms (existing mechanism, unchanged)
   → pod runs sensemaking (sensemaking_sessions, §1.4)
-  → mapped Problem Situations become problem_frames
+  → mapped Problem Situations become problem_situations (pods adopt them)
+  → the Hackathon turns research into project_proposals (Owner + Frame)
   → pod members stake seats (instance_members)
   → at 3 commits a project_instance auto-provisions
 ```
 
-- **`problem_frames`** — `id, cycle_id FK, pod_id FK, sensemaking_session_id FK NULL,
-  client_sponsor_id FK, title, messy_context text,
-  status enum('open','matched','archived'), created_at`. `pod_id` scopes the frame to the pod
+- **`problem_situations`** — `id, cycle_id FK, pod_id FK NULL, sensemaking_session_id FK NULL,
+  problem_owner_id FK, title, messy_context text,
+  status enum('open','adopted','archived'), created_at`. `pod_id` fills when a pod adopts the
+  inquiry (the vision's Month-1 formation moment). Problem Owners are *identified through
+  stakeholder mapping*, not pre-assigned clients — the column names the discovered owner.
+- **`project_proposals`** — `id, problem_situation_id FK, title, frame text,
+  intervention text, success_metrics text, evidence text,
+  status enum('open','matched','archived'), created_at`. Born at the Hackathon; the staking
+  target. `pod_id` scopes the frame to the pod
   that produced it; `sensemaking_session_id` records provenance — which Triangulator session's
   mapped Problem Situation the frame came from (the prototype renders this as the card's
   "Mapped in the Triangulator · Pod 4 sensemaking" origin line). Frames render only inside the
   cycle view for enrolled pod members (the prototype's Cycles panel) — never on public
   surfaces, never in Discover.
-- **`project_instances`** — `id, problem_frame_id FK,
+- **`project_instances`** — `id, project_proposal_id FK,
   status enum('scoping','executing','delivered'), qa_verified boolean default false, created_at`.
 - **`instance_members`** — compound PK `(project_instance_id, participant_id)`, plus
   `intent enum('builder','dri','mentor'), joined_at`. Inserts require the participant to be an
@@ -188,9 +210,11 @@ pod forms (existing mechanism, unchanged)
 - **`citations`** — `id, participant_id FK, project_instance_id FK, narrative_claim text,
   source_url, domain_verified boolean, created_at`. Backs the profile citation chips.
 
-**Frame creation:** `POST /api/pods/[pod_id]/frames`, drawing title/context from a
-`sensemaking_sessions` state's mapped Problem Situation. *Open question: who may create — any
-pod member from their own session, or moderator-curated from the pod's sessions?*
+**Situation creation:** `POST /api/pods/[pod_id]/situations`, drawing title/context from a
+`sensemaking_sessions` state's mapped Problem Situation. **Proposal creation:**
+`POST /api/situations/[id]/proposals` (Hackathon output; requires frame + intervention +
+metrics + evidence). *Open question: who may create — any pod member from their own session,
+or moderator/facilitator-curated?*
 
 **Remaining overlap question (narrowed, still needs one decision).** With frames pod-scoped
 and downstream of sensemaking, they no longer touch pod formation
@@ -221,7 +245,7 @@ other names — roadmap W2-006 notes reference `project_min`/`max_projects` and 
 so at least the Project side may already be configured. Check `cycle_config`'s actual columns
 in `SCHEMA.md`/migrations first.
 
-- **Ignition trigger:** `POST /api/frames/[id]/commit` — caller must be an **active member of
+- **Ignition trigger:** `POST /api/proposals/[id]/commit` — caller must be an **active member of
   the frame's pod** (and enrolled in its cycle); reject otherwise. On success it inserts an
   `instance_members` row, then counts members for that frame. At `count == 3` (Project minimum)
   the handler auto-provisions the `project_instances` row (`status='scoping'`). The prototype's
@@ -254,6 +278,15 @@ in `SCHEMA.md`/migrations first.
   / `cron/revocation-check` pattern and `vercel.json` cron registration.
 - Public reads: `GET /api/events` (backs the landing and Discover feeds) and
   `GET /api/events/[id]`.
+- **Event kinds:** add `events.kind enum('workshop','summit','meetup','showcase','cycle_anchor')`
+  and a nullable `cycle_week int`. The six anchor events (Kickoff Summit, Meet the Pods,
+  Hackathon, Meet the Projects, Showcase Summit) are first-class rows tied to cycle weeks —
+  they are the institution's public rhythm, not ad-hoc calendar entries.
+- **Public RSVP (email-only):** public programming is free, open, first come first served —
+  RSVP must not require an account. New **`event_rsvps`** table: `id, event_id FK,
+  participant_id FK NULL, email text, created_at` (nullable participant, same anonymous
+  pattern as `survey_responses`), with `POST /api/events/[id]/rsvp` public and rate-limited
+  (same `ip_hash` guidance as survey responses).
 - Admin: `POST/PATCH /api/admin/events` for manual annotation of synced events (e.g. tagging
   one to a cycle).
 
@@ -294,23 +327,55 @@ than overloading `Role`. **Flag in the PR that this closes roadmap row D3.**
 
 ---
 
-## 6. Social updates — "an extension of the pulse check"
+## 6. The Practice Journal — replaces the weekly Pulse (institutional-model decision)
 
-**Shared UX moment, not a shared schema.** `pulse_checks` content is a private
-wellbeing/engagement check-in reviewed by moderators; mixing a public social post into that
-table would either leak private content or force per-field visibility logic onto an already
-complex table. Design:
+The institutional model **retires the weekly Pulse in favor of a guided Practice Journal**.
+This supersedes the earlier "extend the pulse-check form" design in previous drafts of this
+document. The journal serves three audiences — yourself, your pod, and OLOS synthesis — and
+its prompts evolve with the cycle phase (Discovery → Investigation → Reframing → Building →
+Integration).
 
-- `pulse_checks` unchanged.
-- Extend the pulse-check form UI (`app/(dashboard)/pulse-check/pulse-check-form.tsx`) with an
-  optional final step — "share a quick public update?" — which performs a **second, independent
-  write** to `profile_updates`, stamping `pulse_check_id` only as a backreference.
-- `profile_updates` is also writable standalone via `POST /api/profile-updates` (self-only,
-  zod-validated body), matching the prototype's anytime Dashboard composer.
-- RLS: public SELECT scoped to `visibility='public'`; INSERT restricted to the owning
-  participant.
+- **`journal_entries`** — `id, participant_id FK, cycle_id FK, phase text, prompt_key text,
+  body text, visibility enum('private','pod') default 'private', created_at`. Never public;
+  a public post is a *separate, explicit* write to `profile_updates` (the prototype's
+  "also post publicly" checkbox performs exactly this second write).
+- **Migration path from `pulse_checks`:** keep the table and its history; new cycles write
+  `journal_entries` instead. The pulse cadence infrastructure (reminder cron, moderator
+  review surfaces) adapts: reminders point at the journal; the poderator dashboard reads
+  pod-visible entries (`visibility='pod'`) in place of pulse responses.
+- **OLOS synthesis layer (new scope):** the platform synthesizes hundreds of journals to
+  surface recurring themes, shared paradoxes, stalled investigations, and promising
+  connections between pods. Follow the existing precedent that **no LLM runs inside OLOS**
+  (per the poderator dashboard's AI-summary pattern): v1 bundles pod-visible entries plus a
+  stored prompt for a facilitator to run in their own AI tool; a served synthesis is a later
+  decision.
+- Routes: `POST /api/journal-entries` (self-only), `GET /api/journal-entries/me`,
+  `GET /api/pods/[pod_id]/journal` (pod-visible entries, pod members + moderators),
+  `GET /api/moderator/journal-synthesis/[cycle_id]` (the bundled-prompt export).
+- `profile_updates` (§1.9) is unchanged — it remains the optional public social layer.
 
----
+## 6a. Just-in-time mentorship — evidence precedes assistance
+
+Mentors are not assigned and not booked cold. Participants investigate, try, document,
+reflect — *then* request, with evidence attached. New table:
+
+- **`mentor_requests`** — `id, requested_by FK participants, project_instance_id FK NULL,
+  pod_id FK NULL, tried text, evidence text, challenge_question text, expertise_needed text[],
+  status enum('open','matched','closed'), matched_mentor_id FK NULL, created_at`.
+- Routes: `POST /api/mentor-requests` (validation **requires** `tried`, `evidence`, and
+  `challenge_question` — the evidence-first principle is enforced at the API, not just the UI),
+  `GET /api/mentor-requests` (mentors/facilitators browse open requests),
+  `PATCH /api/mentor-requests/[id]` (match/close).
+- The mentor directory remains for community browsing, but the *help pathway* runs through
+  requests, not booking links.
+
+**Mentor recruitment path (product decision):** recruited, known-experienced mentors register
+through the **same signup as everyone else** — the role-intent step keeps its Mentor option,
+and the signup flow's "How did you hear about us? / Who referred you?" step lands in two new
+`participants` columns (`referral_source text`, `referred_by text`) so the org can connect
+recruited mentors to their recruiter. Any member can also raise their hand later via the
+profile's "I have experience to offer" path (the same mentor-profile flow). Leadership grows
+from within; the door is the same door.
 
 ## 7. Directory + public profiles
 
@@ -353,8 +418,11 @@ new `lib/validations/survey-responses.ts`; accepts session participant **or** an
 **Authenticated:** `GET/PUT /api/sensemaking-sessions/[cycle_id]`,
 `GET /api/surveys/[survey_id]/responses` (moderator/admin review),
 `PUT /api/onboarding/checklist`, `POST /api/profile-updates`,
-`GET /api/pods/[pod_id]/frames` + `POST /api/pods/[pod_id]/frames` (pod members — frames are
-pod-scoped, never public), `POST /api/frames/[id]/commit` (frame's pod members only),
+`GET /api/pods/[pod_id]/situations`, `POST /api/pods/[pod_id]/situations`, and
+`POST /api/situations/[id]/proposals` (pod members — situations and proposals are pod-scoped,
+never public), `POST /api/proposals/[id]/commit` (the proposal's pod members only),
+`POST /api/mentor-requests` + `GET /api/mentor-requests` (see §6a),
+`POST /api/journal-entries` + pod/moderator journal reads (see §6),
 `POST /api/projects/[id]/revisions/[rev_id]/approve`,
 `POST /api/profiles/citations`, plus admin CRUD for metros / resources / events /
 mentor-profiles.
@@ -386,10 +454,11 @@ Confirm the head number first (see §1 preamble), then land in this order:
    `participant_onboarding_progress`
 5. `events` (Luma cache)
 6. `resources` (CMS)
-7. `profile_updates` + RLS
-8. `problem_frames` + project-formation tables + RLS — **only after §1.10's remaining
+7. `profile_updates` + `journal_entries` + RLS
+8. `problem_situations` + `project_proposals` + project-formation tables + RLS — **only after §1.10's remaining
    decision (separate tables vs. `formed_via` column on the existing `projects` tables)**
 9. `narrative_revisions` + `citations` + RLS — same gate as (8)
+10. `mentor_requests` + `event_rsvps` + `events.kind`/`cycle_week` + `participants.referral_source`/`referred_by`
 
 ---
 

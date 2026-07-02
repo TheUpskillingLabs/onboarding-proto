@@ -104,12 +104,20 @@ arrays (`EVENTS`, `RESOURCES`, `MEMBERS`, `LABS`) so production swaps the data s
 markup. Legacy panels (`panel-cycles/events/event/labs/resources/bookmarks`) are retained as
 "View all →" drill-ins only — no nav entries.
 
-**Problem frames are NOT Discover content.** They are cycle-specific, pod-scoped, and born
-from the pod's Triangulator sensemaking (each frame is a mapped Problem Situation). They live
-on `panel-cycles` (`#cycle-frames`, rendered by `renderCycleFrames()`), show a provenance line
-("Mapped in the Triangulator · Pod 4 sensemaking"), and staking is gated on cycle membership
-(`inPod()`): non-members see the frames with a "register for the cycle" note instead of
-commit buttons.
+**Two-tier formation (institutional model) — neither tier is Discover content.** Both live on
+`panel-cycles`, cycle-scoped:
+- **Problem Situations** (`SITUATIONS`, `renderCycleSituations()`, Month 1 · Problem Sprint):
+  communities of *inquiry*, mapped in the Triangulator; pods form/adopt around these. Cards
+  show the Triangulator provenance line and an adopted-by pod pill — no project staking.
+- **Project Proposals** (`PROPOSALS`, `renderCycleProposals()`, Month 2 · Hackathon):
+  communities of *action* — each pairs the situation's Problem Owner with a new **frame** +
+  intervention + metrics + evidence. Staking (3 min · 5 max · +2 override) happens HERE,
+  gated on cycle membership (`inPod()`), always through the `#commit-confirm` sheet.
+
+**The cycle's public rhythm is the six anchor events** (Kickoff Summit, Meet the Pods,
+Hackathon, Meet the Projects, Showcase Summit) — they lead the `EVENTS` array (`anchor:true`,
+`kind`), appear ✦-marked on the week rail, and drive `CYCLE.milestones`. Phases are
+`Problem Sprint / Frame Sprint / Building`.
 
 **`panel-dashboard`** is the admin view of your own presence: condensed identity header
 (avatar + greeting + "View your full profile"), the **update composer** (posts to your profile's
@@ -153,11 +161,21 @@ Triangulator lead that list (prominent but skippable, never a gate).
   straight into the flow, no account needed) → `openTriangulator()` → the iframe ingests the
   pool on boot and live via the `storage` event. **Prototype limit (by design):** single-browser
   aggregation only — real cross-user pooling is the OLOS `survey_responses` API.
-- **Staking → ignition (pod members only):** on the Cycles panel, commit to one of your pod's
-  problem frames as builder or lead (buttons, not swipe); at 3 commits the frame ignites →
-  `view-team-ignition` → `view-project-canvas` (back arrow returns to Cycles). Caps: 3 min,
-  5 max, +2 facilitator-override seats (7 absolute). Frames are produced by the pod's
-  Triangulator sensemaking — never hand-authored, never public.
+- **Staking → ignition (pod members only):** on the Cycles panel, commit to a project
+  *proposal* as builder or lead (buttons, not swipe); at 3 commits it ignites →
+  `view-team-ignition` → `view-project-canvas` (canvas shows frame/intervention/metrics/
+  evidence + a "Request a mentor" JIT-support block). Caps: 3 min, 5 max, +2 override.
+- **Practice Journal (replaces the Pulse):** `#journal-card` on the dashboard — phase-evolving
+  prompt (`JOURNAL_PROMPTS` keyed by `CYCLE.phase`), visibility Just me / My pod, optional
+  "also post publicly" (a second, explicit write to `userState.updates`). Entries are never
+  public by default. The public composer below it is the demoted, optional social layer.
+- **Evidence precedes assistance:** `FLOWS('mentorRequest')` — required tried/evidence/
+  challenge steps; entry points on the project canvas and the directory's mentor filter.
+  Public event RSVPs are email-only (`#rsvp-modal`, `openRsvp()`) — never account-gated.
+- **Mentor pathways:** role-intent keeps Mentor (recruited mentors use the same signup);
+  signup asks "How did you hear about us?" (+ conditional "Who referred you?" →
+  `userState.referral`); the profile's "I have experience to offer" card starts the mentor
+  flow anytime (`#prof-mentor-cta`, owner-only, hidden once `completed.mentor`).
 - **Directory:** Discover → member card → `showMemberProfile(id)` renders that member into
   `view-profile` in visitor mode ("Back to Discover" bar). Owner state is fully restored by
   `renderProfileView()` on next open.
@@ -187,8 +205,10 @@ MEMBERS / FRAMES          // mock directory + problem frames (staking)
 SURVEY_SEED / SURVEY_POOL_KEY  // Civic & Elections seed + 'olos.surveyPool.v1'
 
 renderDiscover()          // all Discover sections (called by showAppView('discover'))
-renderCycleFrames()       // pod problem frames on panel-cycles (called by showAppView('cycles'))
-inPod() / commitToFrame(id,intent,e) / confirmCommit() / openProjectCanvas(id)  // gate + confirm sheet + staking + ignition
+renderCycleSituations() / renderCycleProposals()   // two formation tiers on panel-cycles
+inPod() / commitToProposal(id,intent,e) / confirmCommit() / openProjectCanvas(id)  // gate + confirm sheet + staking + ignition
+renderJournal() / saveJournalEntry()               // Practice Journal (phase-evolving prompts)
+openRsvp(ctx,e) / submitRsvp()                     // email-only public event RSVP
 openEvent(id)             // data-driven event detail (EVENTS lookup; no id = static default)
 renderBadges(earned) / bioWithCitations(text)      // trust states + anchored citations
 exitSurveyShare() / exitTriangulator()             // auth-aware exits
@@ -228,5 +248,6 @@ keeps its own `olos.sensemaking.v2` state key.
 - New listings reuse `.card` + `.media`; dense collections use `.cards.dense`; sparse use
   `.cards.two`. New Discover content belongs in the data arrays, not hand-written markup.
 - Honor `prefers-reduced-motion` and keep keyboard focus states visible.
-- Mock data shapes are contracts: keep `EVENTS` Luma-shaped and `RESOURCES` CMS-shaped so the
+- Mock data shapes are contracts: keep `EVENTS` Luma-shaped (anchor events carry `kind` +
+  `anchor:true`) and `RESOURCES` CMS-shaped (commons items carry `from` provenance) so the
   production data-source swap stays a swap (see `docs/OLOS_BACKEND_CHANGES.md`).
