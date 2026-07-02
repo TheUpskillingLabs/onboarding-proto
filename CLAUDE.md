@@ -24,20 +24,24 @@ It is **mobile-first and fully responsive**: a phone-shaped experience on small 
 
 | Path | What it is |
 |---|---|
-| `index.html` | The main prototype — CSS + screens + JS, self-contained (embedded Geologica font) |
+| `index.html` | The member app — landing, onboarding, Discover · Dashboard · Profile |
 | `triangulator.html` | The Triangulator — a full problem-framing tool (Kees Dorst Frame Creation), reskinned to this design system, embedded via iframe from `index.html`. Canonical upstream: the `triangles` repo; this copy is the reskinned/integrated adaptation. |
+| `font.css` | The single embedded Geologica `@font-face` (base64) — every HTML file links it; **no inline `@font-face` anywhere** |
+| `tokens.css` | Brand primitives (palette, `--r`, shadows, `--grain`) — the single source of truth; per-file `:root`s hold only file-specific vocabulary |
+| `shared.js` | Stateless helpers (`escHTML relDate avatarSm enhanceTappables ORB GRAD`, view-as persona contract) loaded before each file's inline script — no routing, no per-file state |
 | `docs/OLOS_BACKEND_CHANGES.md` | The backend planning doc — every schema/API change OLOS needs to serve this frontend |
 | `assets/` | Used images (logos, sample photography, orb marks) |
 | `archive/` | Superseded drafts (`old-index.html`, `prototype-v1.html`) and unused files |
 
 Both HTML files have three editable regions: `<style>` in `<head>`, screen markup in `<body>`,
-and a `<script>` at the end of `<body>`.
+and a `<script>` at the end of `<body>` — plus the three shared files above.
 
 ---
 
 ## Design system
 
-Custom CSS variables in `:root` (same tokens in both HTML files). **Canonical brand palette**
+Brand primitives live in **`tokens.css`** (linked by every HTML file — never re-declare them in
+a file's own `:root`). **Canonical brand palette**
 (do not reintroduce the old `midnight`/`aqua` values):
 
 | Token | Value | Use |
@@ -65,7 +69,8 @@ Rules baked into the system:
 - **Soft elevation:** `--shadow` / `--shadow-lg`; cards `.tappable` lift on hover (desktop only).
 - **Grain:** `.grain` overlays an SVG-noise texture on dark surfaces.
 
-Font: **Geologica** only (embedded base64 in both files — no CDN). The Triangulator additionally
+Font: **Geologica** only (embedded base64 in `font.css` — no CDN, one fetch for the whole
+suite). The Triangulator additionally
 keeps its own functional/semantic colors (`--tier-1..6` ladder ramp, seven `--type-*` evidence
 colors) — those are not brand palette and must stay recognizable.
 

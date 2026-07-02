@@ -36,25 +36,28 @@ No build step, no dependencies:
 npx serve .
 ```
 
-(Or open `index.html` directly — everything is self-contained, fonts included. Serving is
-recommended so the Triangulator iframe and `?survey=` links behave like production.)
+(Or open `index.html` directly — serving is recommended so the Triangulator iframe, the shared
+CSS/JS files, and `?survey=` links behave like production.)
 
 ## Repo structure
 
 ```
-index.html                     — the main prototype (CSS + screens + JS, self-contained)
+index.html                     — the member app (landing, onboarding, Discover · Dashboard · Profile)
 triangulator.html              — the Triangulator, reskinned to the design system, iframe-embedded
+font.css                       — the embedded Geologica font (base64) — fetched once, shared by all pages
+tokens.css                     — brand primitives (palette, radius, shadows) — the single source of truth
+shared.js                      — stateless helpers shared by all pages
 docs/OLOS_BACKEND_CHANGES.md   — the backend plan: everything OLOS needs to serve this frontend
 assets/                        — images (logos, sample photography, orb marks)
 archive/                       — superseded drafts and unused files
 ```
 
-Both HTML files are large because the **Geologica** font is embedded as a base64 `@font-face`
-data URI — no CDN, works offline, CSP-safe.
+The **Geologica** font is embedded as a base64 `@font-face` data URI in `font.css` — no CDN,
+works offline, CSP-safe, and the browser caches one copy for the whole suite.
 
 ## Design system
 
-Brand palette (`:root` in both files): `--ink #00141B` (dark covers/nav), `--teal #0094A0`
+Brand palette (`tokens.css`): `--ink #00141B` (dark covers/nav), `--teal #0094A0`
 (primary accent), `--red #E11D2A` (high-priority CTAs), `--paper #F6F4EF` (the only light page
 background), `--white` (cards). One radius everywhere (`--r: 14px`), 4px baseline grid,
 light-first with dark reserved for covers. See `CLAUDE.md` for the full system and conventions.

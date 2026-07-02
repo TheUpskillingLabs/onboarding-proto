@@ -1,0 +1,15 @@
+/* The Upskilling Labs — brand primitives. Single source of truth for every
+   HTML file in this prototype (index, triangulator, moderator, admin). Each file
+   keeps its own layout/type vocabulary in its inline <style>, layered after this.
+   Canonical palette — do not reintroduce the old midnight/aqua values. */
+:root {
+  --ink:#00141B; --navy:#03232A; --forest:#005F68; --teal:#0094A0; --teal-deep:#007882; --red:#E11D2A;
+  --paper:#F6F4EF; --paper-edge:#E8E5DF; --tint:#ECF3F4; --tint-edge:#D8E8EA;
+  --white:#FFFFFF; --charcoal:#444444; --slate:#4A5557; --meta:#748083; --meta-soft:#A0ADB0;
+  --od1:rgba(255,255,255,.95); --od2:rgba(255,255,255,.64); --od3:rgba(255,255,255,.40);
+  --rule-d:rgba(255,255,255,.16); --rule:rgba(0,20,27,.10); --rule-soft:rgba(0,20,27,.07); --rule-ink:rgba(0,20,27,.85);
+  --r:14px; /* the one radius — no pills except genuine circles */
+  --shadow:0 1px 2px rgba(0,20,27,.05), 0 6px 20px rgba(0,20,27,.06);
+  --shadow-lg:0 12px 40px rgba(0,20,27,.16);
+  --grain:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScyMjAnIGhlaWdodD0nMjIwJz48ZmlsdGVyIGlkPSduJz48ZmVUdXJidWxlbmNlIHR5cGU9J2ZyYWN0YWxOb2lzZScgYmFzZUZyZXF1ZW5jeT0nMC45JyBudW1PY3RhdmVzPScyJyBzdGl0Y2hUaWxlcz0nc3RpdGNoJy8+PGZlQ29sb3JNYXRyaXggdmFsdWVzPScwIDAgMCAwIDEgIDAgMCAwIDAgMSAgMCAwIDAgMCAxICAwIDAgMCAwLjUgMCcvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPScxMDAlJyBoZWlnaHQ9JzEwMCUnIGZpbHRlcj0ndXJsKCNuKScgb3BhY2l0eT0nMC41NScvPjwvc3ZnPg==");
+}
