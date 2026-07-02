@@ -111,6 +111,17 @@ button,input,select,textarea { font-family:inherit; }
 .field-grid .field { flex:1 1 100%; }
 .field-grid .field.half { flex:1 1 calc(50% - 7px); min-width:150px; }
 @media (max-width:480px) { .field-grid .field.half { flex-basis:100%; } }
+/* Learning Log — health-check sliders + scaffolded inputs */
+.ll-slider { display:flex; align-items:center; gap:14px; padding:6px 0; }
+.ll-slider label { flex:1 1 150px; color:var(--charcoal); }
+.ll-slider input[type=range] { flex:1 1 140px; accent-color:var(--teal); min-width:110px; }
+.ll-slider output { width:20px; text-align:center; font-weight:600; font-size:14px; color:var(--teal-deep); }
+.ll-lbl { display:block; margin:10px 0 6px; }
+.ll-input { width:100%; border:1px solid var(--rule); border-radius:var(--r); padding:12px 14px; font:inherit; font-size:16px; background:var(--white); }
+.ll-input:focus { outline:none; border-color:var(--teal); box-shadow:0 0 0 3px rgba(0,148,160,.14); }
+/* phase info dots — ⓘ opens a compact modal (the reviewer asked for info icons, not expandables) */
+.info-dot { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; margin-left:2px; vertical-align:-6px; background:none; border:none; border-radius:50%; color:var(--meta); cursor:pointer; }
+.info-dot:hover, .info-dot:focus-visible { color:var(--teal-deep); outline:none; background:rgba(0,148,160,.10); }
 .field textarea { resize:none; min-height:104px; }
 
 /* ════ Flow ════ */
@@ -776,7 +787,7 @@ button,input,select,textarea { font-family:inherit; }
             <div class="card-body"><div class="card-row"><span class="status active">Active</span><span class="card-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div><div class="t-h4" style="margin:6px 0 4px;">Washington, DC</div><p class="t-small">DC Public Library · 312 members</p></div>
             <div class="card-expand">
               <div class="kv"><span class="k lbl">Partner</span><span class="t-small">DC Public Library</span></div>
-              <div class="kv"><span class="k lbl">Now</span><span class="t-small">Spring 2026 Build Cycle in progress</span></div>
+              <div class="kv"><span class="k lbl">Now</span><span class="t-small">Summer 2026 Civic &amp; Elections Cycle in progress</span></div>
               <div class="kv"><span class="k lbl">Cadence</span><span class="t-small">Weekly workshops · monthly showcase</span></div>
               <div class="lock-note"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Member directory and local events unlock when you join</div>
               <button class="btn btn-teal btn-block" onclick="gateCreateAccount('the DC lab',event)">Join this lab</button>
@@ -1201,35 +1212,35 @@ button,input,select,textarea { font-family:inherit; }
                   <a class="see" style="font-size:12px;" onclick="toggleSetupSection()">Show</a>
                 </div>
               </div>
-              <!-- Practice Journal — the Upskiller's core reflective practice. Three
-                   audiences: yourself, your pod, and OLOS synthesis. Prompts evolve with
-                   the cycle phase. Replaces the weekly Pulse (see docs/OLOS_BACKEND_CHANGES.md §journal). -->
-              <div class="lcard" style="padding:20px 22px;margin-bottom:16px;" id="journal-card">
-                <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:8px;">
-                  <div class="lbl lbl-teal">Practice Journal · <span id="journal-phase">Discovery</span></div>
-                  <span class="t-small" id="journal-count"></span>
-                </div>
-                <p class="t-body" id="journal-prompt" style="margin-bottom:12px;">What did you notice this week? What assumptions are you questioning?</p>
-                <textarea id="journal-entry" rows="3" placeholder="Observations, surprises, assumptions, failures, frame shifts…" style="width:100%;border:1px solid var(--rule);border-radius:var(--r);padding:12px 14px;font:inherit;font-size:15px;resize:vertical;background:var(--white);"></textarea>
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:12px;flex-wrap:wrap;">
-                  <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;">
-                    <label class="t-small" style="display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="radio" name="journal-vis" value="private" checked> Just me</label>
-                    <label class="t-small" style="display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="radio" name="journal-vis" value="pod"> Share with my pod</label>
-                    <label class="t-small" style="display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="checkbox" id="journal-public"> Also post publicly</label>
-                  </div>
-                  <button class="btn btn-teal btn-sm" onclick="saveJournalEntry()">Save entry</button>
-                </div>
-                <div id="journal-recent" style="margin-top:14px;"></div>
-                <a class="see" style="display:inline-block;margin-top:12px;" onclick="startNominate(null,event)">Recognize someone this week →</a>
-              </div>
+              <!-- Learning Log — the weekly practice: a private health check (Poderator +
+                   admins only), three scaffolded prompts, and an optional share to the
+                   Discover feed. Replaces the Practice Journal + the public composer
+                   (docs/OLOS_BACKEND_CHANGES.md §6). Log as often as you like. -->
+              <div style="margin-bottom:40px;">
+                <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Weekly practice</div><h2 class="t-h2">Your Learning Log</h2></div><span class="t-small" id="ll-count"></span></div>
+                <div class="lcard" id="learning-log-card" style="padding:20px 22px;">
+                  <div class="lbl" style="margin-bottom:4px;">Health check</div>
+                  <p class="t-small" style="margin-bottom:12px;">Only your Poderator and The Labs team see this — never your pod or the feed.</p>
+                  <div class="ll-slider"><label class="t-small" for="ll-clarity">Clarity on my next steps</label><input type="range" id="ll-clarity" min="1" max="5" value="3" step="1" oninput="document.getElementById('ll-clarity-out').textContent=this.value"><output id="ll-clarity-out">3</output></div>
+                  <div class="ll-slider"><label class="t-small" for="ll-alignment">Alignment with my pod</label><input type="range" id="ll-alignment" min="1" max="5" value="3" step="1" oninput="document.getElementById('ll-alignment-out').textContent=this.value"><output id="ll-alignment-out">3</output></div>
+                  <label class="t-small" style="display:flex;align-items:center;gap:8px;cursor:pointer;margin:12px 0 0;"><input type="checkbox" id="ll-blocked" onchange="toggleBlocked()"> I’m currently blocked</label>
+                  <div id="ll-blocked-wrap" style="display:none;margin-top:10px;"><label class="t-small" for="ll-blocker" style="display:block;margin-bottom:6px;">What do you need?</label><input id="ll-blocker" class="ll-input" placeholder="e.g. 15 minutes with someone who knows the permits data"></div>
 
-              <!-- Public update composer — optional social exhaust, secondary to the journal. -->
-              <div class="lcard" style="padding:20px 22px;margin-bottom:40px;">
-                <div class="lbl" style="margin-bottom:10px;">Share a public update</div>
-                <textarea id="update-composer" class="field-input" rows="2" placeholder="What did you ship, learn, or try this week?" style="width:100%;border:1px solid var(--rule);border-radius:var(--r);padding:12px 14px;font:inherit;font-size:15px;resize:vertical;background:var(--white);"></textarea>
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:12px;">
-                  <span class="t-small">Posts publicly to your profile.</span>
-                  <button class="btn btn-teal btn-sm" onclick="postUpdate()">Post update</button>
+                  <div class="lbl" style="margin:20px 0 10px;border-top:1px solid var(--rule);padding-top:16px;">This week</div>
+                  <label class="t-small ll-lbl" for="ll-accomplished">This week, I figured out / accomplished…</label>
+                  <input id="ll-accomplished" class="ll-input" placeholder="…how to get clean data out of the permits PDF" oninput="llSyncPreview()">
+                  <label class="t-small ll-lbl" for="ll-exploring">I’m currently exploring / stuck on…</label>
+                  <input id="ll-exploring" class="ll-input" placeholder="…whether residents actually want SMS updates" oninput="llSyncPreview()">
+                  <label class="t-small ll-lbl" for="ll-next">Next week, my focus is…</label>
+                  <input id="ll-next" class="ll-input" placeholder="…testing the guide with three librarians" oninput="llSyncPreview()">
+
+                  <div class="lbl" style="margin:20px 0 8px;border-top:1px solid var(--rule);padding-top:16px;">Share preview</div>
+                  <p class="t-body" id="ll-preview" style="color:var(--meta);">Your log reads back here as you type.</p>
+                  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px;">
+                    <label class="t-small" style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="checkbox" id="ll-share"> Share this log to the Discover feed <span style="color:var(--meta);">· Labs members only</span></label>
+                    <button class="btn btn-teal btn-sm" onclick="saveLearningLog()">Log this week</button>
+                  </div>
+                  <div id="ll-recent" style="margin-top:14px;"></div>
                 </div>
               </div>
 
@@ -1248,7 +1259,7 @@ button,input,select,textarea { font-family:inherit; }
   <circle cx="120" cy="120" r="116" fill="url(#oc)"/>
   <circle cx="120" cy="120" r="116" fill="url(#or)"/>
   <g transform="translate(20,40) scale(0.142)"><path d="M 0 900.84 C 532.341 651.368 841.069 454.81 1407.215 0 C 1190.699 365.98 1060.371 566.788 776.503 900.84 L 950.588 496.405 C 539.219 733.009 347.248 789.767 0 900.84 Z" fill="url(#og)"/></g>
-</svg></div><div class="m-tag">Spring 2026</div></div><div class="card-body"><div class="t-h4" style="margin-bottom:6px;">Build Cycle is forming</div><p class="t-small" style="margin-bottom:16px;">Pod registration opens Mar 30. Join a pod and ship something real.</p><button class="btn btn-teal btn-sm btn-block" onclick="goApp('cycles')">View cycle</button></div></div>
+</svg></div><div class="m-tag">Summer 2026</div></div><div class="card-body"><div class="t-h4" style="margin-bottom:6px;">Build Cycle is forming</div><p class="t-small" style="margin-bottom:16px;">Pod registration opens Mar 30. Join a pod and ship something real.</p><button class="btn btn-teal btn-sm btn-block" onclick="goApp('cycles')">View cycle</button></div></div>
               <div class="lcard" style="padding:24px;"><div class="lbl" style="margin-bottom:14px;">Quick links</div><div style="display:flex;flex-direction:column;"><a onclick="goApp('discover')" style="font-size:14px;font-weight:600;color:var(--teal-deep);cursor:pointer;padding:12px 0;border-bottom:1px solid var(--rule);">Discover the Labs →</a><a onclick="openTriangulator()" style="font-size:14px;font-weight:600;color:var(--teal-deep);cursor:pointer;padding:12px 0;border-bottom:1px solid var(--rule);">Open the Triangulator →</a><a onclick="showProfile()" style="font-size:14px;font-weight:600;color:var(--teal-deep);cursor:pointer;padding:12px 0;border-bottom:1px solid var(--rule);">Your profile →</a><a href="https://www.every.org/theupskillinglabs" target="_blank" rel="noopener" style="font-size:14px;font-weight:600;color:var(--teal-deep);cursor:pointer;padding:12px 0 0;">Support The Labs →</a></div></div>
             </aside>
           </div>
@@ -1258,9 +1269,9 @@ button,input,select,textarea { font-family:inherit; }
       <!-- CYCLES -->
       <div id="panel-cycles" class="panel">
         <div class="container" style="padding-top:32px;padding-bottom:48px;">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;"><span class="live-dot"></span><span class="lbl lbl-teal">Current cycle</span></div>
-          <h1 class="t-h1" style="margin-bottom:8px;">Spring 2026</h1>
-          <p class="t-lede" style="margin-bottom:28px;">Mar 2 – May 29 · 71 days to Showcase</p>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;"><span class="live-dot"></span><span class="lbl lbl-teal">Current cycle · Summer 2026</span></div>
+          <h1 class="t-h1" style="margin-bottom:8px;">Civic &amp; Elections</h1>
+          <p class="t-lede" style="margin-bottom:28px;">Washington, DC · Kickoff Jul 14 · 13 weeks · Showcase Summit Oct 13</p>
           <div class="media m-forest" style="aspect-ratio:21/9;margin-bottom:28px;"><div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
   <defs>
     <radialGradient id="oc" cx="38%" cy="35%" r="58%"><stop offset="0%" stop-color="#0094A0"/><stop offset="62%" stop-color="rgba(0,148,160,0)"/></radialGradient>
@@ -1272,11 +1283,11 @@ button,input,select,textarea { font-family:inherit; }
   <g transform="translate(20,40) scale(0.142)"><path d="M 0 900.84 C 532.341 651.368 841.069 454.81 1407.215 0 C 1190.699 365.98 1060.371 566.788 776.503 900.84 L 950.588 496.405 C 539.219 733.009 347.248 789.767 0 900.84 Z" fill="url(#og)"/></g>
 </svg></div><div class="m-tag">13-week Build Cycle</div></div>
           <div class="phase-band"><div class="phase-segment"></div><div class="phase-segment"></div><div class="phase-segment"></div></div>
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-bottom:8px;"><div class="t-small" style="font-weight:600;color:var(--ink);font-size:11px;">Problem Sprint</div><div class="t-small" style="font-weight:600;color:var(--ink);text-align:center;font-size:11px;">Frame Sprint</div><div class="t-small" style="font-weight:600;color:var(--ink);text-align:right;font-size:11px;">Building</div></div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-bottom:8px;"><div class="t-small" style="font-weight:600;color:var(--ink);font-size:11px;">Problem Sprint<button class="info-dot" aria-label="About the Problem Sprint" onclick="openPhaseInfo('problem')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="7.5" r="0.6" fill="currentColor" stroke="none"/></svg></button></div><div class="t-small" style="font-weight:600;color:var(--ink);text-align:center;font-size:11px;">Frame Sprint<button class="info-dot" aria-label="About the Frame Sprint" onclick="openPhaseInfo('frame')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="7.5" r="0.6" fill="currentColor" stroke="none"/></svg></button></div><div class="t-small" style="font-weight:600;color:var(--ink);text-align:right;font-size:11px;">Building<button class="info-dot" aria-label="About the Building phase" onclick="openPhaseInfo('building')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="7.5" r="0.6" fill="currentColor" stroke="none"/></svg></button></div></div>
           <div class="week-scroll"><div class="week-rail" id="week-rail"></div></div>
           <div class="cards two" style="margin-top:36px;">
-            <div class="lcard" style="padding:24px;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;"><span class="live-dot"></span><span class="lbl lbl-teal">Next window</span></div><div class="t-h4" style="margin-bottom:6px;">Pod Registration</div><p class="t-small" style="margin-bottom:16px;">Opens Mar 30 · Weeks 4–5. Join a pod and ship something real.</p><button class="btn btn-teal btn-sm" onclick="startFlow('cycle', ()=>goApp('cycles'))">Join a pod</button></div>
-            <div class="lcard" style="padding:24px;"><div class="lbl" style="margin-bottom:14px;">Later window</div><div class="t-h4" style="margin-bottom:6px;">Project Registration</div><p class="t-small" style="margin-bottom:16px;">Opens May 4 · Week 9. Register for a team formed from the winning proposals.</p><button class="btn btn-ghost btn-sm" disabled>Opens May 4</button></div>
+            <div class="lcard" style="padding:24px;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;"><span class="live-dot"></span><span class="lbl lbl-teal">Next window</span></div><div class="t-h4" style="margin-bottom:6px;">Pod Registration</div><p class="t-small" style="margin-bottom:16px;">Opens Aug 3 · Weeks 3–4. Join a pod and ship something real.</p><button class="btn btn-teal btn-sm" onclick="openPodChooser()">Join a pod</button></div>
+            <div class="lcard" style="padding:24px;"><div class="lbl" style="margin-bottom:14px;">Later window</div><div class="t-h4" style="margin-bottom:6px;">Project Registration</div><p class="t-small" style="margin-bottom:16px;">Opens Sep 14 · Week 9. Register for a team formed from the winning proposals.</p><button class="btn btn-ghost btn-sm" disabled>Opens Sep 14</button></div>
           </div>
 
           <!-- Cycle formation — cycle-specific, pod-scoped. Situations are born from the
@@ -1286,8 +1297,8 @@ button,input,select,textarea { font-family:inherit; }
                Triangulator during the Problem Sprint; PODS form around these (12–30 people).
                They ask: what is really going on here? -->
           <div id="cycle-situations-wrap" style="margin-top:44px;">
-            <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Problem Sprint · problem situations</div><h2 class="t-h2">What is really going on here?</h2></div><span class="see" onclick="openTriangulator()">Open the Triangulator →</span></div>
-            <p class="t-body" style="max-width:62ch;margin-bottom:20px;">Situations are mapped in the Triangulator from the cycle's observations. Pods form around situations — not ideas — and adopt them as a shared inquiry.</p>
+            <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Month 1 · Problem Sprint</div><h2 class="t-h2">What this cycle is investigating</h2></div><span class="see" onclick="openTriangulator()">Open the Triangulator →</span></div>
+            <p class="t-body" style="max-width:62ch;margin-bottom:20px;">Before anyone builds, pods spend the first weeks understanding real problems — mapped from the community's field observations in the Triangulator. Each pod digs into one of these.</p>
             <div class="cards two" id="cycle-situations"></div>
           </div>
 
@@ -1658,6 +1669,31 @@ button,input,select,textarea { font-family:inherit; }
   </div>
 </div>
 
+<!-- Pod chooser — "Join a pod" shows actual pods (it used to misroute into registration) -->
+<div class="gate-modal" id="pod-chooser" onclick="if(event.target===this)closePodChooser()">
+  <div class="gate-sheet s-paper">
+    <button class="gate-close" onclick="closePodChooser()" aria-label="Close">
+      <svg width="20" height="20" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 5L17 17M17 5L5 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <div class="lbl lbl-teal" style="margin-bottom:6px;">Civic &amp; Elections · Summer 2026</div>
+    <h3 class="t-h3" style="margin-bottom:6px;padding-right:32px;">Join a pod</h3>
+    <p class="t-small" style="margin-bottom:16px;">Pods are 12–30 people investigating one problem together. Pick where you’ll dig in — if you’re not registered for the cycle yet, that takes two minutes first.</p>
+    <div id="pod-list"></div>
+  </div>
+</div>
+
+<!-- Phase info — a compact per-phase explainer (ⓘ, deliberately not an expandable) -->
+<div class="gate-modal" id="phase-info-modal" onclick="if(event.target===this)closePhaseInfo()">
+  <div class="gate-sheet s-paper">
+    <button class="gate-close" onclick="closePhaseInfo()" aria-label="Close">
+      <svg width="20" height="20" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 5L17 17M17 5L5 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <div class="lbl lbl-teal" id="phase-info-when" style="margin-bottom:6px;"></div>
+    <h3 class="t-h3" id="phase-info-title" style="margin-bottom:10px;padding-right:32px;"></h3>
+    <p class="t-body" id="phase-info-body"></p>
+  </div>
+</div>
+
 <!-- Feedback — triggered from the avatar's "Send feedback" menu item (signed-in only). Logs to FEEDBACK_LOG. -->
 <div class="gate-modal" id="fb-modal" onclick="if(event.target===this)closeFeedback()">
   <div class="gate-sheet s-paper">
@@ -1717,12 +1753,12 @@ button,input,select,textarea { font-family:inherit; }
 
 <script src="shared.js"></script>
 <script>
-const userState = {name:'Alex', initials:'AR', roles:[], isMentor:false, signedIn:false, completed:{}, profileAnswers:{}, mentorAnswers:{}, volunteerAnswers:{}, saved:[], lab:{name:'',status:''}, updates:[], journal:[], mentorRequests:[], testimonials:[], testimonialRequests:[], following:[], ballot:null, projectId:null, nominations:[]};
+const userState = {name:'Alex', initials:'AR', roles:[], isMentor:false, signedIn:false, completed:{}, profileAnswers:{}, mentorAnswers:{}, volunteerAnswers:{}, saved:[], lab:{name:'',status:''}, updates:[], learningLogs:[], mentorRequests:[], testimonials:[], testimonialRequests:[], following:[], ballot:null, projectId:null, nominations:[]};
 const FLOW_ROLES=['mentor','volunteer','cycle']; // roles with a deferrable setup flow ('events' is passive)
 const ROLE_ITEMS={
   mentor:{title:'Complete the mentor section of your profile', sub:'Tell pods what you bring and how to reach you.'},
   volunteer:{title:'Complete the volunteer section of your profile', sub:'Tell us where and how you want to help.'},
-  cycle:{title:'Register for the Spring 2026 Build Cycle', sub:'Pick a problem area and your commitment.'}
+  cycle:{title:'Register for the Civic & Elections Cycle', sub:'Pick a problem area and your commitment.'}
 };
 // Lab options shared by onboarding (lab-choice step) and the profile credibility band.
 const LABS={ dc:{name:'Washington, DC', status:'active'}, baltimore:{name:'Baltimore', status:'forming'}, philadelphia:{name:'Philadelphia', status:'soon'} };
@@ -1730,7 +1766,7 @@ const LABS={ dc:{name:'Washington, DC', status:'active'}, baltimore:{name:'Balti
 // The cycle runs the vision's three-month arc: Problem Sprint (pods form around
 // Problem Situations) → Frame Sprint / Hackathon (projects form around frames) →
 // Building. Its public rhythm is the six anchor events (marked ✦ on the week rail).
-const CYCLE={ name:'Spring 2026', phase:'Problem Sprint', phaseIndex:0, phases:['Problem Sprint','Frame Sprint','Building'], pod:'Pod 4 · Civic AI', milestones:[ {label:'✦ Meet the Pods — discovery goes public', when:'Wk 6'}, {label:'✦ Hackathon — the Frame Sprint', when:'Wk 9'}, {label:'✦ Meet the Projects — critique the framing', when:'Wk 10'}, {label:'✦ Showcase Summit — everything returns to the commons', when:'Wk 13'} ] };
+const CYCLE={ name:'Summer 2026', theme:'Civic & Elections', city:'Washington, DC', phase:'Problem Sprint', phaseIndex:0, phases:['Problem Sprint','Frame Sprint','Building'], pod:'Pod 4 · Civic AI', milestones:[ {label:'✦ Meet the Pods — discovery goes public', when:'Wk 6'}, {label:'✦ Hackathon — the Frame Sprint', when:'Wk 9'}, {label:'✦ Meet the Projects — critique the framing', when:'Wk 10'}, {label:'✦ Showcase Summit — everything returns to the commons', when:'Wk 13'} ] };
 /* ── Upskiller stories — the landing's hero-adjacent row; the CTA card and every
    "Read more" deep-link into stories.html (Upskiller Spotlights), which holds the
    full set. Production swaps the data source, not the markup. ── */
@@ -1836,9 +1872,9 @@ const MEMBERS=[
    (docs/OLOS_BACKEND_CHANGES.md §2). */
 const CYCLE_CONFIG={ submitterVotes:5, nonSubmitterVotes:3, voteThreshold:5, projectMin:3, projectMax:5, maxProjects:4 };
 const SITUATIONS=[
-  {id:'s1', title:'Benefits navigation dead-ends', owner:'DC Public Library', origin:'Mapped in the Triangulator · Pod 4 sensemaking, Week 3', context:'Residents abandon benefits applications mid-way. Frontline librarians field the fallout daily but the failure points are invisible to the agencies upstream.', adoptedBy:'Pod 4 · Civic AI'},
-  {id:'s2', title:'First-time voter information gap', owner:'League of Women Voters DC', origin:'Mapped in the Triangulator · Pod 2 sensemaking, Week 3', context:'First-time voters can find national coverage everywhere and local ballot information almost nowhere. The gap is worst exactly where votes matter most.', adoptedBy:'Pod 2 · Voting Access'},
-  {id:'s3', title:'Volunteer knowledge walks out the door', owner:'Civic Tech DC', origin:'Mapped in the Triangulator · open sensemaking, Week 4', context:'Local civic groups run on a few overloaded volunteers. When leadership turns over, everything they knew leaves with them.', adoptedBy:null}
+  {id:'s1', title:'Benefits navigation dead-ends', owner:'DC Public Library', line:'Residents give up on benefits applications halfway through.', origin:'Built from community observations in the Triangulator · Week 3', context:'Residents abandon benefits applications mid-way. Frontline librarians field the fallout daily but the failure points are invisible to the agencies upstream.', adoptedBy:'Pod 4 · Civic AI'},
+  {id:'s2', title:'First-time voter information gap', owner:'League of Women Voters DC', line:'First-time voters can\u2019t find local ballot information anywhere.', origin:'Built from community observations in the Triangulator · Week 3', context:'First-time voters can find national coverage everywhere and local ballot information almost nowhere. The gap is worst exactly where votes matter most.', adoptedBy:'Pod 2 · Voting Access'},
+  {id:'s3', title:'Volunteer knowledge walks out the door', owner:'Civic Tech DC', line:'When a volunteer leader leaves, everything they knew leaves too.', origin:'Built from community observations in the Triangulator · Week 4', context:'Local civic groups run on a few overloaded volunteers. When leadership turns over, everything they knew leaves with them.', adoptedBy:null}
 ];
 const SOLUTION_PROPOSALS=[
   {id:'p1', problemStatementId:'s1', title:'BenefitsBot', frame:'Treat benefits enrollment as a wayfinding problem, not a paperwork problem.', intervention:'A plain-language guide that walks residents through SNAP + Medicaid in one calm flow, piloted at library help desks.', metrics:'Completion rate at 3 pilot branches; intake questions per application.', evidence:'12 resident interviews · 3 librarian shadow shifts · journey map', submittedBy:'m3', votes:[{voterRef:'m4',count:3},{voterRef:'m5',count:2}], status:'open'},
@@ -1976,12 +2012,13 @@ function renderCycleSituations(){
   const c=document.getElementById('cycle-situations'); if(!c) return;
   c.innerHTML=SITUATIONS.map(s=>{
     return '<div class="card expandable tappable" onclick="toggleExpand(this,event)"><div class="card-body">'
-      +'<div class="card-row"><div class="lbl lbl-teal">Problem owner · '+escHTML(s.owner)+'</div><span class="card-chev">'+CHEV+'</span></div>'
-      +'<div class="t-h3" style="margin:8px 0 10px;">'+escHTML(s.title)+'</div>'
-      +'<p class="t-small" style="color:var(--meta);margin-bottom:10px;">'+escHTML(s.origin)+'</p>'
+      +'<div class="card-row"><div class="lbl lbl-teal">Brought by '+escHTML(s.owner)+'</div><span class="card-chev">'+CHEV+'</span></div>'
+      +'<div class="t-h3" style="margin:8px 0 8px;">'+escHTML(s.title)+'</div>'
+      +'<p class="t-small" style="margin-bottom:10px;">'+escHTML(s.line||'')+'</p>'
       +'<span class="status">Voting closed</span>'
-      +'</div><div class="card-expand"><div class="kv"><span class="k lbl">Situation</span><span class="t-small">'+escHTML(s.context)+'</span></div>'
-      +'<p class="t-small" style="color:var(--meta);">This cycle\u2019s problem statements are settled — solution proposals build on them at the Hackathon.</p>'
+      +'</div><div class="card-expand"><div class="kv"><span class="k lbl">The situation</span><span class="t-small">'+escHTML(s.context)+'</span></div>'
+      +'<div class="kv"><span class="k lbl">Where it came from</span><span class="t-small">'+escHTML(s.origin)+'</span></div>'
+      +'<p class="t-small" style="color:var(--meta);">This cycle\u2019s situations are settled — next, the Hackathon turns them into proposals for what to build.</p>'
       +'</div></div>';
   }).join('');
   enhanceTappables();
@@ -2216,36 +2253,13 @@ function renderProfUpdates(list, isOwner=false){
   const items=(list||[]).slice().sort((a,b)=>b.at-a.at);
   if(!items.length){ c.innerHTML='<p class="t-small" style="color:var(--meta);">No updates yet.</p>'; return; }
   c.innerHTML=items.map(u=>'<div class="lcard" style="padding:16px 18px;margin-bottom:10px;"><div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-bottom:6px;"><span class="t-small" style="color:var(--meta);">'+relDate(u.at)+'</span>'
-    +(isOwner?'<span style="display:flex;gap:14px;"><a class="see" style="font-size:12px;" onclick="editUpdate('+u.at+')">Edit</a><a class="see" style="font-size:12px;color:var(--meta);" onclick="deleteUpdate('+u.at+')">Delete</a></span>':'')
+    +(isOwner?'<span style="display:flex;gap:14px;"><a class="see" style="font-size:12px;color:var(--meta);" onclick="deleteUpdate('+u.at+')">Delete</a></span>':'')
     +'</div><p class="t-body">'+escHTML(u.body)+'</p></div>').join('');
 }
 function deleteUpdate(at){
   const i=userState.updates.findIndex(u=>u.at===at); if(i<0) return;
   userState.updates.splice(i,1);
   renderProfUpdates(userState.updates, true); renderActivity(); renderDiscUpdates();
-}
-function editUpdate(at){
-  const i=userState.updates.findIndex(u=>u.at===at); if(i<0) return;
-  const [u]=userState.updates.splice(i,1);
-  goApp('dashboard');
-  const ta=document.getElementById('update-composer'); if(ta){ ta.value=u.body; ta.focus(); }
-  renderDiscUpdates();
-}
-function postUpdate(){
-  const ta=document.getElementById('update-composer'); if(!ta) return;
-  const body=(ta.value||'').trim(); if(!body) return;
-  const entry={body:body, at:Date.now()};
-  userState.updates.push(entry);
-  ta.value='';
-  renderDiscUpdates(); renderActivity();
-  // Posted ✓ plus a brief Undo window — public posts deserve a take-back.
-  const foot=ta.closest('.lcard').querySelector('.t-small');
-  const btn=ta.closest('.lcard').querySelector('.btn');
-  if(btn){ const t=btn.textContent; btn.textContent='Posted ✓'; setTimeout(()=>btn.textContent=t, 4000); }
-  if(foot){ const orig=foot.innerHTML; foot.innerHTML='Posted to your profile. <a class="see" id="undo-post">Undo</a>';
-    const u=document.getElementById('undo-post');
-    if(u) u.onclick=()=>{ const i=userState.updates.indexOf(entry); if(i>=0) userState.updates.splice(i,1); const ta2=document.getElementById('update-composer'); if(ta2) ta2.value=entry.body; foot.innerHTML=orig; renderDiscUpdates(); renderActivity(); };
-    setTimeout(()=>{ if(foot.querySelector('#undo-post')) foot.innerHTML=orig; }, 8000); }
 }
 
 /* ── Survey pool — shared with triangulator.html via same-origin localStorage.
@@ -2312,35 +2326,50 @@ function openTriangulator(){
   if(fr&&!fr.getAttribute('src')) fr.setAttribute('src','triangulator.html'); // lazy-load; never reset once set
   showView('triangulator');
 }
-/* ── Practice Journal — reflection builds judgment. Prompts evolve with the cycle:
-   Discovery → Investigation → Reframing → Building → Integration. Entries are
-   private or pod-shared (never public unless explicitly also posted). Production:
-   journal_entries + the OLOS cross-journal synthesis layer. */
-const JOURNAL_PROMPTS={
-  'Problem Sprint':{stage:'Discovery', q:'What did you notice this week? What assumptions are you questioning?'},
-  'Frame Sprint':{stage:'Reframing', q:'What new frame is emerging? What possibilities does it open?'},
-  'Building':{stage:'Building', q:'What did you test? What failed? What changed your thinking?'}
-};
-function currentJournalPrompt(){ return JOURNAL_PROMPTS[CYCLE.phase]||JOURNAL_PROMPTS['Problem Sprint']; }
-function renderJournal(){
-  const p=currentJournalPrompt();
-  const ph=document.getElementById('journal-phase'); if(ph) ph.textContent=p.stage;
-  const pr=document.getElementById('journal-prompt'); if(pr) pr.textContent=p.q;
-  const ct=document.getElementById('journal-count'); if(ct) ct.textContent=(userState.journal.length||'No')+' entr'+(userState.journal.length===1?'y':'ies')+' this cycle';
-  const rec=document.getElementById('journal-recent'); if(!rec) return;
-  const items=userState.journal.slice(-2).reverse();
-  rec.innerHTML=items.length?items.map(j=>'<div style="border-top:1px solid var(--rule);padding:10px 0 2px;"><div class="t-small" style="color:var(--meta);margin-bottom:4px;">'+relDate(j.at)+' · '+escHTML(j.stage)+' · '+(j.visibility==='pod'?'Shared with your pod':'Just you')+'</div><p class="t-small">'+escHTML(j.body)+'</p></div>').join('')
-    :'<p class="t-small" style="color:var(--meta);">Entries stay between you and your pod — OLOS synthesizes themes across the cohort, never names.</p>';
+/* ── Learning Log — the weekly practice that replaced the Practice Journal (and the
+   Pulse before it). One low-friction flow: a private health check (metrics visible to
+   the member's Poderator + The Labs admins only), three scaffolded prompts that kill
+   blank-page anxiety, and an optional share of the concatenated log to the Discover
+   feed. Unlimited logs — no weekly lockout in the prototype; the weekly-cron cadence
+   is a production note. Production: learning_logs (docs/OLOS_BACKEND_CHANGES.md §6). */
+function llVal(id){ const e=document.getElementById(id); return e?e.value.trim():''; }
+function llSeg(lead,v){ v=(v||'').trim(); if(!v) return ''; return lead+' '+v.replace(/^[…\s]+/,'').replace(/[.\s]+$/,'')+'. '; }
+function llPreviewText(){
+  return (llSeg('This week, I figured out', llVal('ll-accomplished'))
+        + llSeg('I\u2019m currently exploring', llVal('ll-exploring'))
+        + llSeg('Next week, my focus is', llVal('ll-next'))).trim();
 }
-function saveJournalEntry(){
-  const ta=document.getElementById('journal-entry'); if(!ta) return;
-  const body=(ta.value||'').trim(); if(!body) return;
-  const vis=(document.querySelector('input[name="journal-vis"]:checked')||{}).value||'private';
-  const pub=document.getElementById('journal-public');
-  userState.journal.push({body:body, at:Date.now(), stage:currentJournalPrompt().stage, visibility:vis});
-  if(pub&&pub.checked){ userState.updates.push({body:body, at:Date.now()}); renderDiscUpdates(); renderActivity(); pub.checked=false; }
-  ta.value='';
-  renderJournal(); renderTodos();
+function llSyncPreview(){ const p=document.getElementById('ll-preview'); if(!p) return; const t=llPreviewText(); p.textContent=t||'Your log reads back here as you type.'; p.style.color=t?'var(--charcoal)':'var(--meta)'; }
+function toggleBlocked(){ const on=document.getElementById('ll-blocked').checked; const w=document.getElementById('ll-blocked-wrap'); w.style.display=on?'block':'none'; if(on) document.getElementById('ll-blocker').focus(); }
+function renderLearningLog(){
+  const n=userState.learningLogs.length;
+  const ct=document.getElementById('ll-count'); if(ct) ct.textContent=(n||'No')+' log'+(n===1?'':'s')+' this cycle';
+  const rec=document.getElementById('ll-recent'); if(!rec) return;
+  const items=userState.learningLogs.slice(-2).reverse();
+  rec.innerHTML=items.length?items.map(l=>{
+    const para=(llSeg('This week, I figured out', l.log_content.accomplished)
+              + llSeg('I\u2019m currently exploring', l.log_content.exploring)
+              + llSeg('Next week, my focus is', l.log_content.next)).trim();
+    return '<div style="border-top:1px solid var(--rule);padding:10px 0 2px;"><div class="t-small" style="color:var(--meta);margin-bottom:4px;">'+relDate(l.at)+' · Clarity '+l.metrics.clarity+' · Alignment '+l.metrics.alignment+(l.metrics.is_blocked?' · <span style="color:var(--red);font-weight:600;">Blocked</span>':'')+' · '+(l.share_publicly?'Shared to Discover':'Health check private')+'</div><p class="t-small">'+escHTML(para)+'</p></div>';
+  }).join('')
+    :'<p class="t-small" style="color:var(--meta);">Health checks go only to your Poderator and The Labs team. What you share is always your call.</p>';
+}
+function saveLearningLog(){
+  const content={accomplished:llVal('ll-accomplished'), exploring:llVal('ll-exploring'), next:llVal('ll-next')};
+  if(!content.accomplished&&!content.exploring&&!content.next){ document.getElementById('ll-accomplished').focus(); return; }
+  const blocked=document.getElementById('ll-blocked').checked;
+  const share=document.getElementById('ll-share').checked;
+  userState.learningLogs.push({ at:Date.now(), phase:CYCLE.phase,
+    metrics:{ clarity:+document.getElementById('ll-clarity').value, alignment:+document.getElementById('ll-alignment').value, is_blocked:blocked, blocker_context:blocked?llVal('ll-blocker'):null },
+    log_content:content, share_publicly:share });
+  if(share){ userState.updates.push({body:llPreviewText(), at:Date.now()}); renderDiscUpdates(); renderActivity(); }
+  // reset the form — log as often as you like
+  ['ll-accomplished','ll-exploring','ll-next','ll-blocker'].forEach(id=>{ document.getElementById(id).value=''; });
+  ['ll-clarity','ll-alignment'].forEach(id=>{ document.getElementById(id).value=3; document.getElementById(id+'-out').textContent='3'; });
+  document.getElementById('ll-blocked').checked=false; document.getElementById('ll-share').checked=false;
+  document.getElementById('ll-blocked-wrap').style.display='none';
+  llSyncPreview();
+  renderLearningLog(); renderTodos();
 }
 
 /* Public event RSVP — free & first-come-first-served, so it never gates on an account. */
@@ -2406,7 +2435,7 @@ function showAppView(id){
   const panel=document.getElementById('panel-'+id); if(panel) panel.classList.add('active');
   if(id==='bookmarks') renderBookmarks();
   if(id==='discover') renderDiscover();
-  if(id==='dashboard'){ renderJournal(); renderTodos(); } // todos are phase-aware — refresh on every visit
+  if(id==='dashboard'){ renderLearningLog(); renderTodos(); } // todos are phase-aware — refresh on every visit
   if(id==='cycles'){ renderCycleSituations(); renderCycleFormation(); }
   // Drill-in panels (cycles/events/labs/resources/bookmarks) are browse content —
   // keep Discover highlighted so the user stays oriented in the 3-item nav. Your own
@@ -2443,6 +2472,39 @@ function gateCreateAccount(ctx, e){ if(e) e.stopPropagation();
     gateReturnTo=/workshop|session|event/.test(c)?()=>goApp('events'):/lab|waitlist/.test(c)?()=>goApp('labs'):/cycle|frame/.test(c)?()=>goApp('cycles'):null; }
   applyGate(); showView('google-auth'); }
 function toggleExpand(card, e){ if(e){ const t=e.target; if(t.closest('button')) return; } card.classList.toggle('expanded'); }
+
+/* ── Pods — "Join a pod" opens a chooser of real pods, never a bare form. One pod
+   per member; pods run 12–30 (see CLAUDE.md). Production: pods/pod_memberships. */
+const PODS_OPEN=[
+  {id:'pod4', name:'Pod 4 · Civic AI', focus:'Benefits navigation dead-ends — plain-language tools for DC residents', members:14, meets:'Tuesdays 6:30 PM · DC Public Library'},
+  {id:'pod2', name:'Pod 2 · Voting Access', focus:'First-time voter information gap — local ballot info that travels', members:11, meets:'Thursdays 7 PM · Virtual'},
+  {id:'pod7', name:'Pod 7 · Open Knowledge', focus:'Volunteer knowledge walks out the door — keeping what groups learn', members:5, meets:'Forming · first session after Kickoff', forming:true}
+];
+let pendingPod=null;
+function renderPodChooser(){
+  document.getElementById('pod-list').innerHTML=PODS_OPEN.map(p=>'<div class="lcard" style="padding:16px 18px;margin-bottom:10px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">'
+    +'<div style="flex:1;min-width:180px;"><div class="t-h4" style="font-size:15px;">'+escHTML(p.name)+'</div><p class="t-small" style="margin:4px 0;">'+escHTML(p.focus)+'</p><p class="t-small" style="color:var(--meta);">'+(p.forming?p.members+' joined · pods are real at 12':p.members+' of 30 · '+escHTML(p.meets))+'</p></div>'
+    +'<button class="btn btn-teal btn-sm" onclick="choosePod(\''+p.id+'\')">Join</button>'
+    +'</div>').join('');
+}
+function openPodChooser(){ renderPodChooser(); document.getElementById('pod-chooser').classList.add('open'); }
+function closePodChooser(){ document.getElementById('pod-chooser').classList.remove('open'); }
+function applyPod(id){ const p=PODS_OPEN.find(x=>x.id===id); if(!p) return; CYCLE.pod=p.name; p.members++; renderDashCycle(); }
+function choosePod(id){
+  closePodChooser();
+  if(!userState.signedIn){ gateCreateAccount('a pod in the Civic & Elections Cycle', null); return; }
+  if(inCycle()){ applyPod(id); goApp('cycles'); }
+  else { pendingPod=id; startFlow('cycle', ()=>goApp('cycles')); } // register first; the pick applies on completion
+}
+/* Phase info — a compact modal per phase (ⓘ icons on the phase band labels). */
+const PHASE_INFO={
+  problem:{title:'Problem Sprint', when:'Weeks 1–5', body:'The cycle opens by looking, not building. Everyone gathers real observations, the community maps them together in the Triangulator, and pods form around the problem situations that emerge. It ends with each pod adopting one situation as its shared inquiry.'},
+  frame:{title:'Frame Sprint', when:'Weeks 6–9', body:'Pods dig into their situation — interviews, field work, research — looking for a new way of seeing it. At the Hackathon that research becomes solution proposals, and the community votes on which become projects.'},
+  building:{title:'Building', when:'Weeks 10–13', body:'Winning proposals become teams of 3–5 who build and test a real intervention. Everything — prototypes, findings, failures — returns to the commons at the Showcase Summit.'}
+};
+function openPhaseInfo(key){ const p=PHASE_INFO[key]; if(!p) return; document.getElementById('phase-info-when').textContent=p.when; document.getElementById('phase-info-title').textContent=p.title; document.getElementById('phase-info-body').textContent=p.body; const mo=document.getElementById('phase-info-modal'); mo.classList.add('open'); const c=mo.querySelector('.gate-close'); if(c) c.focus(); }
+function closePhaseInfo(){ document.getElementById('phase-info-modal').classList.remove('open'); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closePodChooser(); closePhaseInfo(); } });
 
 function signinReturning(){ userState.signedIn=true; document.getElementById('header-avatar').textContent=userState.initials; const da=document.getElementById('dash-avatar'); if(da) da.textContent=userState.initials; document.getElementById('dash-greeting').textContent='Welcome back, '+userState.name+'.'; renderTodos(); renderDashSaved(); renderDashCycle(); buildWeekRail(); renderProfileChecklist(); showView('dashboard'); }
 function updateRoleBtn(){ const c=document.querySelectorAll('#role-options input:checked'); document.getElementById('role-continue-btn').disabled=c.length===0; document.querySelectorAll('#role-options .opt-card').forEach(x=>x.classList.toggle('selected',x.querySelector('input').checked)); }
@@ -2487,7 +2549,7 @@ function FLOWS(name){
     onComplete:()=>{ userState.mentorRequests.push({...fans, at:Date.now()}); renderTodos(); showView('stub'); },
     steps:[ {id:'jitInfo',type:'info',q:'Evidence precedes assistance',help:'Mentors aren\u2019t assigned — they\u2019re activated when your work shows where they\u2019d have the most leverage. Investigate, try, document, reflect — then ask.',render:'<div class="flow-emaillarge" style="font-size:18px;line-height:1.5;">\u201cHere\u2019s what we\u2019ve learned. Where would you challenge our thinking?\u201d beats \u201cWhat should we do?\u201d</div>'},
       {id:'tried',type:'textarea',q:'What have you investigated and tried so far?',help:'Interviews run, experiments attempted, dead ends hit.',ph:'e.g. 12 resident interviews, a paper prototype that confused everyone...',required:true},
-      {id:'evidenceLinks',type:'textarea',q:'Link your evidence',help:'Practice Journal entries, interview summaries, failed experiments, prototype screenshots, research synthesis.',ph:'e.g. journal entries from weeks 3–5, the interview synthesis doc, prototype v1 screenshots...',required:true},
+      {id:'evidenceLinks',type:'textarea',q:'Link your evidence',help:'Learning Log entries, interview summaries, failed experiments, prototype screenshots, research synthesis.',ph:'e.g. journal entries from weeks 3–5, the interview synthesis doc, prototype v1 screenshots...',required:true},
       {id:'challenge',type:'textarea',q:'Where do you want your thinking challenged?',help:'The sharper the question, the more leverage the conversation has.',ph:'e.g. We\u2019re convinced the barrier is language complexity — challenge that.',required:true},
       {id:'expertiseNeeded',type:'tags',q:'What kind of expertise would help?',options:EXPERTISE,required:true} ]};
   if(name==='solutionProposal') return { eyebrow:'Solution proposal · '+CYCLE.name, finalLabel:(myProposal()?'Update proposal':'Submit proposal'), finalClass:'btn-teal',
@@ -2508,7 +2570,7 @@ function FLOWS(name){
     steps:[ {id:'nominee',type:'text',q:'Who are you recognizing?',help:'Their name as it appears in the directory.',ph:'e.g. Priya Shah',required:true,when:f=>!f.nominee},
       {id:'as',type:'choice',q:'Recognize them as\u2026',options:[{v:'upskiller',label:'Standout Upskiller',sub:'Consistently shows up and ships'},{v:'mentor',label:'Mentor material',sub:'Generous with evidence-backed help'},{v:'advisor',label:'Advisor',sub:'Strategic judgment The Labs should tap'}],required:true},
       {id:'reason',type:'textarea',q:'What did they do?',help:'A sentence is plenty — nominations go to the Labs team, who follow up with the member.',ph:'e.g. Debugged three pods\u2019 scoping questions in one office hour...',required:true} ]};
-  if(name==='cycle') return { eyebrow:'Spring 2026', finalLabel:'Submit registration', finalClass:'btn-teal', onComplete:()=>finishRoleFlow('cycle'),
+  if(name==='cycle') return { eyebrow:'Civic & Elections · Summer 2026', finalLabel:'Submit registration', finalClass:'btn-teal', onComplete:()=>{ finishRoleFlow('cycle'); if(pendingPod){ applyPod(pendingPod); pendingPod=null; } },
     steps:[ {id:'overview',type:'info',q:'The Civic & Elections Cycle',help:'A Build Cycle is 13 weeks of learning by doing: you join a pod, investigate a real problem together, and build something with a small team.',render:'<div class="flow-emaillarge" style="font-size:18px;line-height:1.5;">Summer 2026 · Washington, DC<br>Kickoff Jul 14 · 13 weeks · Showcase Summit in October</div><p class="t-small" style="margin-top:14px;color:var(--meta);">Problem Sprint → Frame Sprint → Building. Registration takes about two minutes.</p>'},
       {id:'problem',type:'textarea',q:'What problem area excites you most?',help:'A sentence or two is plenty.',ph:'e.g. how AI can help DC residents navigate benefits eligibility...',required:true},
       {id:'level',type:'choice',q:'Where are you at in your primary area?',options:LEVELS.map(l=>({v:l[0],label:l[0],sub:l[1]}))},
@@ -2693,9 +2755,9 @@ function renderTodos(){
     }[CYCLE.formationPhase||'submission'];
     if(f) todos.push({label:'Cycle formation',title:f.title,body:f.body,cta:f.cta,action:f.start?()=>startProposalFlow():()=>goApp('cycles')});
   }
-  if(!userState.journal.length) todos.push({id:'journal',label:'Practice Journal',title:'Write your first entry',body:'Reflection builds judgment — two minutes on what you noticed this week.',cta:'Open the journal',action:()=>{ goApp('dashboard'); const t=document.getElementById('journal-entry'); if(t) t.focus(); },dismiss:true});
+  if(!userState.learningLogs.length) todos.push({id:'learninglog',label:'Learning Log',title:'Log your first week',body:'A health check and three quick prompts — five minutes, once a week.',cta:'Open your Learning Log',action:()=>{ goApp('dashboard'); const t=document.getElementById('ll-accomplished'); if(t){ t.focus(); t.scrollIntoView({block:'center'}); } },dismiss:true});
   if(!userState.completed.surveyFill) todos.push({id:'survey',label:'Field survey',title:'Add your observations',body:'Feed the Civic & Elections problem map — a few raw observations from your world.',cta:'Start the survey',action:()=>startFlow('survey',()=>goApp('dashboard')),dismiss:true});
-  if(!inCycle()) todos.push({label:'Cycles',title:'Build Cycle is forming',body:'Pod registration opens Mar 30.',cta:'Learn more',action:()=>goApp('cycles')});
+  if(!inCycle()) todos.push({label:'Cycles',title:'Build Cycle is forming',body:'Pod registration opens Aug 3.',cta:'Learn more',action:()=>goApp('cycles')});
   const c=document.getElementById('todos-container'); if(!c)return; c.innerHTML='';
   todos.filter(t=>!t.id||!dismissedTodos.has(t.id)).forEach(t=>{ const d=document.createElement('div'); d.className='lcard'; d.style.padding='20px 22px'; d.style.position='relative'; d.innerHTML=(t.dismiss?'<button title="Dismiss" style="position:absolute;top:10px;right:12px;background:none;border:none;color:var(--meta);cursor:pointer;font-size:16px;line-height:1;" onclick="dismissTodo(\''+t.id+'\',event)">×</button>':'')+'<div class="lbl lbl-teal" style="margin-bottom:8px;">'+t.label+'</div><div class="t-h4" style="margin-bottom:6px;">'+t.title+'</div><p class="t-small" style="margin-bottom:'+(t.cta?'14px':'0')+';">'+t.body+'</p>'+(t.cta?'<button class="btn btn-ghost-teal btn-sm">'+t.cta+'</button>':''); if(t.action){ const b=d.querySelector('.btn.btn-ghost-teal'); if(b) b.onclick=t.action; } c.appendChild(d); });
 }
@@ -2709,7 +2771,7 @@ function renderDashCycle(){
   const labels=CYCLE.phases.map((p,i)=>'<span class="t-small" style="font-weight:600;color:'+(i===CYCLE.phaseIndex?'var(--ink)':'var(--meta)')+';">'+p+'</span>').join('');
   const mile=CYCLE.milestones.map(m=>'<div style="display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--rule);"><span class="t-small" style="color:var(--ink);">'+m.label+'</span><span class="t-small">'+m.when+'</span></div>').join('');
   el.innerHTML='<div class="lcard" style="padding:24px;">'
-    +'<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Current cycle · '+CYCLE.name+'</div><div class="t-h4">'+CYCLE.phase+' phase · '+CYCLE.pod+'</div></div><button class="btn btn-ghost-teal btn-sm" onclick="goApp(\'cycles\')">Open cycle</button></div>'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">'+CYCLE.theme+' · '+CYCLE.name+'</div><div class="t-h4">'+CYCLE.phase+' phase · '+CYCLE.pod+'</div></div><button class="btn btn-ghost-teal btn-sm" onclick="goApp(\'cycles\')">Open cycle</button></div>'
     +'<div class="phase-band">'+segs+'</div>'
     +'<div style="display:flex;justify-content:space-between;margin-bottom:18px;">'+labels+'</div>'
     +'<div class="lbl" style="margin-bottom:4px;">Upcoming milestones</div>'+mile
@@ -3011,7 +3073,7 @@ function openFeedback(){ fbCategory='Idea'; renderFbCats(); document.getElementB
 function closeFeedback(){ document.getElementById('fb-modal').classList.remove('open'); }
 function submitFeedback(){ const body=document.getElementById('fb-body').value.trim(); if(!body){ document.getElementById('fb-body').focus(); return; } FEEDBACK_LOG.push({category:fbCategory, body:body, at:Date.now(), screen:fbScreen()}); document.getElementById('fb-form').style.display='none'; document.getElementById('fb-done').style.display='block'; }
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeFeedback(); });
-document.addEventListener('DOMContentLoaded',()=>{ renderLandingStories(); initEventCats(); applyCycleState(); buildWeekRail(); renderActivity(); renderJournal(); initHeroScroll(); enhanceTappables();
+document.addEventListener('DOMContentLoaded',()=>{ renderLandingStories(); initEventCats(); applyCycleState(); buildWeekRail(); renderActivity(); renderLearningLog(); initHeroScroll(); enhanceTappables();
   // Shared survey links (?survey=...) deep-link straight into the fill flow — no account needed.
   if(new URLSearchParams(location.search).get('survey')){ startFlow('survey', ()=>showView('landing')); }
 });

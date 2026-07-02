@@ -31,7 +31,7 @@ It is **mobile-first and fully responsive**: a phone-shaped experience on small 
 | `font.css` | The single embedded Geologica `@font-face` (base64) — every HTML file links it; **no inline `@font-face` anywhere** |
 | `tokens.css` | Brand primitives (palette, `--r`, shadows, `--grain`) — the single source of truth; per-file `:root`s hold only file-specific vocabulary |
 | `shared.js` | Stateless helpers (`escHTML relDate avatarSm enhanceTappables ORB GRAD`, view-as persona contract) loaded before each file's inline script — no routing, no per-file state |
-| `moderator.html` | The Poderator persona (never "moderator" in rendered copy) — pod switcher, journal-health bands + trend, at-risk nudges (mailto + dismiss), journal themes, copy-to-clipboard AI bundle (no in-app LLM), vote tallies, roster |
+| `moderator.html` | The Poderator persona (never "moderator" in rendered copy) — pod switcher, Learning-Log health bands (clarity/alignment averages) + trend, needs-attention list (blockers first, then quiet loggers; mailto + dismiss), log themes, copy-to-clipboard AI bundle (no in-app LLM), vote tallies, roster |
 | `admin.html` | The Admin persona — Testing Controls (phase stepper that writes `olos.cycleState.v1`), cycle control, vote progress, invitations, participants + permissions stub, Entity Explorer stub |
 | `docs/OLOS_BACKEND_CHANGES.md` | The backend planning doc — every schema/API change OLOS needs to serve this frontend |
 | `assets/` | Used images (logos, sample photography, orb marks) |
@@ -141,10 +141,11 @@ persona pill, and "Exit to member view".
   (never per-voter), invitations (role presets incl. Poderator, copyable links,
   Resend/Revoke), participants table + permissions modal, Entity Explorer disabled stub.
 - **`moderator.html`** (rendered copy says **Poderator**, never "moderator"): pod switcher
-  (+ All-pods rollup), phase/countdown/journal-health band (`.status.watch`/`.status.risk`) +
-  trend, at-risk nudge cards (mailto + session Dismiss; empty state), journal-themes card
-  (pod-visible entries only), copy-to-clipboard AI bundle (no in-app LLM — matches OLOS),
-  vote tallies, filterable/sortable roster.
+  (+ All-pods rollup), phase/countdown/Learning-Log health band (`.status.watch`/
+  `.status.risk`) + clarity/alignment averages + trend, needs-attention cards (blocked
+  members first with their own "what do you need" text, then quiet loggers; mailto +
+  session Dismiss; empty state), log-themes card (shared entries only), copy-to-clipboard
+  AI bundle (no in-app LLM — matches OLOS), vote tallies, filterable/sortable roster.
 
 **Formation (mirrors OLOS's real pipeline) — never Discover content.** All on `panel-cycles`,
 cycle-scoped, phase-driven from `olos.cycleState.v1` (`CYCLE.formationPhase`, read at boot +
@@ -170,7 +171,8 @@ Hackathon, Meet the Projects, Showcase Summit) — they lead the `EVENTS` array 
 **`panel-dashboard`** is the admin view of your own presence, in this order: **setup checklist
 first** (actionable rows carry visible "Start →" buttons — no hover-only affordances; the
 whole section collapses to a "Setup · All done ✓" strip once complete), then the **Practice
-Journal**, then the demoted public composer, then dismissible "Up next" cards.
+Log** (its own section), then dismissible "Up next" cards — the public composer is gone;
+Learning Log shares are the primary source of member updates.
 
 ### Journey rules (added in the UX-improvements pass — keep these invariants)
 
@@ -202,10 +204,12 @@ Journal**, then the demoted public composer, then dismissible "Up next" cards.
 
 ### Key user flows
 
-- **Create account:** Landing → `view-google-auth` → `view-role-intent` → signup flow
-  (zip pre-suggests the lab; explicit profile-visibility choice step) → role branches →
-  gate-return (if the funnel was entered from a gated card, signup returns there) or
-  dashboard.
+- **Create account:** Landing → `view-google-auth` → `view-role-intent` → signup flow —
+  **5 screens** (email · "Tell us who you are" `fields` step with first+last+zip on one
+  screen · describes-you · hearAbout with the referral input inline via `step.followUp` ·
+  consent). The lab is assigned silently from zip; there is no visibility step — profiles
+  are members-only (`profileVisibility='labs'`, public tier deferred). Then role branches →
+  gate-return (if the funnel was entered from a gated card) or dashboard.
 - **Survey → Triangulator:** survey flow (`FLOWS('survey')`, loops via "add another") →
   observations append to `localStorage['olos.surveyPool.v1']` (seeded from `SURVEY_SEED`, the
   Civic & Elections CSV) → `view-survey-share` (copy `?survey=` link; the link deep-links
@@ -217,10 +221,16 @@ Journal**, then the demoted public composer, then dismissible "Up next" cards.
   → self-register for exactly one team; at `projectMin` (3) registrations the team ignites →
   `view-team-ignition` → `view-project-canvas` (frame/intervention/metrics/evidence + a
   "Request a mentor" JIT-support block). Caps: 3 min · 5 max per team, `maxProjects` 4.
-- **Practice Journal (replaces the Pulse):** `#journal-card` on the dashboard — phase-evolving
-  prompt (`JOURNAL_PROMPTS` keyed by `CYCLE.phase`), visibility Just me / My pod, optional
-  "also post publicly" (a second, explicit write to `userState.updates`). Entries are never
-  public by default. The public composer below it is the demoted, optional social layer.
+- **Learning Log (replaces the Practice Journal, and the Pulse before it):**
+  `#learning-log-card` on the dashboard, one Save, three parts — (1) *Health check*: two 1–5
+  sliders (clarity / pod alignment) + an "I'm currently blocked" toggle revealing "What do
+  you need?"; explicitly private to the member's Poderator + admins. (2) *Scaffolded
+  reflection*: three mad-libs prompts (figured out / exploring / next focus). (3) *Share
+  preview*: live concatenated paragraph + a "Share to the Discover feed" toggle (writes
+  `userState.updates`). Entries append to `userState.learningLogs` — **unlimited logs, no
+  weekly lockout**; the form resets after save and recent logs list below with a count.
+  Payload shape mirrors the backend `learning_logs` row (metrics / log_content /
+  share_publicly — see docs §6).
 - **Evidence precedes assistance:** `FLOWS('mentorRequest')` — required tried/evidence/
   challenge steps; entry points on the project canvas and the directory's mentor filter.
   Public event RSVPs are email-only (`#rsvp-modal`, `openRsvp()`) — never account-gated.
@@ -228,9 +238,9 @@ Journal**, then the demoted public composer, then dismissible "Up next" cards.
   use the same signup); signup asks "How did you hear about us?" (+ conditional "Who referred
   you?" → `userState.referral`); the profile's "I have experience to offer" card starts the
   mentor flow anytime (`#prof-mentor-cta`, owner-only, hidden once `completed.mentor`). The
-  6-step mentor intake (expertise/engage/pods/tz/booking/artifact) **publishes immediately** —
-  no review queue; the explainer says exactly where answers go. Staff can concierge, never
-  gate.
+  4-step mentor intake (expertise/engage/pods/tz — booking + artifact were cut as
+  over-asking) **publishes immediately** — no review queue; the explainer says exactly
+  where answers go. Staff can concierge, never gate.
 - **Testimonials are requested, never self-written:** `testimonialBlockHTML()` — mentors
   request quotes from members (pending chips, cancellable), authors write them, mentors can
   only hide. Received quotes render with attribution on the mentor's profile and directory
@@ -245,9 +255,9 @@ Journal**, then the demoted public composer, then dismissible "Up next" cards.
   `view-profile` in visitor mode ("Back to Discover" bar). Owner state is fully restored by
   `renderProfileView()` on next open.
 - **Nominations (members surface talent; staff concierge, never gate):** "Nominate" ghost
-  button on directory cards + "Recognize someone this week →" under the journal card →
-  `FLOWS('nominate')` (nominee preloaded from the card; a name step appears via `step.when`
-  when entered from the journal) → `userState.nominations[]` → stub confirmation.
+  button on directory cards → `FLOWS('nominate')` (nominee preloaded from the card; a name
+  step appears via `step.when` when no nominee is preloaded) → `userState.nominations[]` →
+  stub confirmation. (The dashboard "Recognize someone" link was cut — team feedback.)
 - **Feedback (signed-in nav bar only):** a "Send feedback" row in `#avatar-menu`, right above
   Sign out (`index.html`, `admin.html`, `moderator.html`) → `openFeedback()` opens `#fb-modal` —
   Bug/Idea/Confusing/Love-it chips + textarea → `FEEDBACK_LOG` entries carry
@@ -289,7 +299,9 @@ renderSolutionBallot() / voteStep() / confirmBallot()  // budget ballot (locks o
 tallyAndFormProjects() / generateProjectName()     // tally + the deterministic naming beat
 renderProjectRegistration() / registerForProject(id) / openProjectCanvas(id)  // self-serve teams + ignition at min
 inCycle() / inProject() / applyCycleState()        // gates + olos.cycleState.v1 (boot + storage event)
-renderJournal() / saveJournalEntry()               // Practice Journal (phase-evolving prompts)
+renderLearningLog() / saveLearningLog() / llPreviewText()  // Learning Log (unlimited; resets on save)
+openPodChooser() / choosePod(id) / PODS_OPEN       // Join-a-pod chooser (register-first if needed)
+openPhaseInfo(key) / PHASE_INFO                    // per-phase ⓘ modals on the cycle page
 openRsvp(ctx,e) / submitRsvp()                     // email-only public event RSVP
 toggleFollow(id,e) / isFollowing(id)               // follow system (updates feed filter payoff)
 testimonialBlockHTML(list,owner) / requestTestimonial(id)  // requested-only testimonials
@@ -300,7 +312,7 @@ exitSurveyShare() / exitTriangulator()             // auth-aware exits
 deleteUpdate(at) / editUpdate(at)                  // owner controls on profile updates
 enhanceTappables()        // keyboard access for dynamic cards
 showMemberProfile(id)     // directory → visitor-mode profile (Discover stays highlighted)
-postUpdate() / renderProfUpdates(list)             // social updates
+renderProfUpdates(list)                            // profile updates (sourced from Learning Log shares)
 seedTriangulatorPool() / appendSurveyObservation() // shared survey pool
 openTriangulator()        // seeds pool, lazy-sets iframe src, shows view
 showSurveyShare() / copySurveyLink(btn)

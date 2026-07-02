@@ -153,12 +153,12 @@ batch-adding columns rather than a satellite table. Reuses the existing `profile
 ### 1.9 `profile_updates` (social layer)
 
 ```
-id, participant_id FK, cycle_id FK NULL, journal_entry_id FK NULL,
+id, participant_id FK, cycle_id FK NULL, learning_log_id FK NULL,
 body text, visibility enum('public','labs_only') default 'public', created_at
 ```
 
 Backs the "Share a public update" composer and the profile activity feed. The nullable
-`journal_entry_id` only logs which journal moment (if any) prompted the post — it is **not**
+`learning_log_id` only logs which Learning Log (if any) produced the post — it is **not**
 how content is sourced. See §6: journal entries are never public; a public post is always a
 separate, explicit write to this table.
 
@@ -333,32 +333,49 @@ than overloading `Role`. **Flag in the PR that this closes roadmap row D3.**
 
 ---
 
-## 6. The Practice Journal — replaces the weekly Pulse (institutional-model decision)
+## 6. The Learning Log — replaces the journal_entries plan (and the weekly Pulse before it)
 
-The institutional model **retires the weekly Pulse in favor of a guided Practice Journal**.
-This supersedes the earlier "extend the pulse-check form" design in previous drafts of this
-document. The journal serves three audiences — yourself, your pod, and OLOS synthesis — and
-its prompts evolve with the cycle phase (Discovery → Investigation → Reframing → Building →
-Integration).
+**Product decision (July 2026, supersedes the Practice Journal design below this doc used to
+carry):** the weekly reflection is a **Learning Log** — one low-friction flow in three parts,
+surfaced on the dashboard by the weekly reminder cron (the prototype allows unlimited logs;
+the cadence is a nudge, not a lockout):
 
-- **`journal_entries`** — `id, participant_id FK, cycle_id FK, phase text, prompt_key text,
-  body text, visibility enum('private','pod') default 'private', created_at`. Never public;
-  a public post is a *separate, explicit* write to `profile_updates` (the prototype's
-  "also post publicly" checkbox performs exactly this second write).
+1. **Health check (the robust Pulse):** two 1–5 sliders (*Clarity on next steps*, *Alignment
+   with pod*) + an *"Are you currently blocked?"* toggle revealing a *"What do you need?"*
+   text field. **Metrics are private to the member, their Poderator, and admins** — enforced
+   by RLS, never shown to the pod or any feed.
+2. **Scaffolded reflection (kills blank-page anxiety):** three short prompts — *"This week, I
+   figured out / accomplished…"*, *"I'm currently exploring / stuck on…"*, *"Next week, my
+   focus is…"*.
+3. **Share preview:** the three answers concatenate into one readable paragraph with a
+   *"Share this log to the Discover feed"* toggle (members-only visibility — profiles and the
+   feed are members-only per §7).
+
+- **`learning_logs`** — `id, participant_id FK, cycle_id FK, phase text,
+  clarity smallint CHECK (1..5), alignment smallint CHECK (1..5),
+  is_blocked boolean default false, blocker_context text,
+  accomplished text, exploring text, next_focus text,
+  share_publicly boolean default false, created_at`.
+  Client payload shape (the prototype's `userState.learningLogs` mirrors it):
+  `{ metrics:{clarity, alignment, is_blocked, blocker_context},
+     log_content:{accomplished, exploring, next}, share_publicly }`.
+- **Share path:** `share_publicly=true` creates a `profile_updates` row from the concatenated
+  paragraph (provenance column `learning_log_id`, replacing the earlier `journal_entry_id`
+  idea). The metrics NEVER travel with the share.
+- **Poderator payoff:** the poderator dashboard reads pod-level metric averages
+  (clarity/alignment), a **blocker-alert feed** (`is_blocked=true`, unresolved — surfaced
+  blockers-first with the member's own "what do you need" text), and logging cadence. This
+  replaces the pulse-review surfaces; keep the no-in-app-LLM precedent — the AI-summary
+  bundle now packages *shared* log entries only.
 - **Migration path from `pulse_checks`:** keep the table and its history; new cycles write
-  `journal_entries` instead. The pulse cadence infrastructure (reminder cron, moderator
-  review surfaces) adapts: reminders point at the journal; the poderator dashboard reads
-  pod-visible entries (`visibility='pod'`) in place of pulse responses.
-- **OLOS synthesis layer (new scope):** the platform synthesizes hundreds of journals to
-  surface recurring themes, shared paradoxes, stalled investigations, and promising
-  connections between pods. Follow the existing precedent that **no LLM runs inside OLOS**
-  (per the poderator dashboard's AI-summary pattern): v1 bundles pod-visible entries plus a
-  stored prompt for a facilitator to run in their own AI tool; a served synthesis is a later
-  decision.
-- Routes: `POST /api/journal-entries` (self-only), `GET /api/journal-entries/me`,
-  `GET /api/pods/[pod_id]/journal` (pod-visible entries, pod members + moderators),
-  `GET /api/moderator/journal-synthesis/[cycle_id]` (the bundled-prompt export).
-- `profile_updates` (§1.9) is unchanged — it remains the optional public social layer.
+  `learning_logs`. The reminder cron points at the Learning Log.
+- Routes: `POST /api/learning-logs` (self-only), `GET /api/learning-logs/me`,
+  `GET /api/pods/[pod_id]/learning-logs` (Poderator + admins: metrics + shared content),
+  `GET /api/pods/[pod_id]/blockers` (unresolved blocker alerts),
+  `GET /api/moderator/log-synthesis/[cycle_id]` (the bundled-prompt export, shared entries only).
+- `profile_updates` (§1.9) is unchanged as a table — but the dashboard's freeform public
+  composer is retired in the prototype; Learning Log shares become the primary source of
+  member updates.
 
 ## 6a. Just-in-time mentorship — evidence precedes assistance
 
@@ -480,7 +497,7 @@ Confirm the head number first (see §1 preamble), then land in this order:
    `participant_onboarding_progress`
 5. `events` (Luma cache)
 6. `resources` (CMS)
-7. `profile_updates` + `journal_entries` + RLS
+7. `profile_updates` + `learning_logs` + RLS
 8. `problem_situations` + the four `solution_proposals` columns (`frame`, `intervention`,
    `success_metrics`, `evidence`) + `solution_proposals.problem_situation_id` + RLS — no new
    formation tables (§1.10 resolved: the existing voting pipeline is the formation mechanism)

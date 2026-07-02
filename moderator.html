@@ -139,10 +139,10 @@ button,input,select,textarea { font-family:inherit; }
 
   <div class="cards two" style="margin-top:24px;">
     <div>
-      <div class="section-head" style="margin-bottom:16px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Needs you</div><h2 class="t-h3">Members going quiet</h2></div></div>
+      <div class="section-head" style="margin-bottom:16px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Needs attention</div><h2 class="t-h3">Blockers first, then quiet members</h2></div></div>
       <div id="nudge-cards"></div>
 
-      <div class="section-head" style="margin-bottom:16px;margin-top:36px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Journal themes</div><h2 class="t-h3">What the pod is wrestling with</h2></div></div>
+      <div class="section-head" style="margin-bottom:16px;margin-top:36px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Log themes</div><h2 class="t-h3">What the pod is wrestling with</h2></div></div>
       <div id="themes-card"></div>
     </div>
     <div>
@@ -158,7 +158,7 @@ button,input,select,textarea { font-family:inherit; }
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;" id="roster-chips"></div>
   <div class="lcard tbl-wrap" style="padding:6px 12px 2px;">
     <table class="tbl" aria-label="Pod roster">
-      <thead><tr><th onclick="setRosterSort('name')">Name</th><th onclick="setRosterSort('active')">Status</th><th onclick="setRosterSort('journals')">Journal entries</th><th>Last entry</th></tr></thead>
+      <thead><tr><th onclick="setRosterSort('name')">Name</th><th onclick="setRosterSort('active')">Status</th><th onclick="setRosterSort('logs')">Learning Logs</th><th>Last log</th></tr></thead>
       <tbody id="roster-rows"></tbody>
     </table>
   </div>
@@ -192,16 +192,17 @@ button,input,select,textarea { font-family:inherit; }
    avatar menu — plain members land back on the member app. */
 if(getViewAsRole()==='upskiller') location.replace('index.html');
 /* ── Poderator mock data — this file's own copy (established pattern).
-   Journal-sourced, never Pulse. Bands are qualitative, never grades. ── */
+   Sourced from Learning Log health checks (visible to Poderators + admins only)
+   and shared log entries. Bands are qualitative, never grades. ── */
 const PODS=[
   { id:'pod4', name:'Pod 4 · Civic AI', phase:'Frame Sprint', closesInDays:5, band:'watch', trend:'down',
     members:[
-      {id:'m3', name:'Jordan Okafor', initials:'JO', email:'jordan@example.org', active:true, journals:6, lastEntryDays:1},
-      {id:'m5', name:'Sam Whitfield', initials:'SW', email:'sam@example.org', active:true, journals:5, lastEntryDays:2},
-      {id:'you', name:'Alex Rivera', initials:'AR', email:'alex@example.org', active:true, journals:4, lastEntryDays:0},
-      {id:'m2', name:'Marcus Bell', initials:'MB', email:'marcus@example.org', active:true, journals:1, lastEntryDays:9},
-      {id:'m7', name:'Dana Whitehall', initials:'DW', email:'dana@example.org', active:true, journals:2, lastEntryDays:8},
-      {id:'m8', name:'Chris Yuen', initials:'CY', email:'chris@example.org', active:false, journals:0, lastEntryDays:21}
+      {id:'m3', name:'Jordan Okafor', initials:'JO', email:'jordan@example.org', active:true, logs:6, lastLogDays:1, clarity:4, alignment:5},
+      {id:'m5', name:'Sam Whitfield', initials:'SW', email:'sam@example.org', active:true, logs:5, lastLogDays:2, clarity:4, alignment:4},
+      {id:'you', name:'Alex Rivera', initials:'AR', email:'alex@example.org', active:true, logs:4, lastLogDays:0, clarity:3, alignment:4},
+      {id:'m2', name:'Marcus Bell', initials:'MB', email:'marcus@example.org', active:true, logs:1, lastLogDays:9, clarity:2, alignment:3, blocked:'Can\u2019t get access to the eligibility dataset \u2014 need an intro to the OCTO contact.'},
+      {id:'m7', name:'Dana Whitehall', initials:'DW', email:'dana@example.org', active:true, logs:2, lastLogDays:8, clarity:3, alignment:2},
+      {id:'m8', name:'Chris Yuen', initials:'CY', email:'chris@example.org', active:false, logs:0, lastLogDays:21}
     ],
     themes:[
       'Scoping anxiety — three entries this week circle "our frame feels too big to build"',
@@ -213,10 +214,10 @@ const PODS=[
     ballotsIn:5, ballotsTotal:7 },
   { id:'pod2', name:'Pod 2 · Voting Access', phase:'Frame Sprint', closesInDays:5, band:'healthy', trend:'up',
     members:[
-      {id:'m4', name:'Elena Ruiz', initials:'ER', email:'elena@example.org', active:true, journals:7, lastEntryDays:0},
-      {id:'m9', name:'Ben Osei', initials:'BO', email:'ben@example.org', active:true, journals:6, lastEntryDays:1},
-      {id:'m10', name:'Rosa Nguyen', initials:'RN', email:'rosa@example.org', active:true, journals:5, lastEntryDays:1},
-      {id:'m11', name:'Kai Tanaka', initials:'KT', email:'kai@example.org', active:true, journals:4, lastEntryDays:3}
+      {id:'m4', name:'Elena Ruiz', initials:'ER', email:'elena@example.org', active:true, logs:7, lastLogDays:0, clarity:5, alignment:5},
+      {id:'m9', name:'Ben Osei', initials:'BO', email:'ben@example.org', active:true, logs:6, lastLogDays:1, clarity:4, alignment:5},
+      {id:'m10', name:'Rosa Nguyen', initials:'RN', email:'rosa@example.org', active:true, logs:5, lastLogDays:1, clarity:4, alignment:4},
+      {id:'m11', name:'Kai Tanaka', initials:'KT', email:'kai@example.org', active:true, logs:4, lastLogDays:3, clarity:4, alignment:4}
     ],
     themes:[
       'Confidence climbing — entries moved from "where do we start" to "which precinct first"',
@@ -227,7 +228,7 @@ const PODS=[
     ballotsIn:4, ballotsTotal:4 }
 ];
 const VOTE_THRESHOLD=5;
-const BAND_LABEL={healthy:'Journaling healthy', watch:'Journaling softening', at_risk:'Journaling at risk'};
+const BAND_LABEL={healthy:'Logs healthy', watch:'Logs softening', at_risk:'Logs at risk'};
 const BAND_CLASS={healthy:'active', watch:'watch', at_risk:'risk'};
 const AT_RISK_DAYS=7;
 let currentPod='pod4';
@@ -244,27 +245,37 @@ function setPod(id){ currentPod=id; renderAll(); }
 function renderPodStatus(){
   const el=document.getElementById('pod-status');
   el.innerHTML=pods().map(p=>{
-    const arrow=p.trend==='up'?'↗':'↘'; const arrowTip=p.trend==='up'?'More pod-visible entries this week than last':'Fewer pod-visible entries this week than last';
+    const arrow=p.trend==='up'?'↗':'↘'; const arrowTip=p.trend==='up'?'More Learning Logs this week than last':'Fewer Learning Logs this week than last';
+    const withLogs=p.members.filter(m=>m.logs>0);
+    const avg=k=>withLogs.length?(withLogs.reduce((a,m)=>a+(m[k]||0),0)/withLogs.length).toFixed(1):'—';
     return '<div class="lcard" style="padding:20px 24px;margin-bottom:12px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;">'
       +'<div style="flex:1;min-width:220px;"><div class="t-h4">'+escHTML(p.name)+'</div><p class="t-small">'+p.members.length+' members · closes in '+p.closesInDays+' days</p></div>'
       +'<span class="status active" title="Cycle phase">'+p.phase+'</span>'
-      +'<span class="status '+BAND_CLASS[p.band]+'" title="Derived from pod-visible journal cadence — a health band, not a grade">'+BAND_LABEL[p.band]+' <span aria-hidden="true" title="'+arrowTip+'">'+arrow+'</span></span>'
+      +'<span class="status" title="This week\'s Learning Log health checks — visible to Poderators and admins only">Clarity '+avg('clarity')+' · Alignment '+avg('alignment')+'</span>'
+      +'<span class="status '+BAND_CLASS[p.band]+'" title="Derived from Learning Log cadence — a health band, not a grade">'+BAND_LABEL[p.band]+' <span aria-hidden="true" title="'+arrowTip+'">'+arrow+'</span></span>'
       +'</div>';
   }).join('');
 }
 
-/* At-risk = no pod-visible journal entry in AT_RISK_DAYS. Dismissals last the
-   session — the signal re-derives from data, so nothing is ever lost. */
-function atRiskMembers(){
-  return pods().flatMap(p=>p.members.filter(m=>m.lastEntryDays>=AT_RISK_DAYS&&!dismissedNudges.has(m.id)).map(m=>({...m, pod:p.name})));
+/* Needs attention = blocked members first (their Learning Log said so, with the
+   "what do you need" text), then anyone with no log in AT_RISK_DAYS. Dismissals last
+   the session — the signal re-derives from data, so nothing is ever lost. */
+function needsAttention(){
+  const all=pods().flatMap(p=>p.members.map(m=>({...m, pod:p.name})));
+  const blocked=all.filter(m=>m.blocked&&!dismissedNudges.has(m.id));
+  const quiet=all.filter(m=>!m.blocked&&m.lastLogDays>=AT_RISK_DAYS&&!dismissedNudges.has(m.id));
+  return [...blocked, ...quiet];
 }
 function renderNudges(){
-  const list=atRiskMembers();
+  const list=needsAttention();
   const c=document.getElementById('nudge-cards');
-  if(!list.length){ c.innerHTML='<div class="lcard" style="padding:18px 22px;"><p class="t-small">Everyone’s journaling — nothing needs you right now.</p></div>'; return; }
+  if(!list.length){ c.innerHTML='<div class="lcard" style="padding:18px 22px;"><p class="t-small">No blockers and everyone’s logging — nothing needs you right now.</p></div>'; return; }
   c.innerHTML=list.map(m=>'<div class="lcard" style="padding:18px 22px;margin-bottom:12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">'
     +avatarSm(m.initials,m.name)
-    +'<div style="flex:1;min-width:170px;"><div class="t-h4" style="font-size:15px;">'+escHTML(m.name)+'</div><p class="t-small">'+escHTML(m.pod)+' · last journal entry '+(m.lastEntryDays>=21?'3+ weeks':m.lastEntryDays+'d')+' ago</p></div>'
+    +'<div style="flex:1;min-width:170px;"><div class="t-h4" style="font-size:15px;">'+escHTML(m.name)+(m.blocked?' <span class="status risk">Blocked</span>':'')+'</div>'
+    +(m.blocked?'<p class="t-small" style="color:var(--charcoal);">\u201c'+escHTML(m.blocked)+'\u201d</p><p class="t-small" style="color:var(--meta);">'+escHTML(m.pod)+' · from their Learning Log health check</p>'
+      :'<p class="t-small">'+escHTML(m.pod)+' · last Learning Log '+(m.lastLogDays>=21?'3+ weeks':m.lastLogDays+'d')+' ago</p>')
+    +'</div>'
     +'<a class="btn btn-ghost-teal btn-sm" href="mailto:'+escHTML(m.email)+'?subject='+encodeURIComponent('Checking in — The Labs')+'">Contact</a>'
     +'<button class="btn btn-ghost-teal btn-sm" onclick="dismissNudge(\''+m.id+'\')">Dismiss</button>'
     +'</div>').join('');
@@ -277,7 +288,7 @@ function renderThemes(){
   c.innerHTML=ps.map(p=>'<div class="lcard" style="padding:20px 24px;margin-bottom:12px;">'
     +(currentPod==='all'?'<div class="lbl lbl-teal" style="margin-bottom:10px;">'+escHTML(p.name)+'</div>':'')
     +p.themes.map(t=>'<div style="display:flex;gap:10px;padding:7px 0;"><span style="color:var(--teal);flex-shrink:0;">·</span><span class="t-small" style="color:var(--charcoal);">'+escHTML(t)+'</span></div>').join('')
-    +'<p class="t-small" style="margin-top:10px;color:var(--meta);">From '+p.themeSources+' pod-visible journal entries this week — private entries are never read.</p>'
+    +'<p class="t-small" style="margin-top:10px;color:var(--meta);">From '+p.themeSources+' shared Learning Logs this week — health checks stay between you, admins, and the member.</p>'
     +'</div>').join('');
 }
 
@@ -286,15 +297,15 @@ function renderThemes(){
 function summaryBundle(){
   const ps=pods();
   return 'You are helping a pod facilitator ("Poderator") at The Upskilling Labs.\n'
-    +'Summarize the themes, risks, and wins in these pod-visible Practice Journal entries.\n'
+    +'Summarize the themes, risks, and wins in these shared Learning Log entries.\n'
     +'Be concrete; quote sparingly; never name-and-shame.\n\n'
     +ps.map(p=>'== '+p.name+' ('+p.phase+') ==\n'
-      +p.members.filter(m=>m.journals>0).map(m=>'- ['+m.initials+', '+m.lastEntryDays+'d ago] '+(m.journals>3?'Steady reflection cadence; latest entry engages the current frame.':'Sparse entries; last one predates the current sprint.')).join('\n')).join('\n\n');
+      +p.members.filter(m=>m.logs>0).map(m=>'- ['+m.initials+', '+m.lastLogDays+'d ago] '+(m.logs>3?'Steady logging cadence; latest entry engages the current frame.':'Sparse logs; last one predates the current sprint.')+(m.blocked?' BLOCKED: '+m.blocked:'')).join('\n')).join('\n\n');
 }
 function renderSummary(){
   document.getElementById('summary-card').innerHTML='<div class="lcard" style="padding:20px 24px;">'
     +'<textarea id="summary-text" readonly rows="9" style="width:100%;border:1px solid var(--rule);border-radius:var(--r);padding:12px 14px;font-size:12px;line-height:18px;color:var(--slate);background:var(--paper);resize:vertical;" aria-label="Prompt bundle for external AI tools"></textarea>'
-    +'<div style="display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap;"><button class="btn btn-teal btn-sm" onclick="copySummary(this)">Copy to clipboard</button><span class="t-small" style="flex:1;min-width:200px;">The Labs runs no in-app LLM — paste this into your own tools. Only pod-visible entries are included.</span></div>'
+    +'<div style="display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap;"><button class="btn btn-teal btn-sm" onclick="copySummary(this)">Copy to clipboard</button><span class="t-small" style="flex:1;min-width:200px;">The Labs runs no in-app LLM — paste this into your own tools. Only shared Learning Log entries are included.</span></div>'
     +'</div>';
   document.getElementById('summary-text').value=summaryBundle();
 }
@@ -325,9 +336,9 @@ function renderRoster(){
   document.getElementById('roster-chips').innerHTML=cats.map(([v,l])=>'<button class="chip'+(rosterFilter===v?' active':'')+'" onclick="rosterFilter=\''+v+'\';renderRoster()">'+l+'</button>').join('');
   let list=pods().flatMap(p=>p.members.map(m=>({...m, pod:p.name})));
   if(rosterFilter==='active') list=list.filter(m=>m.active);
-  if(rosterFilter==='at_risk') list=list.filter(m=>m.lastEntryDays>=AT_RISK_DAYS);
-  list.sort((a,b)=>{ const va=rosterSort==='name'?a.name:rosterSort==='active'?(a.active?1:0):a.journals; const vb=rosterSort==='name'?b.name:rosterSort==='active'?(b.active?1:0):b.journals; return (va<vb?-1:va>vb?1:0)*rosterDir; });
-  document.getElementById('roster-rows').innerHTML=list.map(m=>'<tr><td><div style="display:flex;align-items:center;gap:10px;">'+avatarSm(m.initials,m.name)+'<div><b>'+escHTML(m.name)+'</b>'+(currentPod==='all'?'<div class="t-small">'+escHTML(m.pod)+'</div>':'')+'</div></div></td><td><span class="status'+(m.active?' active':'')+'">'+(m.active?'Active':'Inactive')+'</span></td><td>'+m.journals+'</td><td class="t-small">'+(m.lastEntryDays===0?'Today':m.lastEntryDays+'d ago')+(m.lastEntryDays>=AT_RISK_DAYS?' <span class="status risk" style="margin-left:6px;">quiet</span>':'')+'</td></tr>').join('');
+  if(rosterFilter==='at_risk') list=list.filter(m=>m.lastLogDays>=AT_RISK_DAYS||m.blocked);
+  list.sort((a,b)=>{ const va=rosterSort==='name'?a.name:rosterSort==='active'?(a.active?1:0):a.logs; const vb=rosterSort==='name'?b.name:rosterSort==='active'?(b.active?1:0):b.logs; return (va<vb?-1:va>vb?1:0)*rosterDir; });
+  document.getElementById('roster-rows').innerHTML=list.map(m=>'<tr><td><div style="display:flex;align-items:center;gap:10px;">'+avatarSm(m.initials,m.name)+'<div><b>'+escHTML(m.name)+'</b>'+(currentPod==='all'?'<div class="t-small">'+escHTML(m.pod)+'</div>':'')+'</div></div></td><td><span class="status'+(m.active?' active':'')+'">'+(m.active?'Active':'Inactive')+'</span></td><td>'+m.logs+'</td><td class="t-small">'+(m.lastLogDays===0?'Today':m.lastLogDays+'d ago')+(m.lastLogDays>=AT_RISK_DAYS?' <span class="status risk" style="margin-left:6px;">quiet</span>':'')+'</td></tr>').join('');
 }
 
 /* ── Feedback — mirrored from index.html's widget. ── */
