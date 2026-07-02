@@ -106,6 +106,11 @@ button,input,select,textarea { font-family:inherit; }
 .field input, .field select, .field textarea { background:var(--white); border:1px solid var(--rule); border-radius:var(--r); color:var(--ink); font-size:16px; line-height:24px; padding:14px 16px; outline:none; transition:border-color .15s, box-shadow .15s; width:100%; }
 .field input:focus, .field select:focus, .field textarea:focus { border-color:var(--teal); box-shadow:0 0 0 3px rgba(0,148,160,.14); }
 .field input::placeholder, .field textarea::placeholder { color:var(--meta-soft); }
+/* multi-field flow steps (type:'fields') — several labeled inputs, ONE screen (3 asks max) */
+.field-grid { display:flex; flex-wrap:wrap; gap:14px; }
+.field-grid .field { flex:1 1 100%; }
+.field-grid .field.half { flex:1 1 calc(50% - 7px); min-width:150px; }
+@media (max-width:480px) { .field-grid .field.half { flex-basis:100%; } }
 .field textarea { resize:none; min-height:104px; }
 
 /* ════ Flow ════ */
@@ -822,7 +827,7 @@ button,input,select,textarea { font-family:inherit; }
           <div class="foot-top">
             <div class="foot-brand">
               <span class="logo-link" onclick="scrollTop()"><img src="assets/logo-lockup-light.png" alt="The Upskilling Labs" style="height:56px;width:auto;display:block;"></span>
-              <p class="t-body">A commons for upskilling — learn by doing, in the open. Public profiles, projects, and playbooks, built like open source.</p>
+              <p class="t-body">A commons for upskilling — learn by doing, in the open. Projects, playbooks, and lessons, built like open source.</p>
               <a class="btn btn-ghost-teal btn-sm" href="https://www.every.org/theupskillinglabs" target="_blank" rel="noopener">Support The Labs</a>
             </div>
             <div class="foot-col">
@@ -899,7 +904,7 @@ button,input,select,textarea { font-family:inherit; }
 
         <div class="lbl lbl-teal" style="margin-bottom:12px;">Where we're going</div>
         <h2 class="t-h2" style="margin-bottom:16px;">Open, and expanding</h2>
-        <p class="t-lede" style="margin-bottom:32px;">We're building in the open — any library, any city, the same replicable playbook. Profiles, projects, and playbooks stay public so the whole community can build on them.</p>
+        <p class="t-lede" style="margin-bottom:32px;">We're building in the open — any library, any city, the same replicable playbook. Projects and playbooks stay public so anyone can build on them — member profiles live inside the Labs.</p>
         <button class="btn btn-red btn-lg" onclick="startCreateAccount()">Join The Labs</button>
       </div>
       <footer class="osfooter grain"><div class="osfooter-inner"><div class="os-pill"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3.5 9h17M3.5 15h17M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg> Open by default</div><p class="t-body" style="color:var(--od2);max-width:54ch;margin-top:18px;">No gatekeeping, no waiting. Anyone can learn from our work, build on it, and contribute back.</p><div class="os-meta"><a onclick="showView('landing')" style="cursor:pointer;">Home</a><a onclick="startCreateAccount()" style="cursor:pointer;">Join The Labs</a><span style="color:var(--od3);font-size:13px;margin-left:auto;">Content under CC BY-SA · Built in the open</span></div></div></footer>
@@ -917,7 +922,7 @@ button,input,select,textarea { font-family:inherit; }
         <p class="t-lede" style="margin-bottom:32px;">We use Google so everyone starts with the same foundation — free, familiar, no special account needed.</p>
         <div style="margin-bottom:8px;">
           <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--rule);"><div style="width:7px;height:7px;border-radius:50%;background:var(--teal);flex-shrink:0;margin-top:7px;"></div><span class="t-body">Free for everyone — no paid account needed</span></div>
-          <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--rule);"><div style="width:7px;height:7px;border-radius:50%;background:var(--teal);flex-shrink:0;margin-top:7px;"></div><span class="t-body">Your profile is public by default — you control what you show</span></div>
+          <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--rule);"><div style="width:7px;height:7px;border-radius:50%;background:var(--teal);flex-shrink:0;margin-top:7px;"></div><span class="t-body">Your profile is visible to Labs members — you control what you show</span></div>
           <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 0;"><div style="width:7px;height:7px;border-radius:50%;background:var(--teal);flex-shrink:0;margin-top:7px;"></div><span class="t-body">Easy access to shared tools — Docs, Calendar, Slack</span></div>
         </div>
       </div>
@@ -975,7 +980,7 @@ button,input,select,textarea { font-family:inherit; }
           <h2 class="t-h1" style="margin-bottom:20px;">Not a curriculum. Real work.</h2>
           <p class="t-lede" style="margin-bottom:20px;">We're not a course platform. Upskilling here means learning through real, collaborative work — building things, making decisions, iterating with peers.</p>
           <p class="t-body" style="margin-bottom:20px;">As a mentor, you support that process — not teach a subject. You bring your judgment; participants bring their problems.</p>
-          <div class="lcard" style="padding:16px 20px;background:var(--tint);"><div class="lbl lbl-teal" style="margin-bottom:6px;">Where your answers go</div><p class="t-small">The next few questions <b>publish your public mentor profile</b> — upskillers find you in the community directory, and project teams reach you through evidence-backed requests you choose to pick up. The Labs team sees new mentor profiles too and can make introductions. Live immediately — no application, no review queue.</p></div>
+          <div class="lcard" style="padding:16px 20px;background:var(--tint);"><div class="lbl lbl-teal" style="margin-bottom:6px;">Where your answers go</div><p class="t-small">The next few questions <b>publish your mentor profile</b> — upskillers find you in the community directory, and project teams reach you through evidence-backed requests you choose to pick up. The Labs team sees new mentor profiles too and can make introductions. Live immediately — no application, no review queue.</p></div>
         </div>
       </div>
       <div class="actionbar light-bar"><button class="btn btn-teal btn-block" id="me-next" onclick="mentorSlideNext()">Next</button></div>
@@ -1187,8 +1192,8 @@ button,input,select,textarea { font-family:inherit; }
               <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Your profile</div><h2 class="t-h2">Complete your profile</h2></div><span id="checklist-count" class="lbl">2 left</span></div>
               <div id="checklist-items">
                 <div class="check-row"><input type="checkbox" onchange="tickChecklist(this)"><div><div class="t-h4" style="margin-bottom:2px;">Confirm your email</div><div class="t-small">Click the link we sent to your inbox</div></div></div>
-                <div class="check-row"><input type="checkbox" onchange="tickChecklist(this)"><div><div class="t-h4" style="margin-bottom:2px;">Join our Slack workspace</div><div class="t-small">Accept the invite — that's where the community lives</div></div></div>
-                <div class="check-row" id="profile-checklist-row" style="cursor:pointer;" onclick="onProfileChecklistClick(this)"><input type="checkbox" id="profile-checklist-cb" onchange="tickChecklist(this)" onclick="event.stopPropagation()"><div style="flex:1;"><div class="t-h4" style="margin-bottom:2px;">Complete your public profile</div><div class="t-small">Add a bio so pods can find you</div></div><button class="btn btn-ghost-teal btn-sm" style="flex-shrink:0;align-self:center;">Start →</button></div>
+                <div class="check-row"><input type="checkbox" onchange="tickChecklist(this)"><div style="flex:1;"><div class="t-h4" style="margin-bottom:2px;">Join our Slack workspace</div><div class="t-small">Accept the invite — that's where the community lives</div></div><a class="btn btn-ghost-teal btn-sm" href="https://join.slack.com/t/theupskillinglabs/shared_invite/placeholder" target="_blank" rel="noopener" style="flex-shrink:0;align-self:center;">Open Slack →</a></div>
+                <div class="check-row" id="profile-checklist-row" style="cursor:pointer;" onclick="onProfileChecklistClick(this)"><input type="checkbox" id="profile-checklist-cb" onchange="tickChecklist(this)" onclick="event.stopPropagation()"><div style="flex:1;"><div class="t-h4" style="margin-bottom:2px;">Complete your member profile</div><div class="t-small">Add a bio so pods can find you</div></div><button class="btn btn-ghost-teal btn-sm" style="flex-shrink:0;align-self:center;">Start →</button></div>
                 <div id="role-items"></div>
                 </div>
                 <div id="setup-done-strip" style="display:none;align-items:center;justify-content:space-between;gap:12px;background:var(--white);border:1px solid var(--rule);border-radius:var(--r);padding:14px 18px;">
@@ -1244,7 +1249,7 @@ button,input,select,textarea { font-family:inherit; }
   <circle cx="120" cy="120" r="116" fill="url(#or)"/>
   <g transform="translate(20,40) scale(0.142)"><path d="M 0 900.84 C 532.341 651.368 841.069 454.81 1407.215 0 C 1190.699 365.98 1060.371 566.788 776.503 900.84 L 950.588 496.405 C 539.219 733.009 347.248 789.767 0 900.84 Z" fill="url(#og)"/></g>
 </svg></div><div class="m-tag">Spring 2026</div></div><div class="card-body"><div class="t-h4" style="margin-bottom:6px;">Build Cycle is forming</div><p class="t-small" style="margin-bottom:16px;">Pod registration opens Mar 30. Join a pod and ship something real.</p><button class="btn btn-teal btn-sm btn-block" onclick="goApp('cycles')">View cycle</button></div></div>
-              <div class="lcard" style="padding:24px;"><div class="lbl" style="margin-bottom:14px;">Quick links</div><div style="display:flex;flex-direction:column;"><a onclick="goApp('discover')" style="font-size:14px;font-weight:600;color:var(--teal-deep);cursor:pointer;padding:12px 0;border-bottom:1px solid var(--rule);">Discover the Labs →</a><a onclick="openTriangulator()" style="font-size:14px;font-weight:600;color:var(--teal-deep);cursor:pointer;padding:12px 0;border-bottom:1px solid var(--rule);">Open the Triangulator →</a><a onclick="showProfile()" style="font-size:14px;font-weight:600;color:var(--teal-deep);cursor:pointer;padding:12px 0;border-bottom:1px solid var(--rule);">Your public profile →</a><a href="https://www.every.org/theupskillinglabs" target="_blank" rel="noopener" style="font-size:14px;font-weight:600;color:var(--teal-deep);cursor:pointer;padding:12px 0 0;">Support The Labs →</a></div></div>
+              <div class="lcard" style="padding:24px;"><div class="lbl" style="margin-bottom:14px;">Quick links</div><div style="display:flex;flex-direction:column;"><a onclick="goApp('discover')" style="font-size:14px;font-weight:600;color:var(--teal-deep);cursor:pointer;padding:12px 0;border-bottom:1px solid var(--rule);">Discover the Labs →</a><a onclick="openTriangulator()" style="font-size:14px;font-weight:600;color:var(--teal-deep);cursor:pointer;padding:12px 0;border-bottom:1px solid var(--rule);">Open the Triangulator →</a><a onclick="showProfile()" style="font-size:14px;font-weight:600;color:var(--teal-deep);cursor:pointer;padding:12px 0;border-bottom:1px solid var(--rule);">Your profile →</a><a href="https://www.every.org/theupskillinglabs" target="_blank" rel="noopener" style="font-size:14px;font-weight:600;color:var(--teal-deep);cursor:pointer;padding:12px 0 0;">Support The Labs →</a></div></div>
             </aside>
           </div>
         </div>
@@ -1569,7 +1574,7 @@ button,input,select,textarea { font-family:inherit; }
           <div class="foot-top">
             <div class="foot-brand">
               <span class="logo-link" onclick="goApp('dashboard')"><img src="assets/logo-lockup-light.png" alt="The Upskilling Labs" style="height:56px;width:auto;display:block;"></span>
-              <p class="t-body">A commons for upskilling — learn by doing, in the open. Public profiles, projects, and playbooks, built like open source.</p>
+              <p class="t-body">A commons for upskilling — learn by doing, in the open. Projects, playbooks, and lessons, built like open source.</p>
               <a class="btn btn-ghost-teal btn-sm" href="https://www.every.org/theupskillinglabs" target="_blank" rel="noopener">Support The Labs</a>
             </div>
             <div class="foot-col">
@@ -2202,7 +2207,7 @@ function showMemberProfile(id){
   const rd=document.getElementById('prof-roledetail'); if(rd){ rd.innerHTML=(m.testimonials&&m.testimonials.length)?'<div class="cards two"><div class="lcard" style="padding:24px;"><div class="lbl lbl-teal" style="margin-bottom:8px;">As a mentor</div>'+testimonialBlockHTML(m.testimonials, false)+'</div></div>':''; rd.style.display=rd.innerHTML?'block':'none'; }
   const so=document.getElementById('prof-signout-wrap'); if(so) so.style.display='none';
   const pv=document.getElementById('prof-preview-bar');
-  if(pv){ pv.style.display='block'; pv.innerHTML='<div style="background:var(--ink);color:var(--od1);padding:11px var(--pad);display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;"><span class="t-small" style="color:var(--od2);">Viewing '+escHTML(m.name)+'’s public profile.</span><button class="btn-link" style="color:#fff;font-weight:600;font-size:13px;" onclick="goApp(\'discover\')">Back to Discover</button></div>'; }
+  if(pv){ pv.style.display='block'; pv.innerHTML='<div style="background:var(--ink);color:var(--od1);padding:11px var(--pad);display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;"><span class="t-small" style="color:var(--od2);">Viewing '+escHTML(m.name)+'’s profile.</span><button class="btn-link" style="color:#fff;font-weight:600;font-size:13px;" onclick="goApp(\'discover\')">Back to Discover</button></div>'; }
   showView('profile');
 }
 /* ── Profile updates feed (real content behind the activity strip) ── */
@@ -2458,18 +2463,14 @@ const VOL_AREAS=['Events & logistics','Outreach & community','Mentoring support'
 const VOL_WAYS=['At in-person events','Behind the scenes','On-call for specific needs','An ongoing role'];
 function FLOWS(name){
   if(name==='signup') return { eyebrow:'Your profile', finalLabel:'Become an Upskiller', finalClass:'btn-red',
-    onComplete:()=>{ const f=(fans.first||'Alex').trim()||'Alex'; userState.name=f; userState.fullName=f+' '+(fans.last||'Rivera'); userState.initials=(f[0]||'A').toUpperCase()+((fans.last||'R')[0]||'R').toUpperCase(); userState.signedIn=true; if(fans.lab==='none'){ userState.lab={name:(fans.labTown||'').trim()||'Your town', status:'pending-application'}; } else if(fans.lab&&LABS[fans.lab]){ userState.lab={...LABS[fans.lab]}; } document.getElementById('header-avatar').textContent=userState.initials; const da=document.getElementById('dash-avatar'); if(da) da.textContent=userState.initials; document.getElementById('prof-avatar').textContent=userState.initials; document.getElementById('prof-name').textContent=userState.fullName; document.getElementById('dash-greeting').textContent='Welcome, '+f+'.'; renderTodos(); renderDashSaved(); renderDashCycle(); buildWeekRail(); renderProfileChecklist(); userState.profileVisibility=fans.visibility||'public'; userState.referral={source:fans.hearAbout||'', by:(fans.referredBy||'').trim()}; const pending=userState.roles.filter(r=>FLOW_ROLES.includes(r)); if(pending.length===1){ startRoleFlow(pending[0], ()=>showView('role-intent')); } else if(gateReturnTo){ const r=gateReturnTo; gateReturnTo=null; r(); } else { showView('dashboard'); } },
+    onComplete:()=>{ const f=(fans.first||'Alex').trim()||'Alex'; userState.name=f; userState.fullName=f+' '+(fans.last||'Rivera'); userState.initials=(f[0]||'A').toUpperCase()+((fans.last||'R')[0]||'R').toUpperCase(); userState.signedIn=true; const z=String(fans.zip||''); const labKey=/^20[0-5]/.test(z)?'dc':/^21[0-2]/.test(z)?'baltimore':/^19[0-4]/.test(z)?'philadelphia':'dc'; userState.lab={...LABS[labKey]}; /* lab auto-assigned from zip — the pick-your-lab step was cut */ document.getElementById('header-avatar').textContent=userState.initials; const da=document.getElementById('dash-avatar'); if(da) da.textContent=userState.initials; document.getElementById('prof-avatar').textContent=userState.initials; document.getElementById('prof-name').textContent=userState.fullName; document.getElementById('dash-greeting').textContent='Welcome, '+f+'.'; renderTodos(); renderDashSaved(); renderDashCycle(); buildWeekRail(); renderProfileChecklist(); userState.profileVisibility='labs'; /* members-only profiles — public tier deferred (see backend doc) */ userState.referral={source:fans.hearAbout||'', by:(fans.referredBy||'').trim()}; const pending=userState.roles.filter(r=>FLOW_ROLES.includes(r)); if(pending.length===1){ startRoleFlow(pending[0], ()=>showView('role-intent')); } else if(gateReturnTo){ const r=gateReturnTo; gateReturnTo=null; r(); } else { showView('dashboard'); } },
     steps:[ {id:'email',type:'info',q:'Signing up as',help:'We pulled this from your Google account.',render:'<div class="flow-emaillarge">alex.rivera@gmail.com</div>'},
-      {id:'first',type:'text',q:"What's your first name?",ph:'Alex',required:true},
-      {id:'last',type:'text',q:'And your last name?',ph:'Rivera',required:true},
-      {id:'zip',type:'text',q:'Where are you based?',help:'Your zip code helps us connect you with local labs.',ph:'20001',inputmode:'numeric',required:true},
-      {id:'lab',type:'choice',q:'Which local lab is yours?',help:"Labs are library-hosted and run in the open. We've suggested the one nearest your zip — change it if we guessed wrong.",preselect:f=>{ const z=String(f.zip||''); if(/^20[0-5]/.test(z)) return 'dc'; if(/^21[0-2]/.test(z)) return 'baltimore'; if(/^19[0-4]/.test(z)) return 'philadelphia'; return null; },options:[{v:'dc',label:'Washington, DC',sub:'Flagship · Active'},{v:'baltimore',label:'Baltimore',sub:'Forming'},{v:'philadelphia',label:'Philadelphia',sub:'Coming soon'},{v:'none',label:"I don't see my town",sub:'Apply to start one'}]},
-      {id:'labTown',type:'text',q:'What town should we consider?',help:"You're applying to help start a new local lab here — not joining an existing one. We'll follow up.",ph:'Richmond, VA',required:true,when:f=>f.lab==='none'},
-      {id:'labWhy',type:'text',q:'In one line, why start a lab here?',help:'What makes your town ready? This is part of your application.',ph:'A library partner and a crew of people ready to build.',required:false,when:f=>f.lab==='none'},
+      {id:'about',type:'fields',q:'Tell us who you are',help:'Your zip code connects you with the local lab nearest you.',fields:[
+        {id:'first',label:'First name',ph:'Alex',required:true,half:true},
+        {id:'last',label:'Last name',ph:'Rivera',required:true,half:true},
+        {id:'zip',label:'Zip code',ph:'20001',required:true,inputmode:'numeric'} ]},
       {id:'work',type:'choice',q:'What best describes you right now?',options:WORK.map(w=>({v:w,label:w}))},
-      {id:'hearAbout',type:'choice',q:'How did you hear about The Labs?',help:'Everyone registers through the same path — this helps us thank the people and places that send folks our way.',options:[{v:'referral',label:'A friend or colleague referred me'},{v:'invited',label:'Someone at The Labs invited me',sub:'A mentor, facilitator, or organizer'},{v:'event',label:'A workshop, summit, or event'},{v:'other',label:'Somewhere else',sub:'Social media, the library, word of mouth'}]},
-      {id:'referredBy',type:'text',q:'Who referred you?',help:'So we can thank them.',ph:'e.g. Priya Shah',required:false,when:f=>f.hearAbout==='referral'||f.hearAbout==='invited'},
-      {id:'visibility',type:'choice',q:'How visible should your profile be?',help:'The Labs is built in the open — public profiles are how members find collaborators and show their work. You can change this anytime.',options:[{v:'public',label:'Public',sub:'Recommended — visible to everyone, like the rest of the Labs'},{v:'labs',label:'Labs members only',sub:'Visible only to signed-in members'}]},
+      {id:'hearAbout',type:'choice',q:'How did you hear about The Labs?',help:'Everyone registers through the same path — this helps us thank the people and places that send folks our way.',options:[{v:'referral',label:'A friend or colleague referred me'},{v:'invited',label:'Someone at The Labs invited me',sub:'A mentor, facilitator, or organizer'},{v:'event',label:'A workshop, summit, or event'},{v:'other',label:'Somewhere else',sub:'Social media, the library, word of mouth'}],followUp:{id:'referredBy',label:'Who referred you? (optional — so we can thank them)',ph:'e.g. Priya Shah',when:v=>v==='referral'||v==='invited'}},
       {id:'consent',type:'consent',q:'One last thing',text:'I agree to the Participant Agreement and consent to receive updates from The Upskilling Labs.'} ]};
   if(name==='survey') return { eyebrow:'Field survey · Civic & Elections', finalLabel:'Submit observation', finalClass:'btn-teal',
     onComplete:()=>{ appendSurveyObservation((fans.obsTitle||'').trim(), (fans.obsSummary||'').trim());
@@ -2508,17 +2509,16 @@ function FLOWS(name){
       {id:'as',type:'choice',q:'Recognize them as\u2026',options:[{v:'upskiller',label:'Standout Upskiller',sub:'Consistently shows up and ships'},{v:'mentor',label:'Mentor material',sub:'Generous with evidence-backed help'},{v:'advisor',label:'Advisor',sub:'Strategic judgment The Labs should tap'}],required:true},
       {id:'reason',type:'textarea',q:'What did they do?',help:'A sentence is plenty — nominations go to the Labs team, who follow up with the member.',ph:'e.g. Debugged three pods\u2019 scoping questions in one office hour...',required:true} ]};
   if(name==='cycle') return { eyebrow:'Spring 2026', finalLabel:'Submit registration', finalClass:'btn-teal', onComplete:()=>finishRoleFlow('cycle'),
-    steps:[ {id:'problem',type:'textarea',q:'What problem area excites you most?',help:'A sentence or two is plenty.',ph:'e.g. how AI can help DC residents navigate benefits eligibility...',required:true},
+    steps:[ {id:'overview',type:'info',q:'The Civic & Elections Cycle',help:'A Build Cycle is 13 weeks of learning by doing: you join a pod, investigate a real problem together, and build something with a small team.',render:'<div class="flow-emaillarge" style="font-size:18px;line-height:1.5;">Summer 2026 · Washington, DC<br>Kickoff Jul 14 · 13 weeks · Showcase Summit in October</div><p class="t-small" style="margin-top:14px;color:var(--meta);">Problem Sprint → Frame Sprint → Building. Registration takes about two minutes.</p>'},
+      {id:'problem',type:'textarea',q:'What problem area excites you most?',help:'A sentence or two is plenty.',ph:'e.g. how AI can help DC residents navigate benefits eligibility...',required:true},
       {id:'level',type:'choice',q:'Where are you at in your primary area?',options:LEVELS.map(l=>({v:l[0],label:l[0],sub:l[1]}))},
       {id:'goals',type:'textarea',q:'What do you most want from this cycle?',ph:'What would make this time well spent?',required:true},
       {id:'hours',type:'choice',q:'How much time can you commit?',options:HOURS.map(h=>({v:h,label:h}))} ]};
   if(name==='mentor') return { eyebrow:'Mentor profile', finalLabel:'Publish mentor profile', finalClass:'btn-teal', onComplete:()=>finishRoleFlow('mentor'),
-    steps:[ {id:'expertise',type:'tags',q:'What do you bring?',help:'Pick the areas where you can help — everything here shows on your public mentor profile, which is how upskillers and project teams find you.',options:EXPERTISE,required:true},
+    steps:[ {id:'expertise',type:'tags',q:'What do you bring?',help:'Pick the areas where you can help — everything here shows on your mentor profile — visible to all Labs members — which is how upskillers and project teams find you.',options:EXPERTISE,required:true},
       {id:'engage',type:'checks',q:'How would you like to engage?',help:'Select all that work for you.',options:ENGAGE,required:true},
       {id:'pods',type:'textarea',q:'Who have you mentored, and how?',help:'Tell us where, when, and how you\u2019ve mentored — inside or outside The Labs. No names needed.',ph:'e.g. 3 pods in the Civic AI cycle — weekly office hours on scoping and shipping.',required:true},
-      {id:'tz',type:'choice',q:'What time zone are you in?',options:TZ.map(t=>({v:t,label:t}))},
-      {id:'booking',type:'text',q:'Share a booking link',help:'Optional — makes it easy for pods to grab time with you.',ph:'calendly.com/your-link',required:false},
-      {id:'artifact',type:'text',q:'Link to something you made as a mentor',help:'Optional — a framework, a workshop, a recap. Shows up on your profile.',ph:'labs.org/showcase/civic-ai',required:false} ]};
+      {id:'tz',type:'choice',q:'What time zone are you in?',options:TZ.map(t=>({v:t,label:t}))} ]};
   if(name==='volunteer') return { eyebrow:'Volunteer profile', finalLabel:'Save profile', finalClass:'btn-teal', onComplete:()=>finishRoleFlow('volunteer'),
     steps:[ {id:'areas',type:'tags',q:'Where would you like to help?',help:'Pick the areas that fit. Choose as many as you like.',options:VOL_AREAS,required:true},
       {id:'ways',type:'checks',q:'How would you like to pitch in?',help:'Select all that work for you.',options:VOL_WAYS,required:true},
@@ -2526,7 +2526,7 @@ function FLOWS(name){
   if(name==='profile') return { eyebrow:'Your profile', finalLabel:'Save profile', finalClass:'btn-teal',
     onComplete:()=>{ userState.profileAnswers={...fans}; userState.completed.profile=true; const cb=document.getElementById('profile-checklist-cb'); if(cb&&!cb.checked){cb.checked=true;tickChecklist(cb);} renderProfileView(); (flow.returnTo||showProfile)(); },
     steps:[ {id:'bio',type:'textarea',q:'How would you describe yourself?',help:"A few sentences — what you're working on and what you bring.",ph:'Product-minded generalist learning by shipping...',required:true},
-      {id:'location',type:'text',q:'What city are you in?',help:'Shows on your public profile.',ph:'Washington, DC',required:false},
+      {id:'location',type:'text',q:'What city are you in?',help:'Shows on your member profile.',ph:'Washington, DC',required:false},
       {id:'linkedin',type:'text',q:'LinkedIn profile',help:'Optional — makes it easy for pods and mentors to find you.',ph:'linkedin.com/in/yourname',required:false},
       {id:'website',type:'text',q:'Personal website or portfolio',help:'Optional — anywhere you share your work.',ph:'yoursite.com',required:false} ]};
 }
@@ -2565,12 +2565,45 @@ function renderFlowInput(step){
     el.addEventListener('keydown',ev=>{ if(ev.key==='Enter'&&tag==='input'&&valid()){ ev.preventDefault(); flowAdvance(); } });
     setActions({enabled:valid(), skip:!step.required}); setTimeout(()=>{ el.focus(); el.scrollIntoView({block:'center'}); },60); return;
   }
+  if(step.type==='fields'){
+    // Several labeled inputs on one screen — collapses multi-question runs (3 asks max per screen).
+    const grid=document.createElement('div'); grid.className='field-grid';
+    const els=step.fields.map(f=>{
+      const w=document.createElement('div'); w.className='field'+(f.half?' half':'');
+      const lb=document.createElement('label'); lb.htmlFor='ff-'+f.id; lb.textContent=f.label;
+      const el=document.createElement('input'); el.type='text'; el.id='ff-'+f.id;
+      if(f.inputmode) el.setAttribute('inputmode',f.inputmode);
+      el.placeholder=f.ph||''; el.value=fans[f.id]||'';
+      w.appendChild(lb); w.appendChild(el); grid.appendChild(w); return [f,el];
+    });
+    box.appendChild(grid);
+    const valid=()=>els.every(([f,el])=>!f.required||el.value.trim().length>0);
+    els.forEach(([f,el])=>{
+      el.addEventListener('input',()=>{ fans[f.id]=el.value; enable(valid()); });
+      el.addEventListener('keydown',ev=>{ if(ev.key==='Enter'&&valid()){ ev.preventDefault(); flowAdvance(); } });
+    });
+    setActions({enabled:valid(), skip:step.fields.every(f=>!f.required)});
+    setTimeout(()=>{ els[0][1].focus(); els[0][1].scrollIntoView({block:'center'}); },60); return;
+  }
   if(step.type==='choice'){
     // Optional preselect hook — e.g. suggest the local lab nearest the zip already entered.
     if(step.preselect && fans[step.id]===undefined){ const v=step.preselect(fans); if(v!=null) fans[step.id]=v; }
     const list=document.createElement('div'); list.className='choice-list';
-    step.options.forEach(o=>{ const row=document.createElement('div'); row.className='choice'+(fans[step.id]===o.v?' selected':''); row.innerHTML='<div class="c-main"><div class="c-label">'+o.label+'</div>'+(o.sub?'<div class="c-sub">'+o.sub+'</div>':'')+'</div><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>'; row.onclick=()=>{ fans[step.id]=o.v; [...list.children].forEach(c=>c.classList.remove('selected')); row.classList.add('selected'); enable(true); }; list.appendChild(row); });
-    box.appendChild(list); setActions({enabled:!!fans[step.id]}); return;
+    // Optional inline follow-up input (step.followUp) shown for matching picks — keeps
+    // related asks on ONE screen (e.g. hearAbout + "Who referred you?") instead of a new step.
+    let fuWrap=null;
+    const syncFollowUp=(focus)=>{ if(!fuWrap) return; const on=step.followUp.when(fans[step.id]); fuWrap.style.display=on?'flex':'none'; if(!on){ delete fans[step.followUp.id]; } else if(focus){ const i=fuWrap.querySelector('input'); if(i) setTimeout(()=>i.focus(),60); } };
+    step.options.forEach(o=>{ const row=document.createElement('div'); row.className='choice'+(fans[step.id]===o.v?' selected':''); row.innerHTML='<div class="c-main"><div class="c-label">'+o.label+'</div>'+(o.sub?'<div class="c-sub">'+o.sub+'</div>':'')+'</div><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>'; row.onclick=()=>{ fans[step.id]=o.v; [...list.children].forEach(c=>c.classList.remove('selected')); row.classList.add('selected'); enable(true); syncFollowUp(true); }; list.appendChild(row); });
+    box.appendChild(list);
+    if(step.followUp){
+      fuWrap=document.createElement('div'); fuWrap.className='field'; fuWrap.style.marginTop='14px';
+      const lb=document.createElement('label'); lb.htmlFor='ff-'+step.followUp.id; lb.textContent=step.followUp.label;
+      const inp=document.createElement('input'); inp.type='text'; inp.id='ff-'+step.followUp.id; inp.placeholder=step.followUp.ph||''; inp.value=fans[step.followUp.id]||'';
+      inp.addEventListener('input',()=>{ fans[step.followUp.id]=inp.value; });
+      fuWrap.appendChild(lb); fuWrap.appendChild(inp); box.appendChild(fuWrap);
+      syncFollowUp(false);
+    }
+    setActions({enabled:!!fans[step.id]}); return;
   }
   if(step.type==='checks'){
     if(!Array.isArray(fans[step.id])) fans[step.id]=[]; const list=document.createElement('div'); list.className='choice-list';
@@ -2640,7 +2673,7 @@ function updateChecklistCount(){ const total=document.querySelectorAll('#checkli
   if(full&&strip&&rem===0&&full.style.display!=='none'){ full.style.display='none'; strip.style.display='flex'; }
 }
 function toggleSetupSection(){ const full=document.getElementById('setup-full'), strip=document.getElementById('setup-done-strip'); if(!full||!strip) return; full.style.display='block'; strip.style.display='none'; }
-function tickChecklist(el){ if(el.checked){ const row=el.closest('.check-row'); const l=row.querySelector('.t-h4'); if(l){ l.style.textDecoration='line-through'; l.style.color='var(--meta)'; } const b=row.querySelector('.btn'); if(b) b.style.display='none'; } updateChecklistCount(); }
+function tickChecklist(el){ const row=el.closest('.check-row'); const l=row.querySelector('.t-h4'); const b=row.querySelector('.btn'); if(el.checked){ if(l){ l.style.textDecoration='line-through'; l.style.color='var(--meta)'; } if(b) b.style.display='none'; } else { if(l){ l.style.textDecoration=''; l.style.color=''; } if(b) b.style.display=''; } updateChecklistCount(); }
 function renderProfileChecklist(){ const box=document.getElementById('role-items'); if(!box) return; box.innerHTML=''; userState.roles.filter(r=>FLOW_ROLES.includes(r)).forEach(role=>{ const meta=ROLE_ITEMS[role]; if(!meta) return; const done=!!userState.completed[role]; const row=document.createElement('div'); row.className='check-row role-row'; if(!done){ row.style.cursor='pointer'; row.onclick=()=>startRoleFlow(role, ()=>showView('dashboard')); } const strike=done?'color:var(--meta);text-decoration:line-through;':''; row.innerHTML='<input type="checkbox" '+(done?'checked ':'')+'disabled><div style="flex:1;"><div class="t-h4" style="margin-bottom:2px;'+strike+'">'+meta.title+'</div>'+(done?'':'<div class="t-small">'+meta.sub+'</div>')+'</div>'+(done?'':'<button class="btn btn-ghost-teal btn-sm" style="flex-shrink:0;align-self:center;">Start →</button>'); box.appendChild(row); }); updateChecklistCount(); }
 function renderTodos(){
   // Prominent-but-skippable: the survey + Triangulator lead the list and are
@@ -2662,9 +2695,7 @@ function renderTodos(){
   }
   if(!userState.journal.length) todos.push({id:'journal',label:'Practice Journal',title:'Write your first entry',body:'Reflection builds judgment — two minutes on what you noticed this week.',cta:'Open the journal',action:()=>{ goApp('dashboard'); const t=document.getElementById('journal-entry'); if(t) t.focus(); },dismiss:true});
   if(!userState.completed.surveyFill) todos.push({id:'survey',label:'Field survey',title:'Add your observations',body:'Feed the Civic & Elections problem map — a few raw observations from your world.',cta:'Start the survey',action:()=>startFlow('survey',()=>goApp('dashboard')),dismiss:true});
-  todos.push({id:'triangulator',label:'The Triangulator',title:'Make sense of the signal pool',body:'Sort the community’s observations, triangulate the signals, map the problem situation.',cta:'Open the Triangulator',action:()=>openTriangulator(),dismiss:true});
   if(!inCycle()) todos.push({label:'Cycles',title:'Build Cycle is forming',body:'Pod registration opens Mar 30.',cta:'Learn more',action:()=>goApp('cycles')});
-  todos.push({label:'Profile',title:'Make your work public',body:'Add a bio and your first project to your profile.',cta:'Open profile',action:()=>showProfile()});
   const c=document.getElementById('todos-container'); if(!c)return; c.innerHTML='';
   todos.filter(t=>!t.id||!dismissedTodos.has(t.id)).forEach(t=>{ const d=document.createElement('div'); d.className='lcard'; d.style.padding='20px 22px'; d.style.position='relative'; d.innerHTML=(t.dismiss?'<button title="Dismiss" style="position:absolute;top:10px;right:12px;background:none;border:none;color:var(--meta);cursor:pointer;font-size:16px;line-height:1;" onclick="dismissTodo(\''+t.id+'\',event)">×</button>':'')+'<div class="lbl lbl-teal" style="margin-bottom:8px;">'+t.label+'</div><div class="t-h4" style="margin-bottom:6px;">'+t.title+'</div><p class="t-small" style="margin-bottom:'+(t.cta?'14px':'0')+';">'+t.body+'</p>'+(t.cta?'<button class="btn btn-ghost-teal btn-sm">'+t.cta+'</button>':''); if(t.action){ const b=d.querySelector('.btn.btn-ghost-teal'); if(b) b.onclick=t.action; } c.appendChild(d); });
 }
@@ -2752,7 +2783,7 @@ function saveProfileEditor(){
   renderProfileChecklist(); renderProfileView(true); closeProfileEditor();
 }
 function closeProfileEditor(){ const m=document.getElementById('profile-editor'); if(m) m.classList.remove('open'); }
-function onProfileChecklistClick(row){ const cb=document.getElementById('profile-checklist-cb'); if(!cb||cb.checked)return; startFlow('profile', ()=>goApp('dashboard'), userState.profileAnswers, showProfile); }
+function onProfileChecklistClick(row){ const cb=document.getElementById('profile-checklist-cb'); if(!cb||cb.checked)return; startFlow('profile', ()=>goApp('dashboard'), userState.profileAnswers, ()=>goApp('dashboard')); /* completion lands back on the checklist */ }
 function linkify(u){ u=String(u||'').trim(); if(!u) return '#'; return /^https?:\/\//.test(u)?u:'https://'+u; }
 function firstSentence(s){ const m=String(s||'').split(/[.!?]/)[0]; return (m||s||'').trim(); }
 // Active roles in fixed order; Upskiller is the baseline identity for any member.

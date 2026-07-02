@@ -395,15 +395,23 @@ recruited mentors to their recruiter. Any member can also raise their hand later
 profile's "I have experience to offer" path (the same mentor-profile flow). Leadership grows
 from within; the door is the same door.
 
-## 7. Directory + public profiles
+## 7. Directory + member profiles
+
+**Product decision (July 2026): profiles ship members-only.** The signup visibility step is
+removed from the prototype; every profile defaults to `visibility = 'labs'` (visible to
+signed-in members only). The public tier is **deferred pending a privacy conversation** —
+keep the `visibility` column and enum so flipping it on later is config, not migration, but
+no profile content renders on unauthenticated surfaces at launch. (Artifacts — case studies,
+playbooks, resources — remain public; this decision scopes *profiles* only.)
 
 The upskiller directory is a **query, not a content table**: `GET /api/directory` joins
-`participants` (`public_profile_visible = true`) with `mentor_profiles` (mentor filter/badge)
+`participants` (visible to authenticated members) with `mentor_profiles` (mentor filter/badge)
 and the existing expertise-tag source (`participant_options`), paginated, filterable by
-`role=mentor`, metro, and tag. No profile data is duplicated anywhere.
+`role=mentor`, metro, and tag. No profile data is duplicated anywhere. All directory and
+profile routes require an authenticated session.
 
-- `GET /api/profiles/[handle]/public` — public profile payload.
-- `GET /api/profiles/[handle]/updates` — paginated public updates.
+- `GET /api/profiles/[handle]` — profile payload (authenticated members only).
+- `GET /api/profiles/[handle]/updates` — paginated updates (authenticated members only).
 - *Open question: are public profiles directory-listed by default (opt-out) or only after
   explicit completion (opt-in)? Affects the `public_profile_visible` default.*
 
