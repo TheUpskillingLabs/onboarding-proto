@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>The Upskilling Labs — Admin</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="font.css">
+<link rel="stylesheet" href="tokens.css">
+<style>
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+:root { --pad:24px; --maxw:1180px; }
+html { -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+body { font-family:"Geologica",system-ui,sans-serif; font-weight:400; font-size:16px; line-height:24px; color:var(--ink); background:var(--paper); min-height:100svh; }
+a { color:inherit; text-decoration:none; }
+button,input,select,textarea { font-family:inherit; }
+
+/* type */
+.t-h1 { font-weight:700; font-size:32px; line-height:36px; letter-spacing:-.026em; }
+.t-h2 { font-weight:700; font-size:26px; line-height:32px; letter-spacing:-.02em; }
+.t-h3 { font-weight:600; font-size:20px; line-height:28px; letter-spacing:-.016em; }
+.t-h4 { font-weight:600; font-size:17px; line-height:24px; letter-spacing:-.01em; }
+.t-lede { font-weight:400; font-size:18px; line-height:28px; letter-spacing:-.01em; color:var(--slate); }
+.t-body { font-weight:400; font-size:16px; line-height:24px; color:var(--charcoal); }
+.t-small { font-weight:400; font-size:13px; line-height:20px; color:var(--meta); }
+.lbl { font-weight:500; font-size:12px; line-height:16px; letter-spacing:.10em; text-transform:uppercase; color:var(--meta); }
+.lbl-teal { color:var(--teal-deep); }
+
+/* buttons */
+.btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; border:none; border-radius:var(--r); font-weight:600; font-size:15px; letter-spacing:.01em; cursor:pointer; transition:opacity .15s, transform .1s, box-shadow .15s, background .15s; white-space:nowrap; padding:15px 24px; text-decoration:none; }
+.btn:active { transform:scale(.98); }
+.btn-block { width:100%; }
+.btn-teal { background:var(--teal); color:#fff; }
+.btn-ghost { background:transparent; color:var(--ink); border:1px solid var(--rule-ink); }
+.btn-ghost-teal { background:transparent; color:var(--teal-deep); border:1px solid rgba(0,148,160,.45); }
+.btn-link { background:none; border:none; color:inherit; font-weight:600; font-size:14px; cursor:pointer; padding:12px; }
+.btn-sm { font-size:13px; padding:11px 16px; }
+.btn:disabled { opacity:.34; cursor:not-allowed; pointer-events:none; }
+@media (hover:hover) { .btn:hover { opacity:.9; } .btn-teal:hover { box-shadow:var(--shadow); opacity:1; } }
+
+/* surfaces */
+.container { max-width:var(--maxw); margin:0 auto; padding:0 var(--pad); }
+.lcard { background:var(--white); border:1px solid var(--rule); border-radius:var(--r); }
+.section-head { display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom:24px; padding-bottom:14px; border-bottom:2px solid var(--ink); }
+.cards { display:grid; grid-template-columns:1fr; gap:16px; }
+.chip { flex-shrink:0; padding:9px 16px; border-radius:var(--r); border:1px solid var(--rule); background:var(--white); font-size:13px; font-weight:600; color:var(--charcoal); cursor:pointer; white-space:nowrap; transition:all .14s; }
+.chip.active { background:var(--ink); color:#fff; border-color:var(--ink); }
+.chip:active { transform:scale(.97); }
+.chip:focus-visible, .btn:focus-visible, .inp:focus-visible { outline:2px solid var(--teal); outline-offset:2px; }
+.status { display:inline-flex; align-items:center; gap:7px; font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--meta); }
+.status::before { content:""; width:7px; height:7px; border-radius:50%; background:var(--meta-soft); }
+.status.active { color:var(--teal-deep); }
+.status.active::before { background:var(--teal); box-shadow:0 0 0 3px rgba(0,148,160,.18); }
+.status.risk { color:var(--red); }
+.status.risk::before { background:var(--red); box-shadow:0 0 0 3px rgba(225,29,42,.14); }
+.avatar { width:38px; height:38px; border-radius:50%; background:var(--teal); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:600; font-size:13px; cursor:pointer; flex-shrink:0; }
+
+/* dark admin nav — the logo only ever sits on dark navy */
+.topnav { position:sticky; top:0; z-index:50; background:var(--ink); border-bottom:1px solid rgba(255,255,255,.08); flex-shrink:0; }
+.topnav-inner { max-width:var(--maxw); margin:0 auto; padding:12px var(--pad); display:flex; align-items:center; gap:16px; color:var(--od1); }
+.topnav .btn-ghost { color:var(--od1); border-color:rgba(255,255,255,.42); }
+.persona-lbl { font-size:12px; font-weight:600; letter-spacing:.10em; text-transform:uppercase; color:var(--teal); border:1px solid rgba(0,148,160,.5); border-radius:var(--r); padding:5px 10px; }
+
+/* forms */
+.inp { width:100%; padding:12px 14px; border:1px solid var(--rule); border-radius:var(--r); font-size:15px; background:var(--white); color:var(--ink); }
+.f-lbl { display:block; font-weight:500; font-size:12px; letter-spacing:.10em; text-transform:uppercase; color:var(--meta); margin-bottom:6px; }
+.f-row { margin-bottom:16px; }
+
+/* table */
+.tbl-wrap { overflow-x:auto; }
+.tbl { width:100%; border-collapse:collapse; min-width:640px; }
+.tbl th { text-align:left; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--meta); font-weight:600; padding:10px 12px; border-bottom:2px solid var(--ink); white-space:nowrap; }
+.tbl td { padding:12px; border-bottom:1px solid var(--rule); font-size:14px; vertical-align:middle; }
+.tbl tbody tr { cursor:pointer; }
+@media (hover:hover) { .tbl tbody tr:hover td { background:rgba(0,148,160,.05); } }
+.tbl tbody tr:focus-visible { outline:2px solid var(--teal); outline-offset:-2px; }
+
+/* vote progress */
+.vbar { height:8px; background:var(--rule-soft); overflow:hidden; flex:1; }
+.vbar > div { height:100%; background:var(--teal); }
+
+/* modal */
+.gate-modal { display:none; position:fixed; inset:0; z-index:200; background:rgba(0,20,27,.58); backdrop-filter:blur(4px); padding:var(--pad); align-items:flex-end; justify-content:center; }
+.gate-modal.open { display:flex; animation:gateFade .2s ease; }
+.gate-sheet { position:relative; width:100%; max-width:460px; padding:32px 24px 24px; border-radius:var(--r) var(--r) 0 0; box-shadow:var(--shadow-lg); background:var(--paper); animation:gateUp .24s cubic-bezier(.2,.8,.25,1); max-height:86svh; overflow-y:auto; }
+.gate-close { position:absolute; top:14px; right:14px; width:36px; height:36px; display:flex; align-items:center; justify-content:center; background:none; border:none; cursor:pointer; color:var(--meta); border-radius:50%; }
+.gate-close:hover { background:rgba(0,20,27,.06); color:var(--ink); }
+@keyframes gateFade { from { opacity:0; } to { opacity:1; } }
+@keyframes gateUp { from { transform:translateY(24px); opacity:0; } to { transform:none; opacity:1; } }
+@media (min-width:640px) { .gate-modal { align-items:center; } .gate-sheet { border-radius:var(--r); } }
+
+.apanel { display:none; }
+.apanel.active { display:block; animation:panelIn .3s cubic-bezier(.2,.7,.1,1); }
+@keyframes panelIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+.naming-beat { animation:namePulse 1.1s ease infinite; }
+@keyframes namePulse { 0%,100% { opacity:1; } 50% { opacity:.55; } }
+@media (prefers-reduced-motion: reduce) { .apanel.active, .gate-modal.open, .gate-sheet { animation:none; } .naming-beat { animation:none; } }
+
+@media (min-width:1024px) {
+  :root { --pad:40px; }
+  .t-h1 { font-size:48px; line-height:52px; letter-spacing:-.034em; }
+  .t-h2 { font-size:34px; line-height:40px; }
+  .t-h3 { font-size:24px; line-height:32px; }
+  .cards.two { grid-template-columns:1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header class="topnav">
+  <div class="topnav-inner">
+    <a href="index.html" style="display:flex;align-items:center;gap:10px;"><img src="assets/logo-lockup-light.png" alt="The Upskilling Labs" style="height:60px;width:auto;display:block;"></a>
+    <span class="persona-lbl">Admin</span>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:14px;">
+      <a class="btn btn-ghost btn-sm" href="index.html" id="exit-member">Exit to member view</a>
+      <div class="avatar" id="header-avatar" title="Your profile">AR</div>
+    </div>
+  </div>
+</header>
+
+<main class="container" style="padding-top:32px;padding-bottom:64px;">
+  <div class="lbl lbl-teal" style="margin-bottom:8px;">The Labs · operations</div>
+  <h1 class="t-h1" style="margin-bottom:8px;">Cycle administration</h1>
+  <p class="t-lede" style="margin-bottom:24px;">Summer 2026 · Civic &amp; Elections Cycle · Washington, DC</p>
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:36px;" id="admin-tabs" role="tablist">
+    <button class="chip active" data-panel="testing" onclick="showAdminPanel('testing')">Testing Controls</button>
+    <button class="chip" data-panel="cycle" onclick="showAdminPanel('cycle')">Cycle control</button>
+    <button class="chip" data-panel="votes" onclick="showAdminPanel('votes')">Vote progress</button>
+    <button class="chip" data-panel="invites" onclick="showAdminPanel('invites')">Invitations</button>
+    <button class="chip" data-panel="people" onclick="showAdminPanel('people')">Participants</button>
+    <button class="chip" data-panel="entities" onclick="showAdminPanel('entities')">Entity Explorer</button>
+  </div>
+
+  <!-- ═══ TESTING CONTROLS — the live demo driver (mirrors OLOS's admin phase stepper) ═══ -->
+  <div id="apanel-testing" class="apanel active">
+    <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Testing Controls</div><h2 class="t-h2">Step the formation phase</h2></div></div>
+    <p class="t-body" style="max-width:64ch;margin-bottom:20px;">Walks the whole formation arc live: submission → voting → tally → registration. Writes <code style="font-size:13px;background:var(--tint);padding:2px 6px;border-radius:4px;">olos.cycleState.v1</code> — keep the member app open in another tab and watch it follow.</p>
+    <div class="lcard" style="padding:24px;margin-bottom:20px;">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:20px;" id="phase-rail"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-ghost-teal btn-sm" id="phase-back" onclick="stepPhase(-1)">← Back</button>
+        <button class="btn btn-teal btn-sm" id="phase-fwd" onclick="stepPhase(1)">Advance phase →</button>
+      </div>
+    </div>
+    <div id="tally-out"></div>
+  </div>
+
+  <!-- ═══ CYCLE CONTROL ═══ -->
+  <div id="apanel-cycle" class="apanel">
+    <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Cycle control</div><h2 class="t-h2">Status, schedule &amp; thresholds</h2></div></div>
+    <div class="cards two">
+      <div class="lcard" style="padding:24px;">
+        <div class="lbl" style="margin-bottom:14px;">Cycle status</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;" id="cycle-status-chips"></div>
+        <div class="lbl" style="margin-bottom:14px;">Formation windows</div>
+        <div id="schedule-rows"></div>
+      </div>
+      <div class="lcard" style="padding:24px;">
+        <div class="lbl" style="margin-bottom:4px;">Thresholds</div>
+        <p class="t-small" style="margin-bottom:18px;">Live knobs — the Testing Controls tally uses whatever is saved here.</p>
+        <div id="threshold-rows"></div>
+        <button class="btn btn-teal btn-sm" style="margin-top:8px;" onclick="saveCycleConfig(this)">Save changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ VOTE PROGRESS ═══ -->
+  <div id="apanel-votes" class="apanel">
+    <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Vote progress</div><h2 class="t-h2">How the ballot is landing</h2></div><span class="status active" id="ballots-in"></span></div>
+    <p class="t-small" style="margin-bottom:20px;">Aggregates only — no per-voter attribution, ever.</p>
+    <div id="vote-rows"></div>
+  </div>
+
+  <!-- ═══ INVITATIONS ═══ -->
+  <div id="apanel-invites" class="apanel">
+    <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Invitations</div><h2 class="t-h2">Bring people in with a role preset</h2></div></div>
+    <div class="lcard" style="padding:24px;margin-bottom:24px;">
+      <div class="f-row"><label class="f-lbl" for="inv-email">Email</label><input class="inp" id="inv-email" type="email" placeholder="name@example.org" style="max-width:420px;"></div>
+      <div class="f-row"><span class="f-lbl">Role preset</span><div style="display:flex;gap:8px;flex-wrap:wrap;" id="inv-role-chips"></div></div>
+      <div class="f-row"><label class="f-lbl" for="inv-scope">Scope (optional)</label>
+        <select class="inp" id="inv-scope" style="max-width:420px;">
+          <option value="">No scope — org-wide</option>
+          <option value="Summer 2026 Cycle">Summer 2026 Cycle</option>
+          <option value="Pod 4 · Civic AI">Pod 4 · Civic AI</option>
+          <option value="Pod 2 · Voting Access">Pod 2 · Voting Access</option>
+        </select></div>
+      <button class="btn btn-teal btn-sm" onclick="createInvite()">Create invitation</button>
+    </div>
+    <div id="invite-rows"></div>
+  </div>
+
+  <!-- ═══ PARTICIPANTS ═══ -->
+  <div id="apanel-people" class="apanel">
+    <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Participants</div><h2 class="t-h2">Everyone in the cycle</h2></div></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;" id="people-chips"></div>
+    <div class="lcard tbl-wrap" style="padding:6px 12px 2px;">
+      <table class="tbl" aria-label="Participants">
+        <thead><tr><th>Name</th><th>Roles</th><th>Enrollment</th><th>Poderator of</th><th></th></tr></thead>
+        <tbody id="people-rows"></tbody>
+      </table>
+    </div>
+    <p class="t-small" style="margin-top:12px;">Click a row to edit permissions.</p>
+  </div>
+
+  <!-- ═══ ENTITY EXPLORER — feature-flagged off, mirrors production ═══ -->
+  <div id="apanel-entities" class="apanel">
+    <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Entity Explorer</div><h2 class="t-h2">Raw data browser</h2></div></div>
+    <div class="lcard" style="padding:32px;opacity:.6;display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--meta)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <div style="flex:1;min-width:240px;">
+        <div class="t-h4" style="margin-bottom:4px;">Feature-flagged off</div>
+        <p class="t-small">Mirrors production — the Entity Explorer ships behind a flag in OLOS and stays off here. Browse participants and invitations with the tabs above.</p>
+      </div>
+      <button class="btn btn-ghost-teal btn-sm" disabled>Enable (flagged)</button>
+    </div>
+  </div>
+</main>
+
+<!-- Permissions editor — stub; Save mutates in-memory only -->
+<div class="gate-modal" id="perm-modal" onclick="if(event.target===this)closePermModal()">
+  <div class="gate-sheet">
+    <button class="gate-close" onclick="closePermModal()" aria-label="Close">
+      <svg width="20" height="20" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 5L17 17M17 5L5 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <h3 class="t-h3" id="perm-title" style="margin-bottom:4px;padding-right:32px;">Permissions</h3>
+    <p class="t-small" style="margin-bottom:18px;">Participant permissions — mirrors OLOS's <code style="font-size:12px;">participant_permissions</code>.</p>
+    <div id="perm-grid" style="margin-bottom:20px;"></div>
+    <button class="btn btn-teal btn-block" style="margin-bottom:10px;" onclick="savePerms(this)">Save permissions</button>
+    <button class="btn-link" style="color:var(--meta);width:100%;" onclick="closePermModal()">Cancel</button>
+  </div>
+</div>
+
+<script src="shared.js"></script>
+<script>
+/* ── Admin mock data — lives in this file (established per-file duplication
+   pattern). Only olos.cycleState.v1 + olos.viewAsRole.v1 cross file boundaries. ── */
+const CYCLE_STATE_KEY='olos.cycleState.v1';
+const PHASES=['submission','voting','tallied','registration','closed'];
+const PHASE_LABELS={submission:'Submission', voting:'Voting', tallied:'Tallied', registration:'Registration', closed:'Closed'};
+let CONFIG={ submitterVotes:5, nonSubmitterVotes:3, voteThreshold:5, projectMin:3, projectMax:5, maxProjects:4 };
+let cycleStatus='active';
+/* Aggregate vote snapshot — totals only, no per-voter attribution. */
+const ADMIN_PROPOSALS=[
+  {id:'p1', problemStatementId:'s1', title:'BenefitsBot', frame:'Treat benefits enrollment as a wayfinding problem, not a paperwork problem.', intervention:'A plain-language guide that walks residents through SNAP + Medicaid in one calm flow, piloted at library help desks.', metrics:'Completion rate at 3 pilot branches; intake questions per application.', evidence:'12 resident interviews · 3 librarian shadow shifts · journey map', submittedBy:'m3', total:7},
+  {id:'p2', problemStatementId:'s2', title:'Ballot Basics', frame:'First-time voting is a social act — information travels through trusted peers, not portals.', intervention:'Peer-shareable local ballot explainers distributed through school and library networks.', metrics:'Share rate; % of recipients who report feeling prepared to vote.', evidence:'Survey of 40 first-time voters · precinct data review', submittedBy:'m4', total:5},
+  {id:'p3', problemStatementId:'s3', title:'Knowledge Keeper', frame:'Volunteer knowledge is infrastructure, not personality.', intervention:'A lightweight handover wiki seeded by exit interviews.', metrics:'Time-to-onboard for new leads.', evidence:'6 org interviews · 2 leadership transitions observed', submittedBy:'m5', total:2}
+];
+const BALLOTS_IN=5, BALLOTS_TOTAL=7;
+const PEOPLE=[
+  {id:'you', name:'Alex Rivera', initials:'AR', roles:['Admin','Upskiller'], enrollment:'Summer 2026', mod:'—'},
+  {id:'m1', name:'Priya Shah', initials:'PS', roles:['Mentor'], enrollment:'Summer 2026', mod:'—'},
+  {id:'m2', name:'Marcus Bell', initials:'MB', roles:['Mentor','Upskiller'], enrollment:'Summer 2026', mod:'—'},
+  {id:'m3', name:'Jordan Okafor', initials:'JO', roles:['Upskiller'], enrollment:'Summer 2026', mod:'—'},
+  {id:'m4', name:'Elena Ruiz', initials:'ER', roles:['Poderator','Volunteer'], enrollment:'Summer 2026', mod:'Pod 4 · Civic AI'},
+  {id:'m5', name:'Sam Whitfield', initials:'SW', roles:['Upskiller'], enrollment:'Summer 2026', mod:'—'},
+  {id:'m6', name:'Aisha Karim', initials:'AK', roles:['Mentor','Poderator'], enrollment:'Summer 2026', mod:'Pod 2 · Voting Access'}
+];
+const PERMS=[['can_submit_proposals','Submit solution proposals'],['can_vote','Vote on ballots'],['can_post_updates','Post public updates'],['can_view_directory','View the member directory'],['can_request_mentors','Request mentors'],['is_moderator','Poderator tools']];
+let INVITATIONS=[
+  {email:'dana@civictech.dc', role:'Poderator', scope:'Pod 4 · Civic AI', status:'pending', token:'inv-8kd2'},
+  {email:'ray@lwvdc.org', role:'Mentor', scope:'', status:'accepted', token:'inv-3mz9'}
+];
+
+/* ── Cycle state (cross-file contract) ── */
+let phaseIdx=0, projects=[];
+function readCycleState(){ try{ return JSON.parse(localStorage.getItem(CYCLE_STATE_KEY)||'{}')||{}; }catch(e){ return {}; } }
+function writeCycleState(){
+  const phase=PHASES[phaseIdx];
+  const st={ formationPhase:phase, config:{...CONFIG} };
+  if(['tallied','registration','closed'].includes(phase)&&projects.length) st.projects=projects;
+  localStorage.setItem(CYCLE_STATE_KEY, JSON.stringify(st));
+}
+/* Deterministic naming beat — OLOS does this with an LLM (lib/llm/names.ts). */
+const TEAM_WORDS=['Wayfinder','Beacon','Relay','Lantern','Compass','Cairn','Meridian','Prism'];
+function generateProjectName(p){ let h=0; for(const ch of p.title) h=(h*31+ch.charCodeAt(0))%997; return 'Team '+TEAM_WORDS[h%TEAM_WORDS.length]; }
+function runTally(){
+  const podSize=PEOPLE.length;
+  const cap=Math.min(CONFIG.maxProjects, Math.floor(podSize/CONFIG.projectMin));
+  const winners=ADMIN_PROPOSALS.filter(p=>p.total>=CONFIG.voteThreshold).sort((a,b)=>b.total-a.total).slice(0,cap);
+  const taken=new Set();
+  projects=winners.map(p=>{
+    const candidates=[p.submittedBy, ...PEOPLE.map(x=>x.id)].filter(r=>r&&r!=='you'&&!taken.has(r));
+    const seed=[...new Set(candidates)].slice(0,2);
+    seed.forEach(r=>taken.add(r));
+    return { id:'proj-'+p.id, proposalId:p.id, name:generateProjectName(p), title:p.title,
+      frame:p.frame, intervention:p.intervention, metrics:p.metrics, evidence:p.evidence,
+      problemStatementId:p.problemStatementId, members:seed.map(r=>({ref:r})),
+      min:CONFIG.projectMin, max:CONFIG.projectMax };
+  });
+  return projects;
+}
+
+/* ── Testing Controls ── */
+let naming=false;
+function renderPhaseRail(){
+  const rail=document.getElementById('phase-rail');
+  rail.innerHTML=PHASES.map((p,i)=>'<span class="chip'+(i===phaseIdx?' active':'')+'" style="cursor:default;pointer-events:none;'+(i<phaseIdx?'opacity:.55;':'')+'">'+PHASE_LABELS[p]+'</span>'+(i<PHASES.length-1?'<span class="t-small" style="color:var(--meta-soft);">→</span>':'')).join('');
+  document.getElementById('phase-back').disabled=phaseIdx===0||naming;
+  document.getElementById('phase-fwd').disabled=phaseIdx===PHASES.length-1||naming;
+}
+function renderTallyOut(){
+  const out=document.getElementById('tally-out');
+  if(naming){ out.innerHTML='<div class="lcard naming-beat" style="padding:24px;background:var(--tint);" aria-live="polite"><span class="t-h4" style="color:var(--teal-deep);">✨ Naming projects…</span> <span class="t-small">OLOS asks an LLM for names at tally time — the prototype fakes the moment.</span></div>'; return; }
+  if(phaseIdx>=2&&projects.length){
+    out.innerHTML='<div class="lbl" style="margin-bottom:14px;">Tally result · '+projects.length+' project'+(projects.length>1?'s':'')+' formed</div>'
+      +projects.map(pr=>'<div class="lcard" style="padding:18px 22px;margin-bottom:12px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;"><div style="flex:1;min-width:220px;"><div class="t-h4">'+escHTML(pr.name)+' — '+escHTML(pr.title)+'</div><p class="t-small">'+escHTML(pr.frame)+'</p></div><span class="status active">'+(ADMIN_PROPOSALS.find(p=>p.id===pr.proposalId)||{}).total+' votes</span></div>').join('')
+      +(ADMIN_PROPOSALS.filter(p=>p.total<CONFIG.voteThreshold).map(p=>'<div class="lcard" style="padding:18px 22px;margin-bottom:12px;display:flex;align-items:center;gap:16px;opacity:.6;"><div style="flex:1;"><div class="t-h4">'+escHTML(p.title)+'</div></div><span class="status">Below threshold · '+p.total+' votes</span></div>').join(''));
+  } else if(phaseIdx>=2){ out.innerHTML='<div class="lcard" style="padding:18px 22px;"><p class="t-small">No proposals met the threshold ('+CONFIG.voteThreshold+' votes) — nothing formed.</p></div>'; }
+  else out.innerHTML='';
+}
+function stepPhase(delta){
+  if(naming) return;
+  const next=Math.min(PHASES.length-1, Math.max(0, phaseIdx+delta)); if(next===phaseIdx) return;
+  phaseIdx=next;
+  if(PHASES[phaseIdx]==='tallied'&&delta>0){
+    naming=true; renderPhaseRail(); renderTallyOut();
+    const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    setTimeout(()=>{ naming=false; runTally(); writeCycleState(); renderPhaseRail(); renderTallyOut(); }, reduced?0:900);
+    return;
+  }
+  if(phaseIdx<2) projects=[];
+  writeCycleState(); renderPhaseRail(); renderTallyOut();
+}
+
+/* ── Cycle control ── */
+const WINDOWS=[
+  {id:'submission', label:'Proposal submission', start:'2026-08-24T09:00', end:'2026-08-28T18:00'},
+  {id:'voting', label:'Budget voting', start:'2026-08-28T18:00', end:'2026-09-01T18:00'},
+  {id:'registration', label:'Project registration', start:'2026-09-02T09:00', end:'2026-09-05T18:00'}
+];
+function renderCycleControl(){
+  document.getElementById('cycle-status-chips').innerHTML=['draft','active','closed'].map(s=>'<button class="chip'+(cycleStatus===s?' active':'')+'" onclick="cycleStatus=\''+s+'\';renderCycleControl()">'+s[0].toUpperCase()+s.slice(1)+'</button>').join('');
+  document.getElementById('schedule-rows').innerHTML=WINDOWS.map((w,i)=>'<div style="padding:12px 0;border-bottom:1px solid var(--rule);"><div class="t-h4" style="font-size:14px;margin-bottom:8px;">'+w.label+'</div><div style="display:flex;gap:10px;flex-wrap:wrap;"><label class="t-small" style="flex:1;min-width:170px;">Opens<input class="inp" type="datetime-local" value="'+w.start+'" onchange="WINDOWS['+i+'].start=this.value" style="margin-top:4px;"></label><label class="t-small" style="flex:1;min-width:170px;">Closes<input class="inp" type="datetime-local" value="'+w.end+'" onchange="WINDOWS['+i+'].end=this.value" style="margin-top:4px;"></label></div></div>').join('');
+  const fields=[['submitterVotes','Votes per submitter'],['nonSubmitterVotes','Votes per non-submitter'],['voteThreshold','Votes to form a project'],['projectMin','Team minimum'],['projectMax','Team maximum'],['maxProjects','Max projects per pod']];
+  document.getElementById('threshold-rows').innerHTML=fields.map(([k,label])=>'<div style="display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--rule);"><span class="t-small" style="flex:1;color:var(--ink);">'+label+'</span><input class="inp" type="number" min="1" max="30" value="'+CONFIG[k]+'" data-k="'+k+'" style="width:82px;text-align:center;"></div>').join('');
+}
+function saveCycleConfig(btn){
+  document.querySelectorAll('#threshold-rows input[data-k]').forEach(inp=>{ const v=parseInt(inp.value,10); if(v>0) CONFIG[inp.dataset.k]=v; });
+  writeCycleState();
+  const t=btn.textContent; btn.textContent='Saved ✓'; setTimeout(()=>{ btn.textContent=t; }, 1400);
+}
+
+/* ── Vote progress — aggregate bars only ── */
+function renderVotes(){
+  document.getElementById('ballots-in').textContent=BALLOTS_IN+' of '+BALLOTS_TOTAL+' ballots in';
+  const max=Math.max(CONFIG.voteThreshold, ...ADMIN_PROPOSALS.map(p=>p.total));
+  document.getElementById('vote-rows').innerHTML=ADMIN_PROPOSALS.map(p=>{
+    const pct=Math.round(p.total/max*100); const forms=p.total>=CONFIG.voteThreshold;
+    return '<div class="lcard" style="padding:18px 22px;margin-bottom:12px;"><div style="display:flex;justify-content:space-between;gap:12px;margin-bottom:10px;flex-wrap:wrap;"><div class="t-h4">'+escHTML(p.title)+'</div><span class="status'+(forms?' active':'')+'">'+p.total+' votes'+(forms?' · forms':' · below threshold')+'</span></div><div style="display:flex;align-items:center;gap:12px;"><div class="vbar"><div style="width:'+pct+'%;"></div></div><span class="t-small" style="flex-shrink:0;">'+CONFIG.voteThreshold+' to form</span></div></div>';
+  }).join('');
+}
+
+/* ── Invitations ── */
+let inviteRole='Upskiller';
+function renderInviteChips(){
+  document.getElementById('inv-role-chips').innerHTML=['Upskiller','Mentor','Poderator','Admin'].map(r=>'<button class="chip'+(inviteRole===r?' active':'')+'" onclick="inviteRole=\''+r+'\';renderInviteChips()">'+r+'</button>').join('');
+}
+function renderInvites(){
+  const c=document.getElementById('invite-rows');
+  if(!INVITATIONS.length){ c.innerHTML='<div class="lcard" style="padding:18px 22px;"><p class="t-small">No invitations yet — create one above and share the link.</p></div>'; return; }
+  c.innerHTML=INVITATIONS.map((inv,i)=>{
+    const revoked=inv.status==='revoked';
+    return '<div class="lcard" style="padding:18px 22px;margin-bottom:12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;'+(revoked?'opacity:.55;':'')+'">'
+      +'<div style="flex:1;min-width:220px;"><div class="t-h4" style="font-size:15px;">'+escHTML(inv.email)+'</div><p class="t-small">'+inv.role+(inv.scope?' · '+escHTML(inv.scope):' · org-wide')+'</p></div>'
+      +'<span class="status'+(inv.status==='accepted'?' active':inv.status==='revoked'?' risk':'')+'">'+inv.status+'</span>'
+      +(revoked?'':'<button class="btn btn-ghost-teal btn-sm" onclick="copyInviteLink(this,\''+inv.token+'\')">Copy link</button>'
+        +'<button class="btn btn-ghost-teal btn-sm" onclick="resendInvite(this)">Resend</button>'
+        +'<button class="btn btn-ghost-teal btn-sm" style="color:var(--red);border-color:rgba(225,29,42,.4);" onclick="revokeInvite('+i+')">Revoke</button>')
+      +'</div>';
+  }).join('');
+}
+function createInvite(){
+  const email=document.getElementById('inv-email').value.trim();
+  if(!email||!email.includes('@')){ document.getElementById('inv-email').focus(); return; }
+  INVITATIONS.unshift({email:email, role:inviteRole, scope:document.getElementById('inv-scope').value, status:'pending', token:'inv-'+Math.random().toString(36).slice(2,7)});
+  document.getElementById('inv-email').value='';
+  renderInvites();
+}
+function copyInviteLink(btn, token){
+  const link='https://labs.example.org/invite/'+token;
+  const done=()=>{ const t=btn.textContent; btn.textContent='Copied ✓'; setTimeout(()=>{ btn.textContent=t; }, 1400); };
+  if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(done, done); else done();
+}
+function resendInvite(btn){ const t=btn.textContent; btn.textContent='Sent ✓'; setTimeout(()=>{ btn.textContent=t; }, 1400); }
+function revokeInvite(i){ INVITATIONS[i].status='revoked'; renderInvites(); }
+
+/* ── Participants ── */
+let peopleFilter='all';
+function renderPeople(){
+  const cats=[['all','All'],['Admin','Admins'],['Poderator','Poderators'],['Mentor','Mentors'],['Upskiller','Upskillers']];
+  document.getElementById('people-chips').innerHTML=cats.map(([v,l])=>'<button class="chip'+(peopleFilter===v?' active':'')+'" onclick="peopleFilter=\''+v+'\';renderPeople()">'+l+'</button>').join('');
+  const list=PEOPLE.filter(p=>peopleFilter==='all'||p.roles.includes(peopleFilter));
+  document.getElementById('people-rows').innerHTML=list.map(p=>'<tr tabindex="0" role="button" data-pid="'+p.id+'" onclick="openPermModal(\''+p.id+'\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();openPermModal(\''+p.id+'\')}"><td><div style="display:flex;align-items:center;gap:10px;">'+avatarSm(p.initials,p.name)+'<b>'+escHTML(p.name)+'</b></div></td><td>'+p.roles.join(' · ')+'</td><td>'+p.enrollment+'</td><td>'+escHTML(p.mod)+'</td><td class="t-small" style="color:var(--teal-deep);font-weight:600;white-space:nowrap;">Permissions →</td></tr>').join('');
+}
+let permTarget=null;
+function openPermModal(id){
+  permTarget=PEOPLE.find(p=>p.id===id); if(!permTarget) return;
+  if(!permTarget.perms) permTarget.perms={can_submit_proposals:true, can_vote:true, can_post_updates:true, can_view_directory:true, can_request_mentors:true, is_moderator:permTarget.roles.includes('Poderator')};
+  document.getElementById('perm-title').textContent='Permissions — '+permTarget.name;
+  document.getElementById('perm-grid').innerHTML=PERMS.map(([k,label])=>'<label style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--rule);cursor:pointer;"><input type="checkbox" data-perm="'+k+'" '+(permTarget.perms[k]?'checked':'')+' style="width:18px;height:18px;accent-color:var(--teal);"><span class="t-small" style="color:var(--ink);">'+label+'</span></label>').join('');
+  document.getElementById('perm-modal').classList.add('open');
+}
+function closePermModal(){ document.getElementById('perm-modal').classList.remove('open'); permTarget=null; }
+function savePerms(btn){
+  if(!permTarget) return;
+  document.querySelectorAll('#perm-grid input[data-perm]').forEach(cb=>{ permTarget.perms[cb.dataset.perm]=cb.checked; });
+  const t=btn.textContent; btn.textContent='Saved ✓'; setTimeout(()=>{ btn.textContent=t; closePermModal(); }, 700);
+}
+
+/* ── Panel switcher (own tiny router — do not import index.html's) ── */
+function showAdminPanel(id){
+  document.querySelectorAll('.apanel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('apanel-'+id).classList.add('active');
+  document.querySelectorAll('#admin-tabs .chip').forEach(c=>c.classList.toggle('active', c.dataset.panel===id));
+}
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closePermModal(); });
+
+/* boot — adopt whatever phase the suite is already in */
+(function(){
+  const st=readCycleState();
+  const i=PHASES.indexOf(st.formationPhase||'submission'); phaseIdx=i<0?0:i;
+  if(Array.isArray(st.projects)) projects=st.projects;
+  if(st.config) CONFIG={...CONFIG, ...st.config};
+  if(['tallied','registration','closed'].includes(PHASES[phaseIdx])&&!projects.length) runTally();
+  renderPhaseRail(); renderTallyOut(); renderCycleControl(); renderVotes(); renderInviteChips(); renderInvites(); renderPeople();
+})();
+window.addEventListener('storage', e=>{ if(e.key===CYCLE_STATE_KEY){ const st=readCycleState(); const i=PHASES.indexOf(st.formationPhase||'submission'); phaseIdx=i<0?0:i; if(Array.isArray(st.projects)) projects=st.projects; renderPhaseRail(); renderTallyOut(); } });
+</script>
+</body>
+</html>
