@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Upskilling Stories — The Upskilling Labs</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="font.css">
+<link rel="stylesheet" href="tokens.css">
+<style>
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+:root { --pad:24px; --maxw:1180px; }
+html { -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+body { font-family:"Geologica",system-ui,sans-serif; font-weight:400; font-size:16px; line-height:24px; color:var(--ink); background:var(--paper); min-height:100svh; }
+a { color:inherit; text-decoration:none; }
+button,input,select,textarea { font-family:inherit; }
+
+/* type */
+.t-display { font-weight:700; font-size:44px; line-height:48px; letter-spacing:-.03em; }
+.t-h2 { font-weight:700; font-size:26px; line-height:32px; letter-spacing:-.02em; }
+.t-h3 { font-weight:600; font-size:20px; line-height:28px; letter-spacing:-.016em; }
+.t-h4 { font-weight:600; font-size:17px; line-height:24px; letter-spacing:-.01em; }
+.t-lede { font-weight:400; font-size:18px; line-height:28px; letter-spacing:-.01em; color:var(--slate); }
+.t-body { font-weight:400; font-size:16px; line-height:24px; color:var(--charcoal); }
+.t-small { font-weight:400; font-size:13px; line-height:20px; color:var(--meta); }
+.lbl { font-weight:500; font-size:12px; line-height:16px; letter-spacing:.10em; text-transform:uppercase; color:var(--meta); }
+.lbl-teal { color:var(--teal-deep); }
+.on-dark, .on-dark .t-display, .on-dark .t-h2 { color:var(--od1); }
+.on-dark .t-lede, .on-dark .t-body { color:var(--od2); }
+.on-dark .t-small, .on-dark .lbl { color:var(--od3); }
+.on-dark .lbl-teal { color:var(--teal); }
+
+/* buttons */
+.btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; border:none; border-radius:var(--r); font-weight:600; font-size:15px; letter-spacing:.01em; cursor:pointer; transition:opacity .15s, transform .1s, box-shadow .15s, background .15s; white-space:nowrap; padding:15px 24px; text-decoration:none; }
+.btn:active { transform:scale(.98); }
+.btn-block { width:100%; }
+.btn-red { background:var(--red); color:#fff; }
+.btn-teal { background:var(--teal); color:#fff; }
+.btn-ghost { background:transparent; color:var(--ink); border:1px solid var(--rule-ink); }
+.btn-ghost-teal { background:transparent; color:var(--teal-deep); border:1px solid rgba(0,148,160,.45); }
+.btn-link { background:none; border:none; color:inherit; font-weight:600; font-size:14px; cursor:pointer; padding:12px; }
+.btn-sm { font-size:13px; padding:11px 16px; }
+.btn-lg { font-size:16px; padding:17px 30px; }
+.btn:disabled { opacity:.34; cursor:not-allowed; pointer-events:none; }
+@media (hover:hover) { .btn:hover { opacity:.9; } .btn-red:hover, .btn-teal:hover { box-shadow:var(--shadow); opacity:1; } }
+.chip { flex-shrink:0; padding:9px 16px; border-radius:var(--r); border:1px solid var(--rule); background:var(--white); font-size:13px; font-weight:600; color:var(--charcoal); cursor:pointer; white-space:nowrap; transition:all .14s; }
+.chip.active { background:var(--ink); color:#fff; border-color:var(--ink); }
+.chip:active { transform:scale(.97); }
+.chip:focus-visible, .btn:focus-visible { outline:2px solid var(--teal); outline-offset:2px; }
+
+/* surfaces */
+.container { max-width:var(--maxw); margin:0 auto; padding:0 var(--pad); }
+.grain::before { content:""; position:absolute; inset:0; background-image:var(--grain); mix-blend-mode:overlay; opacity:.5; pointer-events:none; }
+.grain > * { position:relative; }
+.s-cover { position:relative; background:linear-gradient(160deg, var(--ink) 0%, var(--navy) 55%, var(--forest) 130%); }
+
+/* nav — the logo only ever sits on dark navy */
+.topnav { position:sticky; top:0; z-index:50; background:var(--ink); border-bottom:1px solid rgba(255,255,255,.08); }
+.topnav-inner { max-width:var(--maxw); margin:0 auto; padding:12px var(--pad); display:flex; align-items:center; gap:16px; color:var(--od1); }
+.topnav .btn-ghost { color:var(--od1); border-color:rgba(255,255,255,.42); }
+
+/* spotlight cards (tinder-swipe-stories-style: photo-led, quote, expandable story) */
+.spot-grid { display:grid; grid-template-columns:1fr; gap:20px; align-items:start; }
+@media (min-width:700px)  { .spot-grid { grid-template-columns:repeat(2,1fr); } }
+@media (min-width:1024px) { .spot-grid { grid-template-columns:repeat(3,1fr); } }
+.card { background:var(--white); border:1px solid var(--rule); border-radius:var(--r); overflow:hidden; }
+.card.tappable { cursor:pointer; transition:transform .18s ease, box-shadow .18s ease; }
+@media (hover:hover) { .card.tappable:hover { transform:translateY(-3px); box-shadow:var(--shadow-lg); } }
+.tappable:focus-visible { outline:2px solid var(--teal); outline-offset:2px; }
+.card-body { padding:18px 20px; }
+.spot-media { position:relative; aspect-ratio:16/10; overflow:hidden; }
+.spot-media::after { content:""; position:absolute; inset:0; background-image:var(--grain); mix-blend-mode:overlay; opacity:.45; pointer-events:none; }
+.spot-media .m-orb { position:absolute; width:148px; height:148px; right:-26px; bottom:-34px; opacity:.95; }
+.m-teal { background:radial-gradient(120% 120% at 0% 100%, rgba(0,148,160,.7), transparent 62%), linear-gradient(150deg, var(--ink), var(--navy)); }
+.m-forest { background:radial-gradient(120% 120% at 100% 0%, rgba(0,148,160,.55), transparent 60%), linear-gradient(150deg, var(--forest), var(--ink)); }
+.m-navy { background:radial-gradient(110% 110% at 50% 120%, rgba(0,148,160,.5), transparent 60%), linear-gradient(160deg, var(--navy), var(--ink)); }
+.spot-story { display:none; border-top:1px solid var(--rule); padding-top:14px; margin-top:14px; }
+.card.expanded .spot-story { display:block; }
+.card.expanded .spot-more .chev { transform:rotate(180deg); }
+.spot-more { display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:var(--teal-deep); margin-top:12px; }
+.spot-more .chev { transition:transform .2s ease; display:inline-flex; }
+.spot-tag { display:inline-block; font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--teal-deep); background:rgba(0,148,160,.10); border-radius:var(--r); padding:4px 10px; }
+
+/* share modal */
+.gate-modal { display:none; position:fixed; inset:0; z-index:200; background:rgba(0,20,27,.58); backdrop-filter:blur(4px); padding:var(--pad); align-items:flex-end; justify-content:center; }
+.gate-modal.open { display:flex; animation:gateFade .2s ease; }
+.gate-sheet { position:relative; width:100%; max-width:460px; padding:32px 24px 24px; border-radius:var(--r) var(--r) 0 0; box-shadow:var(--shadow-lg); background:var(--paper); animation:gateUp .24s cubic-bezier(.2,.8,.25,1); max-height:86svh; overflow-y:auto; }
+.gate-close { position:absolute; top:14px; right:14px; width:36px; height:36px; display:flex; align-items:center; justify-content:center; background:none; border:none; cursor:pointer; color:var(--meta); border-radius:50%; }
+.gate-close:hover { background:rgba(0,20,27,.06); color:var(--ink); }
+@keyframes gateFade { from { opacity:0; } to { opacity:1; } }
+@keyframes gateUp { from { transform:translateY(24px); opacity:0; } to { transform:none; opacity:1; } }
+@media (min-width:640px) { .gate-modal { align-items:center; } .gate-sheet { border-radius:var(--r); } }
+.inp { width:100%; padding:12px 14px; border:1px solid var(--rule); border-radius:var(--r); font-size:15px; background:var(--white); color:var(--ink); }
+.inp:focus-visible { outline:2px solid var(--teal); outline-offset:2px; }
+
+/* feedback launcher — a genuine circle (allowed exception, like avatars) */
+#fb-launcher { position:fixed; right:18px; bottom:calc(18px + env(safe-area-inset-bottom)); width:52px; height:52px; border-radius:50%; background:var(--ink); color:#fff; border:none; cursor:pointer; box-shadow:var(--shadow-lg); display:flex; align-items:center; justify-content:center; z-index:190; }
+#fb-launcher:hover { background:var(--navy); }
+#fb-launcher:focus-visible { outline:2px solid var(--teal); outline-offset:2px; }
+
+.reveal { animation:pageIn .3s cubic-bezier(.2,.7,.1,1); }
+@keyframes pageIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+@media (prefers-reduced-motion: reduce) { .reveal, .gate-modal.open, .gate-sheet { animation:none; } .card.tappable, .spot-more .chev { transition:none; } }
+
+@media (min-width:1024px) {
+  :root { --pad:40px; }
+  .t-display { font-size:64px; line-height:68px; letter-spacing:-.04em; }
+  .t-h2 { font-size:34px; line-height:40px; }
+}
+</style>
+</head>
+<body>
+
+<header class="topnav">
+  <div class="topnav-inner">
+    <a href="index.html" style="display:flex;align-items:center;gap:10px;"><img src="assets/logo-lockup-light.png" alt="The Upskilling Labs" style="height:60px;width:auto;display:block;"></a>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:12px;">
+      <a class="btn btn-ghost btn-sm" href="index.html">Back to The Labs</a>
+      <a class="btn btn-red btn-sm" href="index.html">Join The Labs</a>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ Hero ═══ -->
+<div class="s-cover grain on-dark">
+  <div class="container" style="padding-top:72px;padding-bottom:64px;">
+    <div class="lbl lbl-teal" style="margin-bottom:14px;">The Upskilling Labs · community</div>
+    <h1 class="t-display" style="margin-bottom:16px;">Upskiller Spotlights</h1>
+    <p class="t-lede" style="max-width:56ch;margin-bottom:28px;">Real people, real practice — what changes when you stop consuming education and start building in the open.</p>
+    <button class="btn btn-red btn-lg" onclick="openShare()">Share your story</button>
+  </div>
+</div>
+
+<main class="container reveal" style="padding-top:40px;padding-bottom:64px;">
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;" id="spot-chips"></div>
+  <div class="spot-grid" id="spot-grid"></div>
+
+  <!-- closing CTA band -->
+  <div class="s-cover grain on-dark" style="border-radius:var(--r);margin-top:48px;overflow:hidden;">
+    <div style="padding:40px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
+      <div style="flex:1;min-width:260px;">
+        <div class="lbl lbl-teal" style="margin-bottom:8px;">Your turn</div>
+        <h2 class="t-h2" style="margin-bottom:8px;">Every spotlight started as a first week</h2>
+        <p class="t-body">Tell the community what you practiced, what broke, and what changed. The Labs team edits with you before anything goes live.</p>
+      </div>
+      <button class="btn btn-red btn-lg" onclick="openShare()">Share your story</button>
+    </div>
+  </div>
+</main>
+
+<footer style="background:var(--ink);color:var(--od2);padding:32px 0;">
+  <div class="container" style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+    <img src="assets/logo-lockup-light.png" alt="The Upskilling Labs" style="height:48px;width:auto;">
+    <span class="t-small" style="color:var(--od3);flex:1;min-width:220px;">A commons for upskilling — learn by doing, in the open. Content under CC BY-SA.</span>
+    <a class="btn btn-ghost btn-sm" style="color:var(--od1);border-color:rgba(255,255,255,.42);" href="index.html">Back to The Labs →</a>
+  </div>
+</footer>
+
+<!-- Share your story — submissions are concierge-reviewed, never auto-published -->
+<div class="gate-modal" id="share-modal" onclick="if(event.target===this)closeShare()">
+  <div class="gate-sheet">
+    <button class="gate-close" onclick="closeShare()" aria-label="Close">
+      <svg width="20" height="20" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 5L17 17M17 5L5 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <div id="share-form">
+      <h3 class="t-h3" style="margin-bottom:6px;padding-right:32px;">Share your story</h3>
+      <p class="t-small" style="margin-bottom:16px;">Spotlights are public once published — the Labs team edits with you first.</p>
+      <label class="lbl" for="share-name" style="display:block;margin-bottom:6px;">Your name</label>
+      <input class="inp" id="share-name" type="text" placeholder="e.g. Priya Shah" style="margin-bottom:14px;">
+      <label class="lbl" for="share-story" style="display:block;margin-bottom:6px;">Your story</label>
+      <textarea class="inp" id="share-story" rows="5" placeholder="What did you practice? What broke? What changed?" style="resize:vertical;margin-bottom:16px;"></textarea>
+      <button class="btn btn-teal btn-block" onclick="submitShare()">Send my story</button>
+    </div>
+    <div id="share-done" style="display:none;text-align:center;padding:8px 0;">
+      <h3 class="t-h3" style="margin-bottom:8px;">Thank you ✓</h3>
+      <p class="t-small" style="margin-bottom:18px;">The Labs team will follow up before anything goes live.</p>
+      <button class="btn btn-ghost-teal btn-block" onclick="closeShare()">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- Feedback — mirrored on every page of the suite. -->
+<button id="fb-launcher" aria-label="Send feedback" title="Send feedback" onclick="openFeedback()">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+</button>
+<div class="gate-modal" id="fb-modal" onclick="if(event.target===this)closeFeedback()">
+  <div class="gate-sheet">
+    <button class="gate-close" onclick="closeFeedback()" aria-label="Close">
+      <svg width="20" height="20" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 5L17 17M17 5L5 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <div id="fb-form">
+      <h3 class="t-h3" style="margin-bottom:6px;padding-right:32px;">Send feedback</h3>
+      <p class="t-small" style="margin-bottom:16px;">Straight to the Labs team — every screen carries this button.</p>
+      <div id="fb-cats" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;"></div>
+      <textarea id="fb-body" rows="4" placeholder="What happened? What would make it better?" style="width:100%;border:1px solid var(--rule);border-radius:var(--r);padding:12px 14px;font:inherit;font-size:15px;resize:vertical;background:var(--white);margin-bottom:16px;"></textarea>
+      <button class="btn btn-teal btn-block" onclick="submitFeedback()">Send feedback</button>
+    </div>
+    <div id="fb-done" style="display:none;text-align:center;padding:8px 0;">
+      <h3 class="t-h3" style="margin-bottom:8px;">Thank you ✓</h3>
+      <p class="t-small" style="margin-bottom:18px;">Logged with the screen you were on. The Labs team reads everything.</p>
+      <button class="btn btn-ghost-teal btn-block" onclick="closeFeedback()">Done</button>
+    </div>
+  </div>
+</div>
+
+<script src="shared.js"></script>
+<script>
+/* ── Upskiller Spotlights — public, browse-first (no auth, no view-as guard).
+   SPOTLIGHTS is this file's own full set; the landing's STORIES row shows the
+   head of it and deep-links here with #s-{id}. Production: a spotlights CMS
+   collection + a story_submissions table. ── */
+const SPOTLIGHTS=[
+  {id:'hector', name:'Hector Perla', role:'Inaugural AI Cohort', tag:'builders', tagLabel:'Builder', grad:'m-teal',
+    quote:'The program gave me purpose again—connecting me with mission-driven public servants to tackle real problems. AI as an empowerment tool for people-first civic design.',
+    story:['Hector came to the Labs mid-career, carrying an ADHD diagnosis he’d only recently named and a feeling that his systems-thinking never fit a job description. The Problem Sprint changed the frame: mapping benefits-navigation dead-ends in the Triangulator, his pattern-spotting was suddenly the team’s sharpest tool.',
+      'By Showcase his pod had shipped a plain-language eligibility guide piloted at three library branches. “I stopped apologizing for how my brain works,” he says. “The Labs gave it a job.”']},
+  {id:'suzie', name:'Suzie Zhang', role:'Inaugural AI Cohort', tag:'career', tagLabel:'Career changer', grad:'m-forest',
+    quote:'I left realizing my gap is exactly where my strength lies—translating between tools, teams, and user needs. AI is about community, trust, and the human side of technology.',
+    story:['Suzie spent eight years coaching financial literacy and assumed “learning AI” meant becoming an engineer. Her Practice Journal told a different story: week after week, the entries that mattered were about translation — turning what the tools could do into what her community could trust.',
+      'She now runs AI-literacy workshops for three community organizations, built on the playbook her project team returned to the commons.']},
+  {id:'jordan', name:'Jordan Okafor', role:'Civic & Elections Cycle', tag:'builders', tagLabel:'Builder', grad:'m-navy',
+    quote:'Twelve resident interviews in, the problem stopped being abstract. We shipped a benefits guide three library branches actually use.',
+    story:['Jordan joined the cycle to “learn AI tools” and got assigned twelve resident interviews instead. The evidence-first culture stuck: his solution proposal for BenefitsBot led the pod’s ballot, and the team formed around it within a week of the tally.',
+      '“Every other program hands you a curriculum. This one handed me a problem owner, a deadline, and people who’d actually use the thing.”']},
+  {id:'elena', name:'Elena Ruiz', role:'Poderator · Voting Access', tag:'mentors', tagLabel:'Mentor', grad:'m-teal',
+    quote:'I came for the AI skills and stayed for the pod. Facilitating other people’s growth turned out to be the skill I was building all along.',
+    story:['Elena registered as a volunteer, journaled her way through a cycle, and discovered the entries she reread were all about the pod — who was stuck, who was quiet, what unlocked them. When the Labs opened Poderator roles, her pod nominated her before she could ask.',
+      'She now facilitates Pod 2 · Voting Access, where the journal-health rhythm she once resisted is her favorite instrument.']},
+  {id:'marcus', name:'Marcus Bell', role:'Data Mentor · Two Cycles', tag:'mentors', tagLabel:'Mentor', grad:'m-forest',
+    quote:'Mentoring here isn’t office hours into the void — teams bring evidence, and you get to challenge real thinking at the exact right moment.',
+    story:['Marcus had mentored at three accelerators and burned out on all of them — “What should we do?” asked by teams who hadn’t tried anything. The Labs’ evidence-precedes-assistance rule flipped it: requests arrive with interview notes, failed experiments, and a specific place to push.',
+      '“The first request I got quoted their journal entries at me. I cleared my calendar.”']},
+  {id:'aisha', name:'Aisha Karim', role:'Design Mentor', tag:'career', tagLabel:'Career changer', grad:'m-navy',
+    quote:'My case study became a playbook, the playbook became a workshop, and the workshop hired me. Build in the open — the commons pays you back.',
+    story:['Aisha’s team published their case study under CC BY-SA like every Labs project. A civic-tech nonprofit found the playbook, ran the workshop, and then hired her to run it properly — her first design role after a decade in operations.',
+      '“A portfolio says ‘trust me.’ A public case study with peer sign-off says ‘check for yourself.’”']},
+  {id:'rosa', name:'Rosa Nguyen', role:'Civic & Elections Cycle', tag:'builders', tagLabel:'Builder', grad:'m-teal',
+    quote:'The kickoff assignment was two minutes of observations. Somehow that snowballed into the most useful thing I’ve ever built.',
+    story:['Rosa’s first contribution was a field-survey entry about first-time voters — no account, two minutes, done. Those observations surfaced in her pod’s Triangulator session, became a problem statement, then a ballot-winning proposal she ended up registering for.',
+      '“I watched my own observation travel the whole pipeline. That’s when I understood what ‘build in the open’ actually means.”']}
+];
+const STORY_SUBMISSIONS=[];
+
+/* filter chips */
+let spotFilter='all';
+const SPOT_CATS=[['all','All stories'],['builders','Builders'],['mentors','Mentors'],['career','Career changers']];
+function renderChips(){
+  document.getElementById('spot-chips').innerHTML=SPOT_CATS.map(([v,l])=>'<button class="chip'+(spotFilter===v?' active':'')+'" onclick="spotFilter=\''+v+'\';renderSpotlights()">'+l+'</button>').join('');
+}
+function toggleSpot(el,e){
+  if(e&&(e.target.closest('a,button'))) return;
+  el.classList.toggle('expanded');
+}
+function renderSpotlights(){
+  renderChips();
+  const list=SPOTLIGHTS.filter(s=>spotFilter==='all'||s.tag===spotFilter);
+  document.getElementById('spot-grid').innerHTML=list.map(s=>'<div class="card tappable" id="s-'+s.id+'" onclick="toggleSpot(this,event)">'
+    +'<div class="spot-media '+(s.grad||'m-teal')+'" aria-hidden="true">'+ORB+'</div>'
+    +'<div class="card-body">'
+    +'<span class="spot-tag" style="margin-bottom:12px;">'+escHTML(s.tagLabel)+'</span>'
+    +'<p class="t-body" style="margin:12px 0 14px;">“'+escHTML(s.quote)+'”</p>'
+    +'<div class="t-h4">'+escHTML(s.name)+'</div>'
+    +'<div class="lbl" style="margin-top:4px;">'+escHTML(s.role)+'</div>'
+    +'<div class="spot-story">'+s.story.map(p=>'<p class="t-body" style="margin-bottom:12px;">'+escHTML(p)+'</p>').join('')+'</div>'
+    +'<span class="spot-more">Read the full story <span class="chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></span>'
+    +'</div></div>').join('');
+  enhanceTappables();
+}
+
+/* share your story — concierge-reviewed submissions, never auto-published */
+function openShare(){ document.getElementById('share-form').style.display='block'; document.getElementById('share-done').style.display='none'; document.getElementById('share-modal').classList.add('open'); document.getElementById('share-name').focus(); }
+function closeShare(){ document.getElementById('share-modal').classList.remove('open'); }
+function submitShare(){
+  const name=document.getElementById('share-name').value.trim();
+  const story=document.getElementById('share-story').value.trim();
+  if(!name){ document.getElementById('share-name').focus(); return; }
+  if(!story){ document.getElementById('share-story').focus(); return; }
+  STORY_SUBMISSIONS.push({name:name, story:story, at:Date.now()});
+  document.getElementById('share-form').style.display='none';
+  document.getElementById('share-done').style.display='block';
+}
+
+/* ── Feedback — mirrored from index.html's widget. ── */
+const FEEDBACK_LOG=[];
+let fbCategory='Idea';
+function fbScreen(){ return 'stories'; }
+function renderFbCats(){ document.getElementById('fb-cats').innerHTML=['Bug','Idea','Confusing','Love it'].map(c=>'<button class="chip'+(fbCategory===c?' active':'')+'" onclick="fbCategory=\''+c+'\';renderFbCats()">'+c+'</button>').join(''); }
+function openFeedback(){ fbCategory='Idea'; renderFbCats(); document.getElementById('fb-body').value=''; document.getElementById('fb-form').style.display='block'; document.getElementById('fb-done').style.display='none'; document.getElementById('fb-modal').classList.add('open'); document.getElementById('fb-body').focus(); }
+function closeFeedback(){ document.getElementById('fb-modal').classList.remove('open'); }
+function submitFeedback(){ const body=document.getElementById('fb-body').value.trim(); if(!body){ document.getElementById('fb-body').focus(); return; } FEEDBACK_LOG.push({category:fbCategory, body:body, at:Date.now(), screen:fbScreen()}); document.getElementById('fb-form').style.display='none'; document.getElementById('fb-done').style.display='block'; }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeShare(); closeFeedback(); } });
+
+/* boot — render, then honor #s-{id} deep links from the landing row */
+renderSpotlights();
+if(location.hash&&location.hash.startsWith('#s-')){
+  const el=document.getElementById(location.hash.slice(1));
+  if(el){ el.classList.add('expanded'); el.scrollIntoView({block:'center'}); }
+}
+</script>
+</body>
+</html>

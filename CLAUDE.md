@@ -27,6 +27,7 @@ It is **mobile-first and fully responsive**: a phone-shaped experience on small 
 |---|---|
 | `index.html` | The member app — landing, onboarding, Discover · Dashboard · Profile |
 | `triangulator.html` | The Triangulator — a full problem-framing tool (Kees Dorst Frame Creation), reskinned to this design system, embedded via iframe from `index.html`. Canonical upstream: the `triangles` repo; this copy is the reskinned/integrated adaptation. |
+| `stories.html` | **Upskiller Spotlights** — public story page (tinder-swipe-stories model): filterable spotlight grid, expandable stories, `#s-{id}` deep links, "Share your story" modal → `STORY_SUBMISSIONS` |
 | `font.css` | The single embedded Geologica `@font-face` (base64) — every HTML file links it; **no inline `@font-face` anywhere** |
 | `tokens.css` | Brand primitives (palette, `--r`, shadows, `--grain`) — the single source of truth; per-file `:root`s hold only file-specific vocabulary |
 | `shared.js` | Stateless helpers (`escHTML relDate avatarSm enhanceTappables ORB GRAD`, view-as persona contract) loaded before each file's inline script — no routing, no per-file state |
@@ -182,8 +183,11 @@ Journal**, then the demoted public composer, then dismissible "Up next" cards.
   first-timer to the concept screen (the method needs a named concept for evidence to push
   against); the pool waits behind it. Mobile (<700px) gets a one-time "canvas works best on
   a larger screen" toast on entering the board.
-- **Landing browses free:** no gated "See all" links; section order is hero → cycles (+
-  prominent ungated survey CTA card) → testimonials → workshops → library → labs.
+- **Landing browses free:** no gated "See all" links; section order is hero → **stories**
+  (`#sec-stories` — a fit-to-width `.story-row` of `STORIES` cards, left-side ORB-gradient
+  image placeholders, ending in the `.story-cta` card "Share your story or read more" /
+  "Upskilling Stories →" into `stories.html`; overflow cards hide per breakpoint, the CTA
+  never does) → cycles (+ prominent ungated survey CTA card) → workshops → library → labs.
 - **Keyboard access:** dynamic card renderers call `enhanceTappables()` (tabindex/role +
   delegated Enter/Space handler); keep that call when adding new renderers.
 
@@ -238,7 +242,11 @@ Journal**, then the demoted public composer, then dismissible "Up next" cards.
 - **Feedback (every screen, signed in or out):** the fixed circular launcher (`#fb-launcher`,
   a genuine-circle exception; offset above the mobile tabbar in index.html) opens `#fb-modal` —
   Bug/Idea/Confusing/Love-it chips + textarea → `FEEDBACK_LOG` entries carry
-  `{category, body, at, screen}`. Mirrored on both persona pages.
+  `{category, body, at, screen}`. Mirrored on both persona pages and `stories.html`.
+- **Upskiller Spotlights:** the landing row's cards and CTA deep-link into `stories.html`
+  (public, no auth). `SPOTLIGHTS` (full set) renders a filterable grid (All/Builders/Mentors/
+  Career changers); cards expand in place; `#s-{id}` hashes auto-expand; "Share your story"
+  opens `#share-modal` → `STORY_SUBMISSIONS` (concierge-reviewed, never auto-published).
 
 ---
 
@@ -288,6 +296,7 @@ openTriangulator()        // seeds pool, lazy-sets iframe src, shows view
 showSurveyShare() / copySurveyLink(btn)
 renderTodos() / dismissTodo(id)                    // dismissible "Up next" (phase-aware formation card)
 startNominate(id,e) / nominateBtnHTML(m)           // nominations (FLOWS('nominate'))
+STORIES / renderLandingStories()                   // landing hero-adjacent story row (CTA last)
 openFeedback() / submitFeedback() / FEEDBACK_LOG   // feedback widget (mirrored in persona pages)
 toggleAvatarMenu() / viewAs(role) / getViewAsRole()  // View-as menu (shared.js)
 ```

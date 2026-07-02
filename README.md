@@ -21,9 +21,11 @@ The prototype covers the full member journey:
   - **Dashboard** — your identity header, update composer, setup checklist, dismissible "Up next"
   - **Profile** — public portfolio with trust badges, sourced citation chips, an updates feed,
     and peer-approved case-study editing
-- **Pod problem frames** — on the Cycles panel: frames born from your pod's Triangulator
-  sensemaking; pod members commit as builder or lead, and at 3 commits the frame ignites into
-  a project team (5 seats + 2 facilitator-override seats)
+- **Upskiller Spotlights** — public member stories: a fit-to-width row under the landing hero
+  that deep-links into `stories.html` (filterable grid, expandable stories, share-your-story modal)
+- **Formation** — on the Cycles panel, mirroring OLOS's real pipeline: submit a solution
+  proposal → budget-vote (ballots lock on cast) → tally names the winners → self-register for
+  one team (real at 3 members, cap 5); admin.html's Testing Controls step the phases live
 
 Mobile-first and fully responsive: bottom tab bar and full-screen steps on phones, top nav and
 multi-column grids on desktop.
@@ -39,11 +41,16 @@ npx serve .
 (Or open `index.html` directly — serving is recommended so the Triangulator iframe, the shared
 CSS/JS files, and `?survey=` links behave like production.)
 
+**GitHub Pages ready:** every path is relative and every internal link uses an explicit
+`.html` filename, so the suite works from a `user.github.io/repo/` subpath as-is. `.nojekyll`
+is checked in; the embedded font means no external requests. Point Pages at the repo root.
+
 ## Repo structure
 
 ```
 index.html                     — the member app (landing, onboarding, Discover · Dashboard · Profile)
 triangulator.html              — the Triangulator, reskinned to the design system, iframe-embedded
+stories.html                   — Upskiller Spotlights: public story page + share-your-story modal
 moderator.html                 — the Poderator persona: pod health, nudges, journal themes, tallies
 admin.html                     — the Admin persona: Testing Controls (phase stepper), invites, participants
 font.css                       — the embedded Geologica font (base64) — fetched once, shared by all pages
@@ -73,8 +80,8 @@ other abbreviation in rendered UI.
 
 - Discover renders from mock data arrays shaped like their production APIs: `EVENTS` matches
   Luma's list-events response (OLOS proxies Luma server-side; no API key exists in this repo),
-  `RESOURCES` matches the planned OLOS resources CMS, `MEMBERS`/`FRAMES` match the directory and
-  problem-frame schemas in `docs/OLOS_BACKEND_CHANGES.md`.
+  `RESOURCES` matches the planned OLOS resources CMS, `MEMBERS`/`SOLUTION_PROPOSALS` match the
+  directory and formation schemas in `docs/OLOS_BACKEND_CHANGES.md`.
 - The survey pool lives at `localStorage['olos.surveyPool.v1']` and is shared with the
   Triangulator iframe (same origin). **Prototype limit:** single-browser aggregation only —
   real cross-user pooling is the OLOS `survey_responses` API.

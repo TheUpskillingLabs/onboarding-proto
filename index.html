@@ -512,10 +512,22 @@ button,input,select,textarea { font-family:inherit; }
   .card-chev { transition:none; }
 }
 
-/* ════ Testimonials ════ */
-/* Reuses .section / .cards.two / .card — no bespoke styles. Testimonials sit on
-   warm --paper (the rounded hero flows into paper); the Cycles/Workshops/Labs
-   sections that follow use .s-white. */
+/* ════ Upskiller stories — hero-adjacent, fit-to-width row ════ */
+/* One row that always ends in the CTA card: story cards beyond the breakpoint's
+   column count are hidden via nth-child; .story-cta is a different class so the
+   hiding never touches it and it always holds the rightmost cell. The media
+   blocks below OVERRIDE each other in source order — keep them ascending. */
+.story-row { display:grid; gap:16px; grid-template-columns:repeat(2,1fr); align-items:stretch; }
+.story-card { display:flex; }
+.story-card .card-body { display:flex; gap:16px; align-items:stretch; width:100%; }
+.story-media { flex:0 0 96px; border-radius:var(--r); overflow:hidden; position:relative; min-height:140px; }
+.story-media::after { content:""; position:absolute; inset:0; background-image:var(--grain); mix-blend-mode:overlay; opacity:.45; pointer-events:none; }
+.story-media .m-orb { position:absolute; left:10%; top:16%; width:80%; height:80%; opacity:.95; }
+.story-quote { display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical; overflow:hidden; }
+.story-row > .story-card:nth-child(n+2) { display:none; }
+@media (min-width:700px)  { .story-row { grid-template-columns:repeat(3,1fr); } .story-row > .story-card:nth-child(-n+2) { display:flex; } .story-row > .story-card:nth-child(n+3) { display:none; } }
+@media (min-width:1024px) { .story-row { grid-template-columns:repeat(4,1fr); } .story-row > .story-card:nth-child(-n+3) { display:flex; } .story-row > .story-card:nth-child(n+4) { display:none; } }
+@media (min-width:1440px) { .story-row { grid-template-columns:repeat(5,1fr); } .story-row > .story-card:nth-child(-n+4) { display:flex; } .story-row > .story-card:nth-child(n+5) { display:none; } }
 </style>
 </head>
 <body>
@@ -575,8 +587,18 @@ button,input,select,textarea { font-family:inherit; }
     </div>
 
     <div class="vscroll">
+      <!-- Upskiller stories — first section under the hero. One fit-to-width row,
+           always ending in the CTA card into stories.html (Upskiller Spotlights).
+           Cards render from STORIES via renderLandingStories(). -->
+      <section class="section s-white" id="sec-stories" style="padding-top:calc(56px + 3*var(--r));">
+        <div class="container">
+          <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Upskiller spotlights</div><h2 class="t-h2">Stories from the community</h2></div></div>
+          <div class="story-row" id="story-row"></div>
+        </div>
+      </section>
+
       <!-- Cycles -->
-      <section class="section s-white" id="sec-cycles" style="padding-top:calc(56px + 3*var(--r));"><div class="container">
+      <section class="section s-white" id="sec-cycles"><div class="container">
         <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Build Cycles · 4 a year</div><h2 class="t-h2">Join a cohort, ship something real</h2></div></div>
         <div class="cycle-banner s-cover grain on-dark">
           <div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
@@ -605,33 +627,6 @@ button,input,select,textarea { font-family:inherit; }
         </div>
       </div></section>
 
-      <!-- Testimonials -->
-      <section class="section s-white" id="sec-testimonials">
-        <div class="container">
-          <div class="cards">
-            <div class="card"><div class="card-body">
-              <p class="t-body" style="margin-bottom:18px;">&ldquo;The program gave me purpose again—connecting me with mission-driven public servants to tackle real problems. AI as an empowerment tool for people-first civic design.&rdquo;</p>
-              <div class="t-h4">Hector Perla</div>
-              <div class="lbl" style="margin-top:4px;">ADHD Brain &middot; Inaugural AI Cohort</div>
-              <a class="see" style="display:inline-block;margin-top:16px;" onclick="showView('stub')">Read more &rarr;</a>
-            </div></div>
-            <div class="card"><div class="card-body">
-              <p class="t-body" style="margin-bottom:18px;">&ldquo;I left realizing my gap is exactly where my strength lies—translating between tools, teams, and user needs. AI is about community, trust, and the human side of technology.&rdquo;</p>
-              <div class="t-h4">Suzie Zhang</div>
-              <div class="lbl" style="margin-top:4px;">FinLit Coach &middot; Inaugural AI Cohort</div>
-              <a class="see" style="display:inline-block;margin-top:16px;" onclick="showView('stub')">Read more &rarr;</a>
-            </div></div>
-            <div class="card tappable" onclick="startCreateAccount()">
-              <div class="card-body" style="display:flex;flex-direction:column;height:100%;">
-                <div class="lbl lbl-teal" style="margin-bottom:10px;">Your turn</div>
-                <div class="t-h3" style="margin-bottom:10px;">Share your story</div>
-                <p class="t-body" style="margin-bottom:18px;">Spotlights are public — read more from the community, or add your own.</p>
-                <a class="see" style="margin-top:auto;" onclick="event.stopPropagation();showView('stub')">Read more &rarr;</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
 
       <!-- Workshops -->
@@ -835,7 +830,7 @@ button,input,select,textarea { font-family:inherit; }
             <div class="foot-col">
               <div class="lbl">Community</div>
               <a class="foot-link" onclick="showView('about')">About</a>
-              <a class="foot-link" onclick="scrollToSection('sec-testimonials')">Member stories</a>
+              <a class="foot-link" href="stories.html">Member stories</a>
               <a class="foot-link" onclick="startCreateAccount()">Become a member</a>
               <a class="foot-link" onclick="signinReturning()">Log in</a>
             </div>
@@ -1728,6 +1723,36 @@ const LABS={ dc:{name:'Washington, DC', status:'active'}, baltimore:{name:'Balti
 // Problem Situations) → Frame Sprint / Hackathon (projects form around frames) →
 // Building. Its public rhythm is the six anchor events (marked ✦ on the week rail).
 const CYCLE={ name:'Spring 2026', phase:'Problem Sprint', phaseIndex:0, phases:['Problem Sprint','Frame Sprint','Building'], pod:'Pod 4 · Civic AI', milestones:[ {label:'✦ Meet the Pods — discovery goes public', when:'Wk 6'}, {label:'✦ Hackathon — the Frame Sprint', when:'Wk 9'}, {label:'✦ Meet the Projects — critique the framing', when:'Wk 10'}, {label:'✦ Showcase Summit — everything returns to the commons', when:'Wk 13'} ] };
+/* ── Upskiller stories — the landing's hero-adjacent row; the CTA card and every
+   "Read more" deep-link into stories.html (Upskiller Spotlights), which holds the
+   full set. Production swaps the data source, not the markup. ── */
+const STORIES=[
+  {id:'hector', quote:'The program gave me purpose again\u2014connecting me with mission-driven public servants to tackle real problems. AI as an empowerment tool for people-first civic design.', name:'Hector Perla', tag:'ADHD Brain \u00b7 Inaugural AI Cohort', grad:'m-teal'},
+  {id:'suzie', quote:'I left realizing my gap is exactly where my strength lies\u2014translating between tools, teams, and user needs. AI is about community, trust, and the human side of technology.', name:'Suzie Zhang', tag:'FinLit Coach \u00b7 Inaugural AI Cohort', grad:'m-forest'},
+  {id:'jordan', quote:'Twelve resident interviews in, the problem stopped being abstract. We shipped a benefits guide three library branches actually use.', name:'Jordan Okafor', tag:'BenefitsBot \u00b7 Civic & Elections Cycle', grad:'m-navy'},
+  {id:'elena', quote:'I came for the AI skills and stayed for the pod. Facilitating other people\u2019s growth turned out to be the skill I was building all along.', name:'Elena Ruiz', tag:'Poderator \u00b7 Voting Access', grad:'m-teal'},
+  {id:'marcus', quote:'Mentoring here isn\u2019t office hours into the void \u2014 teams bring evidence, and you get to challenge real thinking at the exact right moment.', name:'Marcus Bell', tag:'Data Mentor \u00b7 Two Cycles', grad:'m-forest'},
+  {id:'aisha', quote:'My case study became a playbook, the playbook became a workshop, and the workshop hired me. Build in the open \u2014 the commons pays you back.', name:'Aisha Karim', tag:'Design Mentor \u00b7 Career Changer', grad:'m-navy'}
+];
+function renderLandingStories(){
+  const row=document.getElementById('story-row'); if(!row) return;
+  row.innerHTML=STORIES.map(st=>'<div class="card tappable story-card" onclick="location.href=\'stories.html#s-'+st.id+'\'"><div class="card-body">'
+    +'<div class="story-media '+(st.grad||'m-teal')+'" aria-hidden="true">'+ORB+'</div>'
+    +'<div style="display:flex;flex-direction:column;min-width:0;flex:1;">'
+    +'<p class="t-body story-quote" style="margin-bottom:14px;">\u201c'+escHTML(st.quote)+'\u201d</p>'
+    +'<div class="t-h4" style="margin-top:auto;">'+escHTML(st.name)+'</div>'
+    +'<div class="lbl" style="margin-top:4px;">'+escHTML(st.tag)+'</div>'
+    +'<a class="see" style="display:inline-block;margin-top:12px;" href="stories.html#s-'+st.id+'" onclick="event.stopPropagation()">Read more \u2192</a>'
+    +'</div></div></div>').join('')
+    +'<div class="card tappable story-cta" onclick="location.href=\'stories.html\'">'
+    +'<div class="card-body" style="display:flex;flex-direction:column;height:100%;">'
+    +'<div class="lbl lbl-teal" style="margin-bottom:10px;">Your turn</div>'
+    +'<div class="t-h3" style="margin-bottom:10px;">Share your story or read more</div>'
+    +'<p class="t-body" style="margin-bottom:18px;">Spotlights are public \u2014 read more from the community, or add your own.</p>'
+    +'<a class="see" style="margin-top:auto;" href="stories.html" onclick="event.stopPropagation()">Upskilling Stories \u2192</a>'
+    +'</div></div>';
+  enhanceTappables();
+}
 // Portfolio is data-driven: the upskiller baseline is seeded; mentor/volunteer evidence is synthesized
 // at render time from the role flows (only when that role is completed), so the grid reads role-blended.
 const PROJECTS=[
@@ -2952,7 +2977,7 @@ function openFeedback(){ fbCategory='Idea'; renderFbCats(); document.getElementB
 function closeFeedback(){ document.getElementById('fb-modal').classList.remove('open'); }
 function submitFeedback(){ const body=document.getElementById('fb-body').value.trim(); if(!body){ document.getElementById('fb-body').focus(); return; } FEEDBACK_LOG.push({category:fbCategory, body:body, at:Date.now(), screen:fbScreen()}); document.getElementById('fb-form').style.display='none'; document.getElementById('fb-done').style.display='block'; }
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeFeedback(); });
-document.addEventListener('DOMContentLoaded',()=>{ initEventCats(); applyCycleState(); buildWeekRail(); renderActivity(); renderJournal(); initHeroScroll(); enhanceTappables();
+document.addEventListener('DOMContentLoaded',()=>{ renderLandingStories(); initEventCats(); applyCycleState(); buildWeekRail(); renderActivity(); renderJournal(); initHeroScroll(); enhanceTappables();
   // Shared survey links (?survey=...) deep-link straight into the fill flow — no account needed.
   if(new URLSearchParams(location.search).get('survey')){ startFlow('survey', ()=>showView('landing')); }
 });
