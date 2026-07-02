@@ -72,6 +72,15 @@ Rules baked into the system:
 - **Type scale** classes: `.t-display .t-h1 .t-h2 .t-h3 .t-h4 .t-lede .t-body .t-small .lbl .idx .t-stat`.
 - **Soft elevation:** `--shadow` / `--shadow-lg`; cards `.tappable` lift on hover (desktop only).
 - **Grain:** `.grain` overlays an SVG-noise texture on dark surfaces.
+- **The orb never sits raw under text or interactive elements** — at every breakpoint, put a
+  scrim between the orb and content (see `.cycle-banner::after`) and/or cut its opacity on
+  small screens. The orb's red lobe kills contrast under gray copy and next to red CTAs.
+- **Mobile keyboard rules:** every input/textarea is `font-size:16px`+ (below 16px iOS zooms
+  the page on focus); viewport metas carry `interactive-widget=resizes-content`; full-height
+  shells use `100dvh` (not `svh`) so the keyboard shrinks them; focused flow inputs scroll
+  into view.
+- **App chrome switches at 768px** (top nav in, tabbar out, dashboard two-column) — the
+  typography/padding scale-up stays at 1024px. Never leave a 640–1023px band on phone chrome.
 
 Font: **Geologica** only (embedded base64 in `font.css` — no CDN, one fetch for the whole
 suite). The Triangulator additionally
