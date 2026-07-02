@@ -274,6 +274,11 @@ button,input,select,textarea { font-family:inherit; }
 .detail-aside { display:none; }
 
 @media (prefers-reduced-motion: reduce) { .view.active, .panel.active { animation:none; } .seg-fill { transition:none; } }
+/* Trust badges: earned = filled status pill; locked = dashed, muted, with a how-to-earn tooltip. */
+.badge-locked { display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--meta); border:1px dashed var(--meta-soft); border-radius:var(--r); padding:4px 10px; cursor:help; }
+.badge-locked svg { width:11px; height:11px; flex-shrink:0; }
+/* Keyboard access for tappable cards (enhanced at render time). */
+.tappable:focus-visible { outline:2px solid var(--teal); outline-offset:2px; }
 /* Inline citation chips — footnote markers whose popover shows the whitelisted source. */
 .cite-chip { position:relative; color:var(--teal-deep); font-weight:600; cursor:help; margin-left:2px; outline:none; }
 .cite-chip:focus-visible { outline:2px solid var(--teal); outline-offset:2px; }
@@ -565,8 +570,38 @@ button,input,select,textarea { font-family:inherit; }
     </div>
 
     <div class="vscroll">
+      <!-- Cycles -->
+      <section class="section s-white" id="sec-cycles" style="padding-top:calc(56px + 3*var(--r));"><div class="container">
+        <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Build Cycles · 4 a year</div><h2 class="t-h2">Join a cohort, ship something real</h2></div></div>
+        <div class="cycle-banner s-cover grain on-dark">
+          <div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
+  <defs>
+    <radialGradient id="oc" cx="38%" cy="35%" r="58%"><stop offset="0%" stop-color="#0094A0"/><stop offset="62%" stop-color="rgba(0,148,160,0)"/></radialGradient>
+    <radialGradient id="or" cx="62%" cy="78%" r="65%"><stop offset="60%" stop-color="rgba(225,29,42,0)"/><stop offset="100%" stop-color="#E11D2A"/></radialGradient>
+    <linearGradient id="og" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#00D3E4"/><stop offset="60%" stop-color="#0094A0"/><stop offset="100%" stop-color="#007882"/></linearGradient>
+  </defs>
+  <circle cx="120" cy="120" r="116" fill="url(#oc)"/>
+  <circle cx="120" cy="120" r="116" fill="url(#or)"/>
+  <g transform="translate(20,40) scale(0.142)"><path d="M 0 900.84 C 532.341 651.368 841.069 454.81 1407.215 0 C 1190.699 365.98 1060.371 566.788 776.503 900.84 L 950.588 496.405 C 539.219 733.009 347.248 789.767 0 900.84 Z" fill="url(#og)"/></g>
+</svg></div>
+          <div class="cb-body">
+            <span class="cb-status">Registration Open Now</span>
+            <div class="lbl lbl-teal" style="margin:14px 0 6px;">Summer 2026 · Washington, DC</div>
+            <h3 class="t-h2">Civic &amp; Elections Cycle</h3>
+            <p class="t-body" style="margin-top:8px;max-width:52ch;">Kicks off July 14, 2026 · a 13-week cohort shipping a real civic project.</p>
+          </div>
+          <div class="cb-cta">
+            <button class="btn btn-red btn-lg" onclick="gateCreateAccount('the Civic &amp; Elections Cycle',event)">Join this cycle</button>
+          </div>
+        </div>
+        <div class="lcard" style="margin-top:16px;padding:20px 24px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
+          <div style="flex:1;min-width:240px;"><div class="lbl lbl-teal" style="margin-bottom:6px;">Field survey · open to everyone</div><div class="t-h4" style="margin-bottom:4px;">Seen something about civic life worth noting?</div><p class="t-small">Add raw observations to the cycle's problem map — takes two minutes, no account needed.</p></div>
+          <button class="btn btn-teal" onclick="startFlow('survey', ()=>showView('landing'))">Add your observations</button>
+        </div>
+      </div></section>
+
       <!-- Testimonials -->
-      <section class="section" id="sec-testimonials" style="padding-top:calc(56px + 3*var(--r));">
+      <section class="section s-white" id="sec-testimonials">
         <div class="container">
           <div class="cards">
             <div class="card"><div class="card-body">
@@ -593,36 +628,10 @@ button,input,select,textarea { font-family:inherit; }
         </div>
       </section>
 
-      <!-- Cycles -->
-      <section class="section s-white" id="sec-cycles" style="padding-top:56px;"><div class="container">
-        <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Build Cycles · 4 a year</div><h2 class="t-h2">Join a cohort, ship something real</h2></div><span class="see" onclick="startCreateAccount()">See all →</span></div>
-        <div class="cycle-banner s-cover grain on-dark">
-          <div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
-  <defs>
-    <radialGradient id="oc" cx="38%" cy="35%" r="58%"><stop offset="0%" stop-color="#0094A0"/><stop offset="62%" stop-color="rgba(0,148,160,0)"/></radialGradient>
-    <radialGradient id="or" cx="62%" cy="78%" r="65%"><stop offset="60%" stop-color="rgba(225,29,42,0)"/><stop offset="100%" stop-color="#E11D2A"/></radialGradient>
-    <linearGradient id="og" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#00D3E4"/><stop offset="60%" stop-color="#0094A0"/><stop offset="100%" stop-color="#007882"/></linearGradient>
-  </defs>
-  <circle cx="120" cy="120" r="116" fill="url(#oc)"/>
-  <circle cx="120" cy="120" r="116" fill="url(#or)"/>
-  <g transform="translate(20,40) scale(0.142)"><path d="M 0 900.84 C 532.341 651.368 841.069 454.81 1407.215 0 C 1190.699 365.98 1060.371 566.788 776.503 900.84 L 950.588 496.405 C 539.219 733.009 347.248 789.767 0 900.84 Z" fill="url(#og)"/></g>
-</svg></div>
-          <div class="cb-body">
-            <span class="cb-status">Registration Open Now</span>
-            <div class="lbl lbl-teal" style="margin:14px 0 6px;">Summer 2026 · Washington, DC</div>
-            <h3 class="t-h2">Civic &amp; Elections Cycle</h3>
-            <p class="t-body" style="margin-top:8px;max-width:52ch;">Kicks off July 14, 2026 · a 13-week cohort shipping a real civic project.</p>
-            <a class="see" style="display:inline-block;margin-top:14px;" onclick="startFlow('survey', ()=>showView('landing'))">Add a field observation — no account needed →</a>
-          </div>
-          <div class="cb-cta">
-            <button class="btn btn-red btn-lg" onclick="gateCreateAccount('the Civic &amp; Elections Cycle',event)">Join this cycle</button>
-          </div>
-        </div>
-      </div></section>
 
       <!-- Workshops -->
       <section class="section s-white" id="sec-workshops"><div class="container">
-        <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Workshops &amp; sessions · weekly</div><h2 class="t-h2">Drop into a session</h2></div><span class="see" onclick="startCreateAccount()">See all →</span></div>
+        <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Workshops &amp; sessions · weekly</div><h2 class="t-h2">Drop into a session</h2></div></div>
         <div class="cards dense">
           <div class="card expandable tappable" onclick="toggleExpand(this,event)"><div class="media"><img src="assets/sample-workshop-recap.png" alt="Workshop Recap" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg></button><div class="m-tag">In person</div></div><div class="card-body"><div class="card-row"><div class="lbl lbl-teal">Jul 9 · 6 PM</div><span class="card-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div><div class="t-h4" style="margin:6px 0 4px;">Prompting for real work</div><p class="t-small">DC Public Library</p></div><div class="card-expand"><div class="kv"><span class="k lbl">What</span><span class="t-small">A hands-on intro to prompting for everyday work</span></div><div class="kv"><span class="k lbl">Bring</span><span class="t-small">A laptop and a real task to try</span></div><div class="lock-note"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Free &amp; public — save a spot for the room details</div><button class="btn btn-teal btn-block" onclick="gateCreateAccount('the Jul 9 workshop',event)">Save a spot</button></div></div>
           <div class="card expandable tappable" onclick="toggleExpand(this,event)"><div class="media m-forest"><div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
@@ -691,7 +700,7 @@ button,input,select,textarea { font-family:inherit; }
 
       <!-- Learning Library -->
       <section class="section s-white" id="sec-library"><div class="container">
-        <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Learning Library · on-demand</div><h2 class="t-h2">Learn at your own pace</h2></div><span class="see" onclick="startCreateAccount()">See all →</span></div>
+        <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Learning Library · on-demand</div><h2 class="t-h2">Learn at your own pace</h2></div></div>
         <div class="cards dense">
           <div class="card expandable tappable" onclick="toggleExpand(this,event)"><div class="media"><img src="assets/sample-alumni-spotlight.png" alt="Prompting fundamentals" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"><button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg></button><div class="m-tag">Guide</div></div><div class="card-body"><div class="card-row"><div class="lbl lbl-teal">12 min read</div><span class="card-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div><div class="t-h4" style="margin:6px 0 4px;">Prompting fundamentals</div><p class="t-small">The Upskilling Labs</p></div><div class="card-expand"><div class="kv"><span class="k lbl">What</span><span class="t-small">A written primer on prompting for everyday work</span></div><div class="kv"><span class="k lbl">Open</span><span class="t-small">Published under CC BY-SA — yours to build on</span></div><div class="lock-note"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Free &amp; public — sign in to open</div><button class="btn btn-teal btn-block" onclick="gateCreateAccount('the prompting guide',event)">Open the guide</button></div></div>
           <div class="card expandable tappable" onclick="toggleExpand(this,event)"><div class="media m-teal"><div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
@@ -741,7 +750,7 @@ button,input,select,textarea { font-family:inherit; }
 
       <!-- Local labs -->
       <section class="section s-white" id="sec-labs"><div class="container">
-        <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Local labs</div><h2 class="t-h2">Find your city</h2></div><span class="see" onclick="startCreateAccount()">See all →</span></div>
+        <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Local labs</div><h2 class="t-h2">Find your city</h2></div></div>
         <div class="cards">
           <div class="card expandable tappable" onclick="toggleExpand(this,event)">
             <div class="media m-teal"><div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
@@ -995,11 +1004,9 @@ button,input,select,textarea { font-family:inherit; }
             <h1 class="t-h1" id="prof-name" style="margin-bottom:4px;">Alex Rivera</h1>
             <p class="t-body" id="prof-headline" style="color:var(--teal-deep);font-weight:600;margin-bottom:6px;"></p>
             <p class="t-body" id="prof-meta" style="margin-bottom:12px;">Washington, DC · Joined Spring 2026</p>
-            <!-- Immutable trust badges — set by the org / clients, never self-attested. -->
-            <div id="prof-badges" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
-              <span class="status active" title="Work verified by Open Labs QA review">✓ Verified QA by Open Labs</span>
-              <span class="status forming" title="Endorsed by a client sponsor">✓ Client Endorsed</span>
-            </div>
+            <!-- Immutable trust badges — set by the org / clients, never self-attested.
+                 Rendered by renderBadges(): locked until earned, so verification means something. -->
+            <div id="prof-badges" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;"></div>
             <div id="prof-roles" class="tag-wrap"></div>
           </div>
           <div id="prof-actions" style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;flex-shrink:0;"></div>
@@ -1050,7 +1057,8 @@ button,input,select,textarea { font-family:inherit; }
         </div>
         <p class="t-small" style="margin-bottom:36px;">Anyone with the link can add observations — no account needed.</p>
         <button class="btn btn-red btn-lg btn-block" style="margin-bottom:14px;" onclick="openTriangulator()">Open the Triangulator →</button>
-        <button class="btn-link" style="color:var(--meta);" onclick="goApp('dashboard')">Back to dashboard</button>
+        <button class="btn-link" style="color:var(--meta);" id="survey-exit" onclick="exitSurveyShare()">Back to dashboard</button>
+        <p class="t-small" style="margin-top:24px;color:var(--meta);">Your observations join the cycle's shared pool and feed the community's sensemaking in the Triangulator. Nothing is published under your name.</p>
       </div>
     </div>
   </div>
@@ -1060,7 +1068,7 @@ button,input,select,textarea { font-family:inherit; }
     <header class="topnav" style="flex-shrink:0;">
       <div class="topnav-inner">
         <div style="display:flex;align-items:center;gap:10px;"><img src="assets/logo-lockup-light.png" alt="The Upskilling Labs" style="height:44px;width:auto;display:block;"><span class="lbl" style="color:var(--od2);">The Triangulator</span></div>
-        <button class="btn btn-ghost btn-sm" style="margin-left:auto;" onclick="goApp('dashboard')">← Back to Dashboard</button>
+        <button class="btn btn-ghost btn-sm" id="tri-exit" style="margin-left:auto;color:#fff;border-color:rgba(255,255,255,.45);" onclick="exitTriangulator()">← Back to Dashboard</button>
       </div>
     </header>
     <!-- Same-origin iframe: the tool reads the shared survey pool from localStorage
@@ -1077,6 +1085,7 @@ button,input,select,textarea { font-family:inherit; }
         <h1 class="t-display" style="margin-bottom:16px;">You're in. The team is real.</h1>
         <p class="t-lede" id="ignition-copy" style="margin-bottom:36px;">Three builders committed — this problem frame just became a project.</p>
         <button class="btn btn-red btn-lg btn-block" onclick="openProjectCanvas()">Open the project canvas →</button>
+        <button class="btn-link" style="color:var(--od2);margin-top:16px;" onclick="goApp('cycles')">Later — back to your cycle</button>
       </div>
     </div>
   </div>
@@ -1127,24 +1136,32 @@ button,input,select,textarea { font-family:inherit; }
       <div id="panel-discover" class="panel">
         <div class="container" style="padding-top:40px;padding-bottom:48px;">
           <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Discover</div><h2 class="t-h1">What's happening in the Labs</h2></div></div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;" aria-label="Jump to section">
+            <button class="chip" onclick="scrollToSection('disc-sec-cycle')">Cycle</button>
+            <button class="chip" onclick="scrollToSection('disc-sec-events')">Events</button>
+            <button class="chip" onclick="scrollToSection('disc-sec-library')">Library</button>
+            <button class="chip" onclick="scrollToSection('disc-sec-people')">Community</button>
+            <button class="chip" onclick="scrollToSection('disc-sec-updates')">Updates</button>
+            <button class="chip" onclick="scrollToSection('disc-sec-labs')">Labs</button>
+          </div>
 
-          <div class="section-head" style="margin-top:32px;"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Build Cycles · 4 a year</div><h2 class="t-h2">Join a cohort, ship something real</h2></div><span class="see" onclick="goApp('cycles')">View all →</span></div>
+          <div class="section-head" id="disc-sec-cycle" style="margin-top:32px;"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Build Cycles · 4 a year</div><h2 class="t-h2">Join a cohort, ship something real</h2></div><span class="see" onclick="goApp('cycles')">View all →</span></div>
           <div id="disc-cycle"></div>
 
-          <div class="section-head" style="margin-top:40px;"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Workshops &amp; events · weekly</div><h2 class="t-h2">Drop into a session</h2></div><span class="see" onclick="goApp('events')">View all →</span></div>
+          <div class="section-head" id="disc-sec-events" style="margin-top:40px;"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Workshops &amp; events · weekly</div><h2 class="t-h2">Drop into a session</h2></div><span class="see" onclick="goApp('events')">View all →</span></div>
           <div class="cards dense" id="disc-events"></div>
 
-          <div class="section-head" style="margin-top:40px;"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Learning Library · on-demand</div><h2 class="t-h2">Learn at your own pace</h2></div><span class="see" onclick="goApp('resources')">View all →</span></div>
+          <div class="section-head" id="disc-sec-library" style="margin-top:40px;"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Learning Library · on-demand</div><h2 class="t-h2">Learn at your own pace</h2></div><span class="see" onclick="goApp('resources')">View all →</span></div>
           <div class="cards dense" id="disc-library"></div>
 
-          <div class="section-head" style="margin-top:40px;"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Community · upskillers &amp; mentors</div><h2 class="t-h2">Meet the community</h2></div></div>
+          <div class="section-head" id="disc-sec-people" style="margin-top:40px;"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Community · upskillers &amp; mentors</div><h2 class="t-h2">Meet the community</h2></div></div>
           <div id="disc-people-chips" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;"></div>
           <div class="cards" id="disc-people"></div>
 
-          <div class="section-head" style="margin-top:40px;"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Community updates</div><h2 class="t-h2">What people are shipping</h2></div></div>
+          <div class="section-head" id="disc-sec-updates" style="margin-top:40px;"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Community updates</div><h2 class="t-h2">What people are shipping</h2></div></div>
           <div class="cards two" id="disc-updates"></div>
 
-          <div class="section-head" style="margin-top:40px;"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Local labs · library-hosted</div><h2 class="t-h2">Find your city</h2></div><span class="see" onclick="goApp('labs')">View all →</span></div>
+          <div class="section-head" id="disc-sec-labs" style="margin-top:40px;"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Local labs · library-hosted</div><h2 class="t-h2">Find your city</h2></div><span class="see" onclick="goApp('labs')">View all →</span></div>
           <div class="cards" id="disc-labs"></div>
 
           <div id="disc-saved-wrap" style="display:none;">
@@ -1366,11 +1383,11 @@ button,input,select,textarea { font-family:inherit; }
   <circle cx="120" cy="120" r="116" fill="url(#or)"/>
   <g transform="translate(20,40) scale(0.142)"><path d="M 0 900.84 C 532.341 651.368 841.069 454.81 1407.215 0 C 1190.699 365.98 1060.371 566.788 776.503 900.84 L 950.588 496.405 C 539.219 733.009 347.248 789.767 0 900.84 Z" fill="url(#og)"/></g>
 </svg></div></div></div><div class="gallery-dots" id="ev-dots"><i class="on"></i><i></i><i></i></div></div>
-              <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;"><span class="lbl lbl-teal">Jul 9 · 6:00 PM</span><span class="lbl lbl-teal">In person</span></div>
-              <h1 class="t-h1" style="margin-bottom:16px;">Prompting for real work</h1>
-              <p class="t-lede" style="margin-bottom:28px;">A hands-on session on turning your judgment into better AI output. Bring a laptop and a real problem you're working on.</p>
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;"><span class="lbl lbl-teal" id="ev-date">Jul 9 · 6:00 PM</span><span class="lbl lbl-teal" id="ev-kind">In person</span></div>
+              <h1 class="t-h1" style="margin-bottom:16px;" id="ev-title">Prompting for real work</h1>
+              <p class="t-lede" style="margin-bottom:28px;" id="ev-desc">A hands-on session on turning your judgment into better AI output. Bring a laptop and a real problem you're working on.</p>
               <div style="margin-bottom:8px;">
-                <div style="display:flex;gap:16px;padding:14px 0;border-bottom:1px solid var(--rule);"><span class="lbl" style="width:88px;flex-shrink:0;padding-top:2px;">Location</span><span class="t-body" style="flex:1;">DC Public Library — Tenley-Friendship</span></div>
+                <div style="display:flex;gap:16px;padding:14px 0;border-bottom:1px solid var(--rule);"><span class="lbl" style="width:88px;flex-shrink:0;padding-top:2px;">Location</span><span class="t-body" style="flex:1;" id="ev-loc">DC Public Library — Tenley-Friendship</span></div>
                 <div style="display:flex;gap:16px;padding:14px 0;border-bottom:1px solid var(--rule);"><span class="lbl" style="width:88px;flex-shrink:0;padding-top:2px;">Time</span><span class="t-body">6:00 – 8:30 PM</span></div>
                 <div style="display:flex;gap:16px;padding:14px 0;"><span class="lbl" style="width:88px;flex-shrink:0;padding-top:2px;">Cost</span><span class="t-body">Free</span></div>
               </div>
@@ -1522,6 +1539,19 @@ button,input,select,textarea { font-family:inherit; }
 
 </div>
 
+<!-- Commit confirm — staking a seat is a promise; state the expectations first. -->
+<div class="gate-modal" id="commit-confirm" onclick="if(event.target===this)closeCommitConfirm()">
+  <div class="gate-sheet s-paper">
+    <button class="gate-close" onclick="closeCommitConfirm()" aria-label="Close">
+      <svg width="20" height="20" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 5L17 17M17 5L5 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <h3 class="t-h3" id="commit-title" style="margin-bottom:10px;padding-right:32px;">Commit to this frame</h3>
+    <p class="t-body" id="commit-expect" style="margin-bottom:20px;"></p>
+    <button class="btn btn-teal btn-block" style="margin-bottom:10px;" onclick="confirmCommit()">I'm in — stake my seat</button>
+    <button class="btn-link" style="color:var(--meta);width:100%;" onclick="closeCommitConfirm()">Not yet</button>
+  </div>
+</div>
+
 <!-- Save gate — shown when a public visitor tries to bookmark a workshop/cycle/lab -->
 <div class="gate-modal" id="save-gate" onclick="if(event.target===this)closeSaveGate()">
   <div class="gate-sheet s-paper">
@@ -1643,11 +1673,12 @@ let peopleFilter='all';
 
 function memberById(id){ return MEMBERS.find(m=>m.id===id); }
 function avatarSm(initials,title){ return '<span class="avatar" title="'+escHTML(title||'')+'" style="width:32px;height:32px;font-size:12px;flex-shrink:0;">'+escHTML(initials)+'</span>'; }
-function mediaHTML(item){ return '<div class="media '+(item.img?'':(item.grad||'m-teal'))+'" style="aspect-ratio:16/10;">'+(item.img?'<img src="'+item.img+'" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">':ORB)+'<button class="heart" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg></button><div class="m-tag">'+escHTML(item.tag||'')+'</div></div>'; }
+function isSaved(title){ return (userState.saved||[]).some(s=>s.title===title); }
+function mediaHTML(item, title){ return '<div class="media '+(item.img?'':(item.grad||'m-teal'))+'" style="aspect-ratio:16/10;">'+(item.img?'<img src="'+item.img+'" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">':ORB)+'<button class="heart'+(isSaved(title)?' saved':'')+'" onclick="toggleHeart(event,this)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg></button><div class="m-tag">'+escHTML(item.tag||'')+'</div></div>'; }
 function fmtEvt(e){ const d=new Date(e.start_at); const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]; let h=d.getHours(); const ap=h>=12?'PM':'AM'; h=h%12||12; return mo+' '+d.getDate()+' · '+h+' '+ap; }
 
 /* ── Discover renderers ── */
-function renderDiscover(){ renderDiscCycle(); renderDiscEvents(); renderDiscLibrary(); renderDiscPeople(); renderDiscUpdates(); renderDiscLabs(); renderDiscSaved(); }
+function renderDiscover(){ renderDiscCycle(); renderDiscEvents(); renderDiscLibrary(); renderDiscPeople(); renderDiscUpdates(); renderDiscLabs(); renderDiscSaved(); enhanceTappables(); }
 function renderDiscCycle(){
   const el=document.getElementById('disc-cycle'); if(!el) return;
   el.innerHTML='<div class="cycle-banner s-cover grain on-dark">'+ORB
@@ -1658,9 +1689,9 @@ function renderDiscEvents(){
   const c=document.getElementById('disc-events'); if(!c) return;
   c.innerHTML=EVENTS.map(e=>{
     const item={img:e.img, grad:e.grad, tag:e.location_type==='virtual'?'Virtual':'In person'};
-    return '<div class="card expandable tappable" onclick="toggleExpand(this,event)">'+mediaHTML(item)
+    return '<div class="card expandable tappable" onclick="toggleExpand(this,event)">'+mediaHTML(item, e.name)
       +'<div class="card-body"><div class="card-row"><div class="lbl lbl-teal">'+fmtEvt(e)+'</div><span class="card-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div><div class="t-h4" style="margin:6px 0 4px;">'+escHTML(e.name)+'</div><p class="t-small">'+escHTML(e.location_name)+'</p></div>'
-      +'<div class="card-expand"><div class="kv"><span class="k lbl">What</span><span class="t-small">'+escHTML(e.desc||'')+'</span></div>'+(e.bring?'<div class="kv"><span class="k lbl">Bring</span><span class="t-small">'+escHTML(e.bring)+'</span></div>':'')+'<button class="btn btn-teal btn-block" onclick="openEvent()">Register</button></div></div>';
+      +'<div class="card-expand"><div class="kv"><span class="k lbl">What</span><span class="t-small">'+escHTML(e.desc||'')+'</span></div>'+(e.bring?'<div class="kv"><span class="k lbl">Bring</span><span class="t-small">'+escHTML(e.bring)+'</span></div>':'')+'<button class="btn btn-teal btn-block" onclick="openEvent(\''+e.api_id+'\')">Register</button></div></div>';
   }).join('');
 }
 function renderDiscLibrary(){
@@ -1668,7 +1699,7 @@ function renderDiscLibrary(){
   const typeLabel={guide:'Guide', recording:'Recording', template:'Template', course:'Course'};
   c.innerHTML=RESOURCES.filter(r=>r.status==='published').map(r=>{
     const item={img:r.img, grad:r.grad, tag:typeLabel[r.content_type]||'Guide'};
-    return '<div class="card expandable tappable" onclick="toggleExpand(this,event)">'+mediaHTML(item)
+    return '<div class="card expandable tappable" onclick="toggleExpand(this,event)">'+mediaHTML(item, r.title)
       +'<div class="card-body"><div class="card-row"><div class="lbl lbl-teal">'+escHTML(r.meta||'')+'</div><span class="card-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div><div class="t-h4" style="margin:6px 0 4px;">'+escHTML(r.title)+'</div><p class="t-small">The Upskilling Labs</p></div>'
       +'<div class="card-expand"><div class="kv"><span class="k lbl">What</span><span class="t-small">'+escHTML(r.summary||'')+'</span></div><div class="kv"><span class="k lbl">Open</span><span class="t-small">Published under CC BY-SA — yours to build on</span></div><button class="btn btn-teal btn-block" onclick="showView(\'stub\')">'+(r.content_type==='recording'?'Watch':'Open')+'</button></div></div>';
   }).join('');
@@ -1679,6 +1710,7 @@ function renderDiscPeople(){
   if(chips) chips.innerHTML=cats.map(([v,l])=>'<button class="chip'+(peopleFilter===v?' active':'')+'" onclick="peopleFilter=\''+v+'\';renderDiscPeople()">'+l+'</button>').join('');
   const list=MEMBERS.filter(m=>peopleFilter==='all'||m.roles.includes(peopleFilter));
   c.innerHTML=list.map(m=>'<div class="card tappable" onclick="showMemberProfile(\''+m.id+'\')"><div class="card-body"><div style="display:flex;align-items:center;gap:14px;margin-bottom:12px;"><span class="avatar-lg" style="width:52px;height:52px;font-size:18px;flex-shrink:0;">'+m.initials+'</span><div style="min-width:0;"><div class="t-h4">'+escHTML(m.name)+'</div><p class="t-small" style="color:var(--teal-deep);font-weight:600;">'+escHTML(m.headline)+'</p></div></div><p class="t-small" style="margin-bottom:12px;">'+escHTML(m.metro)+'</p><div class="tag-wrap">'+m.roles.map(r=>'<span class="tag-btn active" style="pointer-events:none;">'+(r==='upskiller'?'Builder':r[0].toUpperCase()+r.slice(1))+'</span>').join('')+'</div></div></div>').join('');
+  enhanceTappables();
 }
 function allUpdates(){
   const out=[];
@@ -1727,28 +1759,47 @@ function renderCycleFrames(){
       +'<div class="t-h3" style="margin:8px 0 10px;">'+escHTML(f.title)+'</div>'
       +'<p class="t-small" style="color:var(--meta);margin-bottom:10px;">'+escHTML(f.origin)+'</p>'
       +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><div style="display:flex;gap:6px;">'+frameSeatHTML(f)+'</div><span class="lbl" style="margin-left:6px;">'+n+' of '+FRAME_MIN+' to ignite · '+FRAME_MAX+' seats</span></div>'
+      +(f.status!=='matched'&&member&&!youIn&&!full?'<a class="see" style="display:inline-block;margin-top:8px;" onclick="event.stopPropagation();this.closest(\'.card\').classList.add(\'expanded\')">Stake a seat →</a>':'')
       +'</div><div class="card-expand"><div class="kv"><span class="k lbl">Situation</span><span class="t-small">'+escHTML(f.context)+'</span></div>'
-      +(youIn?'<p class="t-small" style="color:var(--teal-deep);font-weight:600;">You’re committed. The team ignites at '+FRAME_MIN+'.</p>'
+      +(f.status==='matched'?'<p class="t-small" style="color:var(--teal-deep);font-weight:600;margin-bottom:10px;">Team formed — this frame is now a project.</p><button class="btn btn-teal btn-block" onclick="event.stopPropagation();openProjectCanvas(\''+f.id+'\')">Open the project canvas →</button>'
+        : youIn?'<p class="t-small" style="color:var(--teal-deep);font-weight:600;">You’re committed. The team ignites at '+FRAME_MIN+'.</p>'
         : full?'<p class="t-small" style="color:var(--meta);">Team full ('+FRAME_MAX+'). Seats 6–7 need a facilitator override.</p>'
         : member?'<div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn btn-teal" style="flex:1;" onclick="commitToFrame(\''+f.id+'\',\'builder\',event)">Commit as builder</button><button class="btn btn-ghost-teal" style="flex:1;" onclick="commitToFrame(\''+f.id+'\',\'dri\',event)">Commit as lead</button></div>'
         : '<p class="t-small" style="color:var(--meta);">Pod members can stake a seat once they’ve been through the sensemaking.</p>')
       +'</div></div>';
   }).join('');
+  enhanceTappables();
 }
+/* Committing is a promise to a team — confirm with expectations before staking. */
+let pendingCommit=null;
 function commitToFrame(id,intent,e){
   if(e) e.stopPropagation();
   if(!userState.signedIn){ gateCreateAccount('a problem frame team', e); return; }
   if(!inPod()){ startFlow('cycle', ()=>goApp('cycles')); return; }
   const f=FRAMES.find(x=>x.id===id); if(!f||f.committed.some(x=>x.ref==='you')||f.committed.length>=FRAME_MAX) return;
+  pendingCommit={id:id, intent:intent};
+  document.getElementById('commit-title').textContent=(intent==='dri'?'Commit as lead':'Commit as builder')+' — '+f.title;
+  document.getElementById('commit-expect').textContent=intent==='dri'
+    ? 'You’d be the directly responsible individual: scoping the work, unblocking the team, and owning the Showcase demo. Plan for the heavier share of the ~5 hrs/week.'
+    : 'A real seat on a real team: plan for ~5 hrs/week through Showcase, showing up for the weekly build sessions.';
+  document.getElementById('commit-confirm').classList.add('open');
+}
+function closeCommitConfirm(){ document.getElementById('commit-confirm').classList.remove('open'); pendingCommit=null; }
+function confirmCommit(){
+  if(!pendingCommit) return;
+  const f=FRAMES.find(x=>x.id===pendingCommit.id); const intent=pendingCommit.intent;
+  document.getElementById('commit-confirm').classList.remove('open'); pendingCommit=null;
+  if(!f||f.committed.some(x=>x.ref==='you')||f.committed.length>=FRAME_MAX) return;
   f.committed.push({ref:'you', intent:intent});
   if(f.committed.length>=FRAME_MIN){
-    ignitedFrame=f;
+    ignitedFrame=f; f.status='matched';
     document.getElementById('ignition-copy').textContent=f.committed.length+' seats filled — “'+f.title+'” just became a project.';
+    renderTodos();
     showView('team-ignition');
   } else { renderCycleFrames(); }
 }
-function openProjectCanvas(){
-  const f=ignitedFrame||FRAMES[0];
+function openProjectCanvas(id){
+  const f=(id&&FRAMES.find(x=>x.id===id))||ignitedFrame||FRAMES[0];
   document.getElementById('pc-frame-title').textContent=f.title;
   document.getElementById('pc-title').textContent=f.title;
   document.getElementById('pc-context').textContent=f.context;
@@ -1774,13 +1825,14 @@ function showMemberProfile(id){
   document.getElementById('prof-headline').textContent=m.headline;
   document.getElementById('prof-meta').textContent=m.metro+' · Joined Spring 2026';
   const bio=document.getElementById('prof-bio'); if(bio) bio.innerHTML=escHTML(m.bio);
+  renderBadges(true); // established mock members show the earned treatment
   document.getElementById('prof-roles').innerHTML=m.roles.map(r=>'<span class="tag-btn active" style="pointer-events:none;cursor:default;">'+(r==='upskiller'?'Builder':r[0].toUpperCase()+r.slice(1))+'</span>').join('');
-  document.getElementById('prof-actions').innerHTML='<span class="t-small" style="color:var(--meta);">Say hi in Slack</span>';
+  document.getElementById('prof-actions').innerHTML='<button class="btn btn-teal btn-sm" onclick="showView(\'stub\')">Say hi in Slack</button>';
   const cred=document.getElementById('prof-cred'); if(cred){ cred.style.display='none'; cred.innerHTML=''; }
   const ce=document.getElementById('prof-case-edit'); if(ce) ce.style.display='none';
   document.getElementById('prof-featured').innerHTML='';
   document.getElementById('prof-projects').innerHTML=(m.projects||[]).map((p,i)=>projectCardHTML({...p, role:p.tag}, i)).join('');
-  renderProfUpdates(m.updates||[]);
+  renderProfUpdates(m.updates||[], false);
   const bm=document.getElementById('prof-bookmarks'); if(bm) bm.innerHTML='';
   document.getElementById('prof-skills').innerHTML='<div class="tag-wrap">'+(m.expertise||[]).map(t=>'<span class="tag-btn active" style="pointer-events:none;">'+escHTML(t)+'</span>').join('')+'</div>';
   const rd=document.getElementById('prof-roledetail'); if(rd) rd.innerHTML='';
@@ -1791,19 +1843,41 @@ function showMemberProfile(id){
   showView('profile');
 }
 /* ── Profile updates feed (real content behind the activity strip) ── */
-function renderProfUpdates(list){
+function renderProfUpdates(list, isOwner=false){
   const c=document.getElementById('prof-updates'); if(!c) return;
   const items=(list||[]).slice().sort((a,b)=>b.at-a.at);
   if(!items.length){ c.innerHTML='<p class="t-small" style="color:var(--meta);">No updates yet.</p>'; return; }
-  c.innerHTML=items.map(u=>'<div class="lcard" style="padding:16px 18px;margin-bottom:10px;"><div class="t-small" style="color:var(--meta);margin-bottom:6px;">'+relDate(u.at)+'</div><p class="t-body">'+escHTML(u.body)+'</p></div>').join('');
+  c.innerHTML=items.map(u=>'<div class="lcard" style="padding:16px 18px;margin-bottom:10px;"><div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-bottom:6px;"><span class="t-small" style="color:var(--meta);">'+relDate(u.at)+'</span>'
+    +(isOwner?'<span style="display:flex;gap:14px;"><a class="see" style="font-size:12px;" onclick="editUpdate('+u.at+')">Edit</a><a class="see" style="font-size:12px;color:var(--meta);" onclick="deleteUpdate('+u.at+')">Delete</a></span>':'')
+    +'</div><p class="t-body">'+escHTML(u.body)+'</p></div>').join('');
+}
+function deleteUpdate(at){
+  const i=userState.updates.findIndex(u=>u.at===at); if(i<0) return;
+  userState.updates.splice(i,1);
+  renderProfUpdates(userState.updates, true); renderActivity(); renderDiscUpdates();
+}
+function editUpdate(at){
+  const i=userState.updates.findIndex(u=>u.at===at); if(i<0) return;
+  const [u]=userState.updates.splice(i,1);
+  goApp('dashboard');
+  const ta=document.getElementById('update-composer'); if(ta){ ta.value=u.body; ta.focus(); }
+  renderDiscUpdates();
 }
 function postUpdate(){
   const ta=document.getElementById('update-composer'); if(!ta) return;
   const body=(ta.value||'').trim(); if(!body) return;
-  userState.updates.push({body:body, at:Date.now()});
+  const entry={body:body, at:Date.now()};
+  userState.updates.push(entry);
   ta.value='';
-  renderDiscUpdates();
-  const btn=ta.closest('.lcard').querySelector('.btn'); if(btn){ const t=btn.textContent; btn.textContent='Posted ✓'; setTimeout(()=>btn.textContent=t, 1600); }
+  renderDiscUpdates(); renderActivity();
+  // Posted ✓ plus a brief Undo window — public posts deserve a take-back.
+  const foot=ta.closest('.lcard').querySelector('.t-small');
+  const btn=ta.closest('.lcard').querySelector('.btn');
+  if(btn){ const t=btn.textContent; btn.textContent='Posted ✓'; setTimeout(()=>btn.textContent=t, 4000); }
+  if(foot){ const orig=foot.innerHTML; foot.innerHTML='Posted to your profile. <a class="see" id="undo-post">Undo</a>';
+    const u=document.getElementById('undo-post');
+    if(u) u.onclick=()=>{ const i=userState.updates.indexOf(entry); if(i>=0) userState.updates.splice(i,1); const ta2=document.getElementById('update-composer'); if(ta2) ta2.value=entry.body; foot.innerHTML=orig; renderDiscUpdates(); renderActivity(); };
+    setTimeout(()=>{ if(foot.querySelector('#undo-post')) foot.innerHTML=orig; }, 8000); }
 }
 
 /* ── Survey pool — shared with triangulator.html via same-origin localStorage.
@@ -1854,9 +1928,18 @@ function copySurveyLink(btn){
   const done=()=>{ const t=btn.textContent; btn.textContent='Copied ✓'; setTimeout(()=>btn.textContent=t,1600); };
   if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(url).then(done,done); } else { const i=document.getElementById('survey-share-url'); i.select(); document.execCommand('copy'); done(); }
 }
-function showSurveyShare(){ const i=document.getElementById('survey-share-url'); if(i) i.value=surveyShareUrl(); showView('survey-share'); }
+function showSurveyShare(){
+  const i=document.getElementById('survey-share-url'); if(i) i.value=surveyShareUrl();
+  const ex=document.getElementById('survey-exit'); if(ex) ex.textContent=userState.signedIn?'Back to dashboard':'Back to The Labs';
+  const n=(flow&&flow._count)||0;
+  const h=document.querySelector('#view-survey-share h1'); if(h) h.textContent=n>1?('Thanks — your '+n+' observations are in the pool.'):'Thanks — your observations are in the pool.';
+  showView('survey-share');
+}
+function exitSurveyShare(){ if(userState.signedIn) goApp('dashboard'); else showView('landing'); }
+function exitTriangulator(){ if(userState.signedIn) goApp('dashboard'); else showView('landing'); }
 function openTriangulator(){
   seedTriangulatorPool();
+  const ex=document.getElementById('tri-exit'); if(ex) ex.textContent=userState.signedIn?'← Back to Dashboard':'← Back to The Labs';
   const fr=document.getElementById('triangulator-frame');
   if(fr&&!fr.getAttribute('src')) fr.setAttribute('src','triangulator.html'); // lazy-load; never reset once set
   showView('triangulator');
@@ -1879,10 +1962,14 @@ let mentorStep = 1; let gateContext = ''; let mentorBack=()=>showView('role-inte
 function scrollTop(){ const v=document.querySelector('.view.active .vscroll'); if(v) v.scrollTop=0; else window.scrollTo(0,0); }
 function scrollToSection(id){ const el=document.getElementById(id); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); }
 
+const APP_PANELS=['discover','dashboard','cycles','events','resources','event','labs','bookmarks'];
 function showView(id){
   closeHamMenu();
+  // Auth guard: the app shell is members-only. Signed-out visitors (e.g. arriving
+  // from a shared survey link) route back to the public landing instead.
+  if(APP_PANELS.includes(id) && !userState.signedIn) id='landing';
   document.querySelectorAll('#screens > .view').forEach(v=>v.classList.remove('active'));
-  if(['discover','dashboard','cycles','events','resources','event','labs','bookmarks'].includes(id)){ document.getElementById('app-shell').classList.add('active'); showAppView(id); }
+  if(APP_PANELS.includes(id)){ document.getElementById('app-shell').classList.add('active'); showAppView(id); }
   else { const el=document.getElementById('view-'+id); if(el) el.classList.add('active'); }
   if(id==='landing') renderLanding();
   window.scrollTo(0,0); document.querySelectorAll('.vscroll').forEach(s=>s.scrollTop=0);
@@ -1905,20 +1992,39 @@ function showAppView(id){
   if(id==='bookmarks') renderBookmarks();
   if(id==='discover') renderDiscover();
   if(id==='cycles') renderCycleFrames();
-  const k=id==='event'?'events':id;
+  // Drill-in panels (cycles/events/labs/resources/bookmarks) are browse content —
+  // keep Discover highlighted so the user stays oriented in the 3-item nav.
+  const k=(id==='dashboard')?'dashboard':'discover';
   ['nav-','tab-'].forEach(pre=>{ const e=document.getElementById(pre+k); if(e) e.classList.add('active'); });
   if(!document.getElementById('app-shell').classList.contains('active')){ document.querySelectorAll('#screens > .view').forEach(v=>v.classList.remove('active')); document.getElementById('app-shell').classList.add('active'); }
   const sc=document.getElementById('app-scroll'); if(sc) sc.scrollTop=0;
 }
-function openEvent(){ showAppView('event'); initGallery(); }
+function openEvent(id){
+  // Data-driven detail: fill from EVENTS when an id is passed; static callers keep the default content.
+  const ev=id?EVENTS.find(x=>x.api_id===id):null;
+  if(ev){
+    const set=(elId,val)=>{ const el=document.getElementById(elId); if(el) el.textContent=val; };
+    set('ev-title', ev.name);
+    set('ev-date', fmtEvt(ev));
+    set('ev-kind', ev.location_type==='virtual'?'Virtual':'In person');
+    set('ev-desc', (ev.desc||'')+(ev.bring?'. Bring: '+ev.bring.charAt(0).toLowerCase()+ev.bring.slice(1)+'.':'.'));
+    set('ev-loc', ev.location_name);
+  }
+  showAppView('event'); initGallery();
+}
 
 /* create-account entry + gate */
 function applyGate(){ const el=document.getElementById('gate-ctx'); if(!el) return; if(gateContext){ el.style.display='inline-flex'; el.innerHTML='Joining '+gateContext; } else { el.style.display='none'; } }
-function startCreateAccount(){ gateContext=''; applyGate(); showView('google-auth'); }
+let gateReturnTo=null;
+function startCreateAccount(){ gateContext=''; gateReturnTo=null; applyGate(); showView('google-auth'); }
 function gateCreateAccount(ctx, e){ if(e) e.stopPropagation();
   // Signed-in members act directly — route to the relevant app view instead of the create-account funnel.
   if(userState.signedIn){ const c=(ctx||'').toLowerCase(); if(/workshop|session|event/.test(c)) goApp('events'); else if(/lab|waitlist/.test(c)) goApp('labs'); else if(/cycle/.test(c)) goApp('cycles'); else goApp('dashboard'); return; }
-  gateContext=ctx||''; applyGate(); showView('google-auth'); }
+  gateContext=ctx||'';
+  // Remember the destination so signup can return the member to what they came for.
+  { const c=(ctx||'').toLowerCase();
+    gateReturnTo=/workshop|session|event/.test(c)?()=>goApp('events'):/lab|waitlist/.test(c)?()=>goApp('labs'):/cycle|frame/.test(c)?()=>goApp('cycles'):null; }
+  applyGate(); showView('google-auth'); }
 function toggleExpand(card, e){ if(e){ const t=e.target; if(t.closest('button')) return; } card.classList.toggle('expanded'); }
 
 function signinReturning(){ userState.signedIn=true; document.getElementById('header-avatar').textContent=userState.initials; const da=document.getElementById('dash-avatar'); if(da) da.textContent=userState.initials; document.getElementById('dash-greeting').textContent='Welcome back, '+userState.name+'.'; renderTodos(); renderDashSaved(); renderDashCycle(); buildWeekRail(); renderProfileChecklist(); showView('dashboard'); }
@@ -1940,19 +2046,23 @@ const VOL_AREAS=['Events & logistics','Outreach & community','Mentoring support'
 const VOL_WAYS=['At in-person events','Behind the scenes','On-call for specific needs','An ongoing role'];
 function FLOWS(name){
   if(name==='signup') return { eyebrow:'Your profile', finalLabel:'Become an Upskiller', finalClass:'btn-red',
-    onComplete:()=>{ const f=(fans.first||'Alex').trim()||'Alex'; userState.name=f; userState.fullName=f+' '+(fans.last||'Rivera'); userState.initials=(f[0]||'A').toUpperCase()+((fans.last||'R')[0]||'R').toUpperCase(); userState.signedIn=true; if(fans.lab==='none'){ userState.lab={name:(fans.labTown||'').trim()||'Your town', status:'pending-application'}; } else if(fans.lab&&LABS[fans.lab]){ userState.lab={...LABS[fans.lab]}; } document.getElementById('header-avatar').textContent=userState.initials; const da=document.getElementById('dash-avatar'); if(da) da.textContent=userState.initials; document.getElementById('prof-avatar').textContent=userState.initials; document.getElementById('prof-name').textContent=userState.fullName; document.getElementById('dash-greeting').textContent='Welcome, '+f+'.'; renderTodos(); renderDashSaved(); renderDashCycle(); buildWeekRail(); renderProfileChecklist(); const pending=userState.roles.filter(r=>FLOW_ROLES.includes(r)); if(pending.length===1){ startRoleFlow(pending[0], ()=>showView('role-intent')); } else { showView('dashboard'); } },
+    onComplete:()=>{ const f=(fans.first||'Alex').trim()||'Alex'; userState.name=f; userState.fullName=f+' '+(fans.last||'Rivera'); userState.initials=(f[0]||'A').toUpperCase()+((fans.last||'R')[0]||'R').toUpperCase(); userState.signedIn=true; if(fans.lab==='none'){ userState.lab={name:(fans.labTown||'').trim()||'Your town', status:'pending-application'}; } else if(fans.lab&&LABS[fans.lab]){ userState.lab={...LABS[fans.lab]}; } document.getElementById('header-avatar').textContent=userState.initials; const da=document.getElementById('dash-avatar'); if(da) da.textContent=userState.initials; document.getElementById('prof-avatar').textContent=userState.initials; document.getElementById('prof-name').textContent=userState.fullName; document.getElementById('dash-greeting').textContent='Welcome, '+f+'.'; renderTodos(); renderDashSaved(); renderDashCycle(); buildWeekRail(); renderProfileChecklist(); userState.profileVisibility=fans.visibility||'public'; const pending=userState.roles.filter(r=>FLOW_ROLES.includes(r)); if(pending.length===1){ startRoleFlow(pending[0], ()=>showView('role-intent')); } else if(gateReturnTo){ const r=gateReturnTo; gateReturnTo=null; r(); } else { showView('dashboard'); } },
     steps:[ {id:'email',type:'info',q:'Signing up as',help:'We pulled this from your Google account.',render:'<div class="flow-emaillarge">alex.rivera@gmail.com</div>'},
       {id:'first',type:'text',q:"What's your first name?",ph:'Alex',required:true},
       {id:'last',type:'text',q:'And your last name?',ph:'Rivera',required:true},
       {id:'zip',type:'text',q:'Where are you based?',help:'Your zip code helps us connect you with local labs.',ph:'20001',inputmode:'numeric',required:true},
-      {id:'lab',type:'choice',q:'Which local lab is yours?',help:'Labs are library-hosted and run in the open. Pick the one nearest you.',options:[{v:'dc',label:'Washington, DC',sub:'Flagship · Active'},{v:'baltimore',label:'Baltimore',sub:'Forming'},{v:'philadelphia',label:'Philadelphia',sub:'Coming soon'},{v:'none',label:"I don't see my town",sub:'Apply to start one'}]},
+      {id:'lab',type:'choice',q:'Which local lab is yours?',help:"Labs are library-hosted and run in the open. We've suggested the one nearest your zip — change it if we guessed wrong.",preselect:f=>{ const z=String(f.zip||''); if(/^20[0-5]/.test(z)) return 'dc'; if(/^21[0-2]/.test(z)) return 'baltimore'; if(/^19[0-4]/.test(z)) return 'philadelphia'; return null; },options:[{v:'dc',label:'Washington, DC',sub:'Flagship · Active'},{v:'baltimore',label:'Baltimore',sub:'Forming'},{v:'philadelphia',label:'Philadelphia',sub:'Coming soon'},{v:'none',label:"I don't see my town",sub:'Apply to start one'}]},
       {id:'labTown',type:'text',q:'What town should we consider?',help:"You're applying to help start a new local lab here — not joining an existing one. We'll follow up.",ph:'Richmond, VA',required:true,when:f=>f.lab==='none'},
       {id:'labWhy',type:'text',q:'In one line, why start a lab here?',help:'What makes your town ready? This is part of your application.',ph:'A library partner and a crew of people ready to build.',required:false,when:f=>f.lab==='none'},
       {id:'work',type:'choice',q:'What best describes you right now?',options:WORK.map(w=>({v:w,label:w}))},
-      {id:'consent',type:'consent',q:'One last thing',text:'I agree to the Participant Agreement and consent to receive updates from The Upskilling Labs. My profile is public by default.'} ]};
+      {id:'visibility',type:'choice',q:'How visible should your profile be?',help:'The Labs is built in the open — public profiles are how members find collaborators and show their work. You can change this anytime.',options:[{v:'public',label:'Public',sub:'Recommended — visible to everyone, like the rest of the Labs'},{v:'labs',label:'Labs members only',sub:'Visible only to signed-in members'}]},
+      {id:'consent',type:'consent',q:'One last thing',text:'I agree to the Participant Agreement and consent to receive updates from The Upskilling Labs.'} ]};
   if(name==='survey') return { eyebrow:'Field survey · Civic & Elections', finalLabel:'Submit observation', finalClass:'btn-teal',
     onComplete:()=>{ appendSurveyObservation((fans.obsTitle||'').trim(), (fans.obsSummary||'').trim());
-      if(fans.addMore==='more'){ delete fans.obsTitle; delete fans.obsSummary; delete fans.addMore; fstep=1; renderFlowStep(); return; }
+      flow._count=(flow._count||0)+1;
+      if(fans.addMore==='more'){ delete fans.obsTitle; delete fans.obsSummary; delete fans.addMore;
+        flow.steps[1].help='That\u2019s '+flow._count+' added this session \u2014 keep them coming.';
+        fstep=1; renderFlowStep(); return; }
       userState.completed.surveyFill=true; renderTodos(); showSurveyShare(); },
     steps:[ {id:'context',type:'info',q:'Help map the problem',help:'The Civic & Elections cycle starts from raw observations — field notes, anecdotes, things you’ve seen with your own eyes. A few from you makes the community’s problem map sharper. No account needed.',render:'<div class="flow-emaillarge" style="font-size:18px;line-height:1.5;">What have you noticed about how civic life and elections actually work — or don’t?</div>'},
       {id:'obsTitle',type:'text',q:'Give your observation a short title',ph:'e.g. Local candidate information gaps',required:true},
@@ -2019,6 +2129,8 @@ function renderFlowInput(step){
     setActions({enabled:valid(), skip:!step.required}); setTimeout(()=>el.focus(),60); return;
   }
   if(step.type==='choice'){
+    // Optional preselect hook — e.g. suggest the local lab nearest the zip already entered.
+    if(step.preselect && fans[step.id]===undefined){ const v=step.preselect(fans); if(v!=null) fans[step.id]=v; }
     const list=document.createElement('div'); list.className='choice-list';
     step.options.forEach(o=>{ const row=document.createElement('div'); row.className='choice'+(fans[step.id]===o.v?' selected':''); row.innerHTML='<div class="c-main"><div class="c-label">'+o.label+'</div>'+(o.sub?'<div class="c-sub">'+o.sub+'</div>':'')+'</div><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>'; row.onclick=()=>{ fans[step.id]=o.v; [...list.children].forEach(c=>c.classList.remove('selected')); row.classList.add('selected'); enable(true); }; list.appendChild(row); });
     box.appendChild(list); setActions({enabled:!!fans[step.id]}); return;
@@ -2075,15 +2187,26 @@ function openSaveGate(){ const m=document.getElementById('save-gate'); if(m) m.c
 function closeSaveGate(){ const m=document.getElementById('save-gate'); if(m) m.classList.remove('open'); }
 function initEventCats(){ const cats=['All','In person','Virtual','This month','Workshops']; const c=document.getElementById('event-cats'); if(!c)return; c.innerHTML=''; cats.forEach((t,i)=>{ const b=document.createElement('button'); b.className='chip'+(i===0?' active':''); b.textContent=t; b.onclick=()=>{ [...c.children].forEach(x=>x.classList.remove('active')); b.classList.add('active'); }; c.appendChild(b); }); }
 function initGallery(){ const tr=document.getElementById('ev-gallery'); const dots=document.getElementById('ev-dots'); if(!tr||!dots)return; tr.onscroll=()=>{ const i=Math.round(tr.scrollLeft/tr.clientWidth); [...dots.children].forEach((d,k)=>d.classList.toggle('on',k===i)); }; }
-function renderActivity(){ const g=document.getElementById('act-grid'); if(!g||g.childElementCount)return; const pat=[1,0,2,3,1,0,0,2,4,3,1,2,0,1,3,4,2,1,0,2,3,1,4,2,0,1,2,3,1,0,2,4,3,2,1,0,1,3,2,4,1,0,2,1,3,2,0,1,4,2,1,3]; const op=[.08,.22,.4,.6,.85]; pat.forEach(v=>{ const s=document.createElement('div'); s.className='act-sq'; s.style.background='rgba(0,148,160,'+op[v]+')'; g.appendChild(s); }); }
+function renderActivity(){
+  const g=document.getElementById('act-grid'); if(!g) return; g.innerHTML='';
+  // Base texture (sample history) + real intensity: each posted update bumps its week's cell.
+  const pat=[1,0,2,3,1,0,0,2,4,3,1,2,0,1,3,4,2,1,0,2,3,1,4,2,0,1,2,3,1,0,2,4,3,2,1,0,1,3,2,4,1,0,2,1,3,2,0,1,4,2,1,3];
+  const op=[.08,.22,.4,.6,.85];
+  const byWeek={};
+  (userState.updates||[]).forEach(u=>{ const w=Math.floor((Date.now()-u.at)/(7*86400000)); const idx=pat.length-1-w; if(idx>=0) byWeek[idx]=(byWeek[idx]||0)+1; });
+  pat.forEach((v,i)=>{ const boost=byWeek[i]||0; const lvl=Math.min(4, v+boost); const s=document.createElement('div'); s.className='act-sq'; if(boost) s.title=boost+' update'+(boost>1?'s':'')+' this week'; s.style.background='rgba(0,148,160,'+op[lvl]+')'; g.appendChild(s); });
+}
 
 function updateChecklistCount(){ const total=document.querySelectorAll('#checklist-items input[type=checkbox]').length; const done=document.querySelectorAll('#checklist-items input[type=checkbox]:checked').length; const rem=total-done; const c=document.getElementById('checklist-count'); if(c) c.textContent=rem===0?'All done':rem+' left'; }
 function tickChecklist(el){ if(el.checked){ const l=el.closest('.check-row').querySelector('.t-h4'); if(l){ l.style.textDecoration='line-through'; l.style.color='var(--meta)'; } } updateChecklistCount(); }
 function renderProfileChecklist(){ const box=document.getElementById('role-items'); if(!box) return; box.innerHTML=''; userState.roles.filter(r=>FLOW_ROLES.includes(r)).forEach(role=>{ const meta=ROLE_ITEMS[role]; if(!meta) return; const done=!!userState.completed[role]; const row=document.createElement('div'); row.className='check-row role-row'; if(!done){ row.style.cursor='pointer'; row.onclick=()=>startRoleFlow(role, ()=>showView('dashboard')); } const strike=done?'color:var(--meta);text-decoration:line-through;':''; row.innerHTML='<input type="checkbox" '+(done?'checked ':'')+'disabled><div><div class="t-h4" style="margin-bottom:2px;'+strike+'">'+meta.title+'</div>'+(done?'':'<div class="t-small">'+meta.sub+'</div>')+'</div>'; box.appendChild(row); }); updateChecklistCount(); }
 function renderTodos(){
   // Prominent-but-skippable: the survey + Triangulator lead the list and are
-  // dismissible; everything here is a suggestion, never a gate.
+  // dismissible; everything here is a suggestion, never a gate. Your live
+  // project (if a frame you staked has ignited) always pins first.
   const todos=[];
+  const myProj=FRAMES.find(f=>f.status==='matched'&&f.committed.some(x=>x.ref==='you'));
+  if(myProj) todos.push({label:'Your project',title:myProj.title,body:'Scoping · your team is assembled. Keep the momentum going.',cta:'Open the project canvas',action:()=>openProjectCanvas(myProj.id)});
   if(!userState.completed.surveyFill) todos.push({id:'survey',label:'Field survey',title:'Add your observations',body:'Feed the Civic & Elections problem map — a few raw observations from your world.',cta:'Start the survey',action:()=>startFlow('survey',()=>goApp('dashboard')),dismiss:true});
   todos.push({id:'triangulator',label:'The Triangulator',title:'Make sense of the signal pool',body:'Sort the community’s observations, triangulate the signals, map the problem situation.',cta:'Open the Triangulator',action:()=>openTriangulator(),dismiss:true});
   todos.push({label:'Cycles',title:'Build Cycle is forming',body:'Pod registration opens Mar 30.',cta:'Learn more',action:()=>goApp('cycles')});
@@ -2185,17 +2308,38 @@ function profRoleList(){
   if(userState.roles.includes('volunteer')&&userState.completed.volunteer) out.push({key:'volunteer',label:'Volunteer'});
   return out;
 }
-const CITATIONS=[{n:1,src:'GitHub Commit #4a1d9e — Open Labs OS'},{n:2,src:'Client acceptance — DC Public Library pilot'}];
+/* Citations anchor the specific claim they substantiate — `after` is the bio fragment
+   the chip attaches to. Custom (user-written) bios fall back to appending at the end. */
+const CITATIONS=[
+  {n:1, src:'GitHub Commit #4a1d9e — Open Labs OS', after:'Civic AI Build Cycle'},
+  {n:2, src:'Client acceptance — DC Public Library pilot', after:'benefits navigation for DC residents'}
+];
 const DEFAULT_BIO='Product-minded generalist learning by shipping. Currently in the Civic AI Build Cycle, focused on benefits navigation for DC residents.';
+function citeChip(c){ return '<sup class="cite-chip" tabindex="0">['+c.n+']<span class="cite-pop">Source: '+escHTML(c.src)+'</span></sup>'; }
+function bioWithCitations(text){
+  let html=escHTML(text); const leftovers=[];
+  CITATIONS.forEach(c=>{ const anchor=escHTML(c.after||''); if(anchor&&html.includes(anchor)) html=html.replace(anchor, anchor+citeChip(c)); else leftovers.push(c); });
+  return html+leftovers.map(citeChip).join('');
+}
+/* Trust badges are earned, never default: a fresh member sees locked states with
+   how-to-earn tooltips; established (mock) members show the earned treatment. */
+function renderBadges(earned){
+  const el=document.getElementById('prof-badges'); if(!el) return;
+  const lockSvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
+  el.innerHTML=earned
+    ? '<span class="status active" title="Work verified by Open Labs QA review">✓ Verified QA by Open Labs</span><span class="status forming" title="Endorsed by a client sponsor">✓ Client Endorsed</span>'
+    : '<span class="badge-locked" tabindex="0" title="Earned when a cycle project you shipped passes Open Labs QA review">'+lockSvg+' Verified QA · not yet earned</span><span class="badge-locked" tabindex="0" title="Earned when a client sponsor signs off on delivered work">'+lockSvg+' Client Endorsed · not yet earned</span>';
+}
 function renderProfileView(isOwner=true){
   const pa=userState.profileAnswers||{};
   // Restore identity fields — a directory member's profile may have been viewed since.
   const av=document.getElementById('prof-avatar'); if(av) av.textContent=userState.initials;
   const nm=document.getElementById('prof-name'); if(nm) nm.textContent=userState.fullName||'Alex Rivera';
-  // Bio with inline citation chips — every claim carries a whitelisted source.
+  // Bio with inline citation chips anchored to the claims they substantiate.
   const bio=document.getElementById('prof-bio');
-  if(bio) bio.innerHTML=escHTML(pa.bio||DEFAULT_BIO)+CITATIONS.map(c=>'<sup class="cite-chip" tabindex="0">['+c.n+']<span class="cite-pop">Source: '+escHTML(c.src)+'</span></sup>').join('');
-  renderProfUpdates(userState.updates);
+  if(bio) bio.innerHTML=bioWithCitations(pa.bio||DEFAULT_BIO);
+  renderBadges(false); // fresh members haven't earned verification yet
+  renderProfUpdates(userState.updates, isOwner);
   const ce=document.getElementById('prof-case-edit'); if(ce) ce.style.display=isOwner?'block':'none';
   const meta=document.getElementById('prof-meta'); if(meta) meta.textContent=(pa.location||userState.lab.name||'Washington, DC')+' · Joined Spring 2026';
   const head=document.getElementById('prof-headline'); if(head){ const sk=mergedSkills(); head.textContent=pa.headline||(sk.length?sk.slice(0,2).map(s=>s.label).join(' · '):'Practitioner · building in the open'); }
@@ -2348,7 +2492,10 @@ function initHeroScroll(){
   update();
 }
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeSaveGate(); });
-document.addEventListener('DOMContentLoaded',()=>{ initEventCats(); renderTodos(); buildWeekRail(); renderActivity(); initHeroScroll();
+/* Keyboard access: tappable cards act like buttons (Enter/Space). */
+function enhanceTappables(){ document.querySelectorAll('.tappable').forEach(el=>{ if(el.closest('a,button')||el.hasAttribute('tabindex')) return; el.setAttribute('tabindex','0'); el.setAttribute('role','button'); }); }
+document.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ')&&e.target.classList&&e.target.classList.contains('tappable')){ e.preventDefault(); e.target.click(); } });
+document.addEventListener('DOMContentLoaded',()=>{ initEventCats(); renderTodos(); buildWeekRail(); renderActivity(); initHeroScroll(); enhanceTappables();
   // Shared survey links (?survey=...) deep-link straight into the fill flow — no account needed.
   if(new URLSearchParams(location.search).get('survey')){ startFlow('survey', ()=>showView('landing')); }
 });

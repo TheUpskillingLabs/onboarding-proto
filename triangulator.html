@@ -3639,6 +3639,10 @@ git push</pre>
         updateClusterProgressChip();
         updateBoardConceptBanner();
         renderModeChrome();
+        if (!goToScreen._mobileCanvasNotice && window.innerWidth < 700) {
+          goToScreen._mobileCanvasNotice = true;
+          toast('Heads up — the canvas works best on a larger screen.', { duration: 5000 });
+        }
         if (appState.classifyPhase) renderClassifyGuide(); else removeClassifyGuide();
       } else if (name === 'workspace') {
         renderWorkspace();
@@ -9743,6 +9747,10 @@ section h2{margin-top:0;font-size:1.3rem;border-bottom:2px solid var(--rule);pad
       const totalItems = appState.items.length;
       const sortedCount = Object.keys(appState.sorting.decisions).length;
       if (totalItems > 0 && sortedCount > 0 && sortedCount < totalItems) return 'sorting';
+      // Pre-seeded pool (survey handoff): a first-timer still names their initial
+      // problem concept before touching the pool — the method depends on evidence
+      // having a concept to push against.
+      if (totalItems > 0 && !(appState.settings.concept || '').trim()) return 'concept';
       if (totalItems > 0) return 'setup';   // pool loaded, not yet sorted → sources
       // No pool yet: resume the onboarding screen they were on; default to the intro deck.
       if (['intro', 'concept', 'setup'].includes(appState.currentScreen)) return appState.currentScreen;

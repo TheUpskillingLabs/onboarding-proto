@@ -116,10 +116,37 @@ commit buttons.
 activity feed), setup checklist, and dismissible "Up next" cards — the field survey and the
 Triangulator lead that list (prominent but skippable, never a gate).
 
+### Journey rules (added in the UX-improvements pass — keep these invariants)
+
+- **Auth guard:** `showView` routes any `APP_PANELS` id to the landing when
+  `!userState.signedIn` — the app shell is unreachable signed-out. All exits are auth-aware:
+  the survey-share exit and the Triangulator chrome exit (`exitSurveyShare()` /
+  `exitTriangulator()`) read "Back to dashboard / ← Back to Dashboard" for members and
+  "Back to The Labs" for anonymous visitors (→ landing).
+- **Trust is earned, never default:** `renderBadges(earned)` — fresh members see locked
+  badges (`.badge-locked`, dashed, with how-to-earn tooltips); established mock members show
+  the earned pills. Citation chips anchor inline after the claims they substantiate
+  (`bioWithCitations`), falling back to end-of-bio for custom text.
+- **Post-ignition continuity:** ignition sets `frame.status='matched'`; the frame card flips
+  to "Team formed → Open the project canvas", a non-dismissible "Your project" card pins
+  first in Dashboard "Up next", and the ignition interstitial has a "Later — back to your
+  cycle" escape. Committing always passes through the `#commit-confirm` sheet (builder vs
+  lead expectations) — never commit directly.
+- **Concept before pool:** `triangulator.html`'s `pickInitialScreen()` routes a pre-seeded
+  first-timer to the concept screen (the method needs a named concept for evidence to push
+  against); the pool waits behind it. Mobile (<700px) gets a one-time "canvas works best on
+  a larger screen" toast on entering the board.
+- **Landing browses free:** no gated "See all" links; section order is hero → cycles (+
+  prominent ungated survey CTA card) → testimonials → workshops → library → labs.
+- **Keyboard access:** dynamic card renderers call `enhanceTappables()` (tabindex/role +
+  delegated Enter/Space handler); keep that call when adding new renderers.
+
 ### Key user flows
 
-- **Create account:** Landing → `view-google-auth` → `view-role-intent` → signup flow → role
-  branches → dashboard.
+- **Create account:** Landing → `view-google-auth` → `view-role-intent` → signup flow
+  (zip pre-suggests the lab; explicit profile-visibility choice step) → role branches →
+  gate-return (if the funnel was entered from a gated card, signup returns there) or
+  dashboard.
 - **Survey → Triangulator:** survey flow (`FLOWS('survey')`, loops via "add another") →
   observations append to `localStorage['olos.surveyPool.v1']` (seeded from `SURVEY_SEED`, the
   Civic & Elections CSV) → `view-survey-share` (copy `?survey=` link; the link deep-links
@@ -161,7 +188,12 @@ SURVEY_SEED / SURVEY_POOL_KEY  // Civic & Elections seed + 'olos.surveyPool.v1'
 
 renderDiscover()          // all Discover sections (called by showAppView('discover'))
 renderCycleFrames()       // pod problem frames on panel-cycles (called by showAppView('cycles'))
-inPod() / commitToFrame(id,intent,e) / openProjectCanvas()   // membership gate + staking + ignition
+inPod() / commitToFrame(id,intent,e) / confirmCommit() / openProjectCanvas(id)  // gate + confirm sheet + staking + ignition
+openEvent(id)             // data-driven event detail (EVENTS lookup; no id = static default)
+renderBadges(earned) / bioWithCitations(text)      // trust states + anchored citations
+exitSurveyShare() / exitTriangulator()             // auth-aware exits
+deleteUpdate(at) / editUpdate(at)                  // owner controls on profile updates
+enhanceTappables()        // keyboard access for dynamic cards
 showMemberProfile(id)     // directory → visitor-mode profile
 postUpdate() / renderProfUpdates(list)             // social updates
 seedTriangulatorPool() / appendSurveyObservation() // shared survey pool
