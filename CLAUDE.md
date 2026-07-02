@@ -2,17 +2,17 @@
 
 ## What this is
 
-A single-file, responsive, click-through HTML prototype for **The Upskilling Labs** —
-a public, browse-first member experience plus the participant onboarding flow. No framework,
-no Tailwind, no build step required to run it, no persistence. Everything lives in `index.html`.
+A responsive, click-through HTML prototype for **The Upskilling Labs** — a public, browse-first
+member experience, the participant onboarding flow, the signed-in app (Discover · Dashboard ·
+Profile), and the embedded **Triangulator** sensemaking tool. No framework, no Tailwind, no build
+step, no backend. This prototype is the design source of truth for the production implementation
+(see `docs/OLOS_BACKEND_CHANGES.md` for the backend plan it implies).
 
 It is **mobile-first and fully responsive**: a phone-shaped experience on small screens
 (bottom tab bar, full-screen steps, sticky CTAs) that expands into a real web app on desktop
 (top nav, multi-column grids, centered auth sheets).
 
-**Branch:** `claude/google-auth-onboarding-c5e6rr`
-**PR:** https://github.com/TheUpskillingLabs/onboarding-proto/pull/4
-Push to this branch to update the PR.
+**Branch:** `claude/merge-repos-onboarding-proto-b3axjt` — push here.
 
 > **Naming rule (hard):** the brand is **"The Upskilling Labs"**, shortened only to **"The Labs"** —
 > never "TUL" or any other abbreviation. This applies to every user-facing string, label, title,
@@ -20,25 +20,25 @@ Push to this branch to update the PR.
 
 ---
 
-## File shape
+## Repo layout
 
-`index.html` is self-contained and large (~600 KB) because the **Geologica** variable font is
-embedded as a base64 `@font-face` data URI — no CDN, no network, CSP-safe, works offline.
-It has three editable regions:
+| Path | What it is |
+|---|---|
+| `index.html` | The main prototype — CSS + screens + JS, self-contained (embedded Geologica font) |
+| `triangulator.html` | The Triangulator — a full problem-framing tool (Kees Dorst Frame Creation), reskinned to this design system, embedded via iframe from `index.html`. Canonical upstream: the `triangles` repo; this copy is the reskinned/integrated adaptation. |
+| `docs/OLOS_BACKEND_CHANGES.md` | The backend planning doc — every schema/API change OLOS needs to serve this frontend |
+| `assets/` | Used images (logos, sample photography, orb marks) |
+| `archive/` | Superseded drafts (`old-index.html`, `prototype-v1.html`) and unused files |
 
-- `<style>` in `<head>` — all design tokens, components, and responsive rules (hand-written CSS, **not** Tailwind).
-- screen markup in `<body>` — one `<div class="view">` per screen, inside `#screens`.
-- `<script>` at the end of `<body>` — routing, the onboarding flow engine, and view logic.
-
-The file was generated from small Python build scripts (CSS + screens + JS assembled separately);
-if you keep those around, edit there and regenerate. Otherwise edit the three regions directly.
+Both HTML files have three editable regions: `<style>` in `<head>`, screen markup in `<body>`,
+and a `<script>` at the end of `<body>`.
 
 ---
 
 ## Design system
 
-Custom CSS variables in `:root`. **Canonical brand palette** (do not reintroduce the old
-`midnight`/`aqua` values):
+Custom CSS variables in `:root` (same tokens in both HTML files). **Canonical brand palette**
+(do not reintroduce the old `midnight`/`aqua` values):
 
 | Token | Value | Use |
 |---|---|---|
@@ -55,20 +55,19 @@ Custom CSS variables in `:root`. **Canonical brand palette** (do not reintroduce
 
 Rules baked into the system:
 - **One radius.** `--r: 14px` on every rectangular container — buttons included. No full pills.
-  Genuine circles only (avatar, status dots, timeline pips, the orb).
+  Genuine circles only (avatar, status dots, timeline pips, the orb, the Triangulator's modal-close).
 - **Warm off-white only.** `--tint` (`#ECF3F4`) exists but is **not** used as a page background.
 - **Light-first; dark is for "covers."** Dark `--ink`/gradient surfaces are reserved for the
-  landing hero, the About hero, nav bars (logo always on navy), and the open-source footer.
+  landing hero, the About hero, nav bars (logo always on navy), the ignition interstitial, and
+  the open-source footer.
 - **4px baseline grid.** Type line-heights and spacing are multiples of 4.
-- **Type scale** (mobile → desktop via media query at 1024px), classes:
-  `.t-display .t-h1 .t-h2 .t-h3 .t-h4 .t-lede .t-body .t-small .lbl` (uppercase eyebrow) `.idx` `.t-stat`.
+- **Type scale** classes: `.t-display .t-h1 .t-h2 .t-h3 .t-h4 .t-lede .t-body .t-small .lbl .idx .t-stat`.
 - **Soft elevation:** `--shadow` / `--shadow-lg`; cards `.tappable` lift on hover (desktop only).
 - **Grain:** `.grain` overlays an SVG-noise texture on dark surfaces.
 
-Font: **Geologica** only (embedded). Surfaces: `.s-paper .s-white .s-ink .s-cover` (+ `.on-dark`
-text mapping). Primary button `.btn.btn-red` / `.btn-teal`; ghost `.btn-ghost` / `.btn-ghost-teal`.
-Media tiles: `.media` with `.m-teal/.m-forest/.m-navy` branded gradients + embedded orb (brand
-stand-in for photography). Save toggle `.heart`. Category chips `.chip` (active = ink fill).
+Font: **Geologica** only (embedded base64 in both files — no CDN). The Triangulator additionally
+keeps its own functional/semantic colors (`--tier-1..6` ladder ramp, seven `--type-*` evidence
+colors) — those are not brand palette and must stay recognizable.
 
 ---
 
@@ -82,119 +81,110 @@ its own **panels** (`.panel`), a sticky dark top nav, and a mobile bottom tab ba
 
 | ID | Screen |
 |---|---|
-| `view-landing` | Public hybrid home — dark hero with **Create account** + browse sections (cycles, workshops, labs) + open-source footer |
-| `view-about` | Explainer (the old tour, recomposed as a scrollable narrative) |
-| `view-google-auth` | Google auth explainer (shows gate context if arriving from a gated card) |
-| `view-role-intent` | Role multi-select (Join a Cycle / Events / Volunteer / Mentor) |
-| `view-flow` | **One-question-per-screen engine** — drives the signup, cycle-intake, and mentor-profile flows |
+| `view-landing` | Public hybrid home — dark hero + browse sections + open-source footer |
+| `view-about` | Scrollable explainer |
+| `view-google-auth` | Google auth explainer (shows gate context) |
+| `view-role-intent` | Role multi-select |
+| `view-flow` | One-question-per-screen engine (signup / cycle / mentor / volunteer / profile / **survey**) |
 | `view-mentor-explainer` | 2-step mentor briefing |
 | `view-stub` | Generic "you're all set" |
-| `view-profile` | Public GitHub-like profile / portfolio (avatar, metro, stats, projects, activity) |
-| `app-shell` | Signed-in app: dark top nav + panels + bottom tab bar |
+| `view-profile` | Public portfolio profile — trust badges, citation chips, updates feed, case-study peer-approval banner |
+| `view-survey-share` | Post-survey share screen (copy link; `?survey=` deep-links back into the flow) |
+| `view-triangulator` | Slim chrome + same-origin `<iframe src="triangulator.html">` |
+| `view-team-ignition` | Full-screen "Team initialized" interstitial (staking threshold reached) |
+| `view-project-canvas` | Project instance mockup — 5-seat roster + 2 locked facilitator-override seats + case-study pending-approval UI |
+| `app-shell` | Signed-in app |
 
-### App panels (inside `#app-shell`, switched by `showAppView(id)`)
+### Signed-in navigation: Discover · Dashboard · Profile
 
-`panel-dashboard` · `panel-cycles` · `panel-events` · `panel-event` · `panel-labs` · `panel-resources`
+Top nav and bottom tab bar both carry exactly three destinations. **`panel-discover`** is the
+single browse destination — problem frames (staking), cycle banner, events, library, community
+directory (mentor-filterable chips), community updates, labs, saved. Every section renders from
+JS data arrays (`FRAMES`, `EVENTS`, `RESOURCES`, `MEMBERS`, `LABS`) so production swaps the data
+source, not markup. Legacy panels (`panel-cycles/events/event/labs/resources/bookmarks`) are
+retained as "View all →" drill-ins only — no nav entries.
 
-Desktop top nav links: Dashboard · Cycles · Events · Labs · Library. Mobile bottom tabs:
-Home · Cycles · Events · Labs (Library + Profile reached via top nav / avatar / dashboard links).
-The **avatar opens the profile** (`showProfile()`); sign-out lives on the profile page.
+**`panel-dashboard`** is the admin view of your own presence: condensed identity header
+(avatar + greeting + "View your full profile"), the **update composer** (posts to your profile's
+activity feed), setup checklist, and dismissible "Up next" cards — the field survey and the
+Triangulator lead that list (prominent but skippable, never a gate).
 
-### User flows
+### Key user flows
 
-- **Create account (primary):** Landing `Create account` → `view-google-auth` → `view-role-intent`
-  → signup flow (`view-flow`) → branch: mentor → `view-mentor-explainer` → mentor flow; else cycle
-  → cycle flow; else → dashboard. The old forced 5-slide tour is gone; the explainer is at `/about`.
-- **Returning:** Landing `Sign in` → `signinReturning()` → dashboard.
-- **Browse → gate (Airbnb pattern):** public cycle/lab cards **expand inline** (`toggleExpand`);
-  the deep action (Join / Save a spot) calls `gateCreateAccount(ctx)`, which routes into the
-  create-account funnel and surfaces the context on the auth screen. Dense workshop tiles tap
-  straight to the gate. Signed-in app views are ungated.
+- **Create account:** Landing → `view-google-auth` → `view-role-intent` → signup flow → role
+  branches → dashboard.
+- **Survey → Triangulator:** survey flow (`FLOWS('survey')`, loops via "add another") →
+  observations append to `localStorage['olos.surveyPool.v1']` (seeded from `SURVEY_SEED`, the
+  Civic & Elections CSV) → `view-survey-share` (copy `?survey=` link; the link deep-links
+  straight into the flow, no account needed) → `openTriangulator()` → the iframe ingests the
+  pool on boot and live via the `storage` event. **Prototype limit (by design):** single-browser
+  aggregation only — real cross-user pooling is the OLOS `survey_responses` API.
+- **Staking → ignition:** commit to a problem frame as builder or lead (buttons, not swipe);
+  at 3 commits the frame ignites → `view-team-ignition` → `view-project-canvas`. Caps: 3 min,
+  5 max, +2 facilitator-override seats (7 absolute).
+- **Directory:** Discover → member card → `showMemberProfile(id)` renders that member into
+  `view-profile` in visitor mode ("Back to Discover" bar). Owner state is fully restored by
+  `renderProfileView()` on next open.
 
 ---
 
-## One-question-per-screen flow engine
+## Flow engine
 
-`view-flow` is data-driven. Each flow is `{ eyebrow, finalLabel, finalClass, onComplete, steps[] }`
-returned by `FLOWS(name)` for `'signup' | 'cycle' | 'mentor'`. A step is
-`{ id, type, q, help?, options?, required? }` where `type` ∈
-`info | text | textarea | choice | checks | tags | consent`.
-
-- **Confirm-to-advance everywhere** — selecting a single-choice option highlights it and enables
-  **Continue**; it does **not** auto-advance. Multi-select (`checks`/`tags`) and text gate Continue
-  on validity; optional steps show **Skip**.
-- Top bar shows a back arrow, a segmented progress bar, and an `NN / NN` step counter.
+`view-flow` is data-driven; flows come from `FLOWS(name)` for
+`'signup' | 'cycle' | 'mentor' | 'volunteer' | 'profile' | 'survey'`. Step types:
+`info | text | textarea | choice | checks | tags | consent`. Confirm-to-advance everywhere;
+optional steps show Skip. The survey flow's `onComplete` loops back to the title step when the
+user picks "add another" (resets `fstep`, calls `renderFlowStep()` directly).
 
 ```js
-startFlow(name, backFn)   // sets the flow, step 0, back target; shows view-flow
-renderFlowStep()          // renders eyebrow/question/help/progress/input for the current step
-flowAdvance()             // next step, or flow.onComplete() on the last
-renderFlowInput(step)     // builds the input + bottom actions per step.type
+startFlow(name, backFn)  renderFlowStep()  flowAdvance()  renderFlowInput(step)
 ```
 
 ---
 
-## Key JS state and functions
+## Key JS state and functions (beyond the flow engine)
 
 ```js
-const userState = { name:'Alex', initials:'AR', roles:[], isMentor:false };
-let flow, fstep, fans;        // flow engine: current flow, step index, collected answers
-let gateContext = '';         // label shown on auth when arriving from a gated browse card
+userState                 // name, initials, fullName, roles, completed{}, saved[], updates[], lab
+EVENTS / RESOURCES        // mock data shaped like Luma API / OLOS resources CMS responses
+MEMBERS / FRAMES          // mock directory + problem frames (staking)
+SURVEY_SEED / SURVEY_POOL_KEY  // Civic & Elections seed + 'olos.surveyPool.v1'
 
-showView(id) / goApp(id)      // top-level routing (goApp = app panels)
-showAppView(id)               // switch panel + nav/tab active state
-showProfile()                 // render activity + open view-profile (from the avatar)
-scrollToSection(id)           // smooth-scroll landing nav
-
-startCreateAccount()          // primary CTA → view-google-auth (clears gate context)
-gateCreateAccount(ctx, e)     // browse gate → stash ctx, go to auth
-toggleExpand(card, e)         // inline expand/collapse for cycle/lab cards
-signinReturning()             // returning member → dashboard
-continueWithGoogle()          // auth → role-intent
-updateRoleBtn() / submitRoleIntent()
-renderMentor() / mentorSlideNext()
-
-toggleHeart(e, btn)           // save toggle on media cards
-initEventCats()               // category chip scroller (Events)
-initGallery()                 // event-detail swipe gallery + dots
-renderActivity()              // profile contribution-style activity strip
-tickChecklist(el) / renderTodos() / buildWeekRail()
-logout()                      // → landing
+renderDiscover()          // all Discover sections (called by showAppView('discover'))
+commitToFrame(id,intent,e) / openProjectCanvas()   // staking + ignition
+showMemberProfile(id)     // directory → visitor-mode profile
+postUpdate() / renderProfUpdates(list)             // social updates
+seedTriangulatorPool() / appendSurveyObservation() // shared survey pool
+openTriangulator()        // seeds pool, lazy-sets iframe src, shows view
+showSurveyShare() / copySurveyLink(btn)
+renderTodos() / dismissTodo(id)                    // dismissible "Up next"
 ```
+
+The prototype is otherwise no-persistence by design; `olos.surveyPool.v1` is the **only**
+localStorage key `index.html` writes (it exists to hand data to the iframe). `triangulator.html`
+keeps its own `olos.sensemaking.v2` state key.
 
 ---
 
-## Dashboard structure
+## triangulator.html conventions
 
-```
-Header — greeting (personalized from signup) + lede
-Setup checklist (#checklist-items, count in #checklist-count)
-  - Allowlist our email domain (self-attested)
-  - Slack invite sent (pre-checked, disabled)
-  - Added to community calendar (pre-checked, disabled)
-  - Set up your public profile (self-attested)
-Up next (#todos-container, built by renderTodos())
-Sidebar (desktop) — featured cycle media card + quick links (Labs / Library / your profile)
-```
-
----
-
-## Open-source positioning (ethos, not mechanics)
-
-The brand is framed as "open by default — the Wikipedia of upskilling, built like open source."
-This shows up as voice/visual cues only (no stars/forks/repos): the dark `.osfooter`
-("Content under CC BY-SA · Built in the open"), `.open-tag` "public by default" labels, public
-profiles/portfolios, and "Open" tags on projects and resources. Local **labs** (metro areas —
-DC flagship/Active, Baltimore Forming, Philadelphia Coming soon) are browseable with `.status` pills.
+- Reskin only — the canvas/sorting/classify/export engine is untouched from upstream `triangles`.
+  `cssToken()` reads colors from CSS variables, so token changes propagate to the canvas.
+- Keep `--tier-*` / `--type-*` colors and the export subsystem's separate `SITE_STYLE_CSS`
+  template as-is.
+- `ingestSurveyPool()` runs at boot (before `pickInitialScreen()`) and on `storage` events —
+  survey observations arrive tagged `'Survey Response'`.
+- Never reset the iframe's `src` mid-session — the tool guards unsaved work with `beforeunload`.
 
 ---
 
 ## Conventions for future changes
 
-- All changes go in `index.html`. Keep the three regions (CSS / screens / JS) coherent.
-- Respect the design rules above: warm `--paper` only, single `--r`, dark for covers/nav only,
-  baseline grid, and the **"The Labs" / never "TUL"** naming rule.
-- New listings should reuse `.card` + `.media`; dense collections (many items, e.g. workshops)
-  use `.cards.dense`; sparse collections (e.g. the ~4 cycles/year) use `.cards.two`.
-- Honor `prefers-reduced-motion` (entrance + expand animations already gate on it) and keep
-  keyboard focus states visible.
+- Keep the three regions (CSS / screens / JS) coherent in each file.
+- Respect the design rules: warm `--paper` only, single `--r`, dark for covers/nav only,
+  baseline grid, **"The Labs" / never "TUL"**.
+- New listings reuse `.card` + `.media`; dense collections use `.cards.dense`; sparse use
+  `.cards.two`. New Discover content belongs in the data arrays, not hand-written markup.
+- Honor `prefers-reduced-motion` and keep keyboard focus states visible.
+- Mock data shapes are contracts: keep `EVENTS` Luma-shaped and `RESOURCES` CMS-shaped so the
+  production data-source swap stays a swap (see `docs/OLOS_BACKEND_CHANGES.md`).
