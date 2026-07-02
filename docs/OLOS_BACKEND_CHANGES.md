@@ -128,7 +128,7 @@ author_id FK participants, published_at, created_at, updated_at
 ```
 
 Custom OLOS-native CMS — no third-party vendor. **Commons provenance:** add a nullable
-`project_instance_id FK` and `'playbook'` to `content_type` — project outputs (playbooks,
+`project_id FK` and `'playbook'` to `content_type` — project outputs (playbooks,
 kits, case studies) return to the Living Library with visible provenance ("From the commons ·
 BenefitsBot, Spring 2026 Cycle"). Publishing a project's approved case study to the library is
 the flywheel's return path; the Showcase is the moment it happens.
@@ -162,102 +162,91 @@ Backs the "Share a public update" composer and the profile activity feed. The nu
 how content is sourced. See §6: journal entries are never public; a public post is always a
 separate, explicit write to this table.
 
-### 1.10 Team formation & governance (selected Open Labs OS elements)
+### 1.10 Team formation & governance (aligned to the live OLOS pipeline)
 
-**Naming update (institutional model):** what earlier drafts called `problem_frames` splits
-into two objects matching the two formation moments — **`problem_situations`** (Month 1,
-Problem Sprint: communities of *inquiry*; in the full model **pods form around situations**)
-and **`project_proposals`** (Month 2, Hackathon/Frame Sprint: communities of *action*; each
-pairs the situation's Problem Owner with a new **frame**, a proposed intervention, success
-metrics, and collected evidence — **projects form around Owner + Frame**, staked at 3–5+2).
-The prototype's Cycles panel renders both tiers.
+**Resolved (product decision, June 2026): the prototype's earlier stake-to-ignite mechanic is
+deleted.** Formation uses OLOS's existing pipeline exactly as it runs today —
+`solution_proposals → project_votes → tally (LLM-named via lib/llm/names.ts) → self-serve
+registration` — with people joining **one pod**, and **projects forming within that pod**.
+No `project_instances`, no `instance_members`, no commit/staking routes. This dissolves the
+old "separate staking tables vs. `formed_via` column" question entirely: there is one
+formation pipeline, and it already exists.
 
-**Product decision (confirmed): situations are cycle-specific, pod-scoped objects,
-created from the pod's Triangulator sensemaking.** They are not public discovery content, and
-staking a seat is a pod-member action. The lifecycle:
+What remains to build:
+
+- **`problem_situations`** (unchanged from earlier drafts) — `id, cycle_id FK, pod_id FK NULL,
+  sensemaking_session_id FK NULL, problem_owner_id FK, title, messy_context text,
+  status enum('open','adopted','archived'), created_at`. Cycle-specific, pod-scoped, created
+  from the pod's Triangulator sensemaking (`sensemaking_sessions`, §1.4); the prototype renders
+  them read-only with a "Voting closed" badge once the problem-statement vote settles. Problem
+  Owners are *identified through stakeholder mapping*, not pre-assigned clients.
+- **Four columns on the existing `solution_proposals`** — `frame text, intervention text,
+  success_metrics text, evidence text`, plus `problem_situation_id FK NULL` for Triangulator
+  provenance (the prototype's "From 'situation' · owner" card eyebrow). Born at the Hackathon;
+  one proposal per member per cycle (the prototype UPSERTs on resubmit — mirror that with a
+  unique `(cycle_id, participant_id)` constraint and upsert semantics on the submit route).
+- **Project canvas fields** — the winning proposal's frame/intervention/metrics/evidence flow
+  into the formed project's canvas view; no new storage beyond the proposal row the project
+  already references.
+- **`narrative_revisions`** — `id, project_id FK, author_id FK, proposed_text text,
+  status enum('pending','approved','rejected'), created_at`. Backs peer-approved case-study
+  edits. (References the existing `projects` table now — not a staking table.)
+- **`citations`** — `id, participant_id FK, project_id FK, narrative_claim text,
+  source_url, domain_verified boolean, created_at`. Backs the profile citation chips.
+
+The lifecycle, end to end (prototype mirrors every step; admin Testing Controls step the
+phases live via the demo-only `olos.cycleState.v1` key — in production the phase derives from
+`cycle_config` window timestamps, **no new table needed**):
 
 ```
 pod forms (existing mechanism, unchanged)
   → pod runs sensemaking (sensemaking_sessions, §1.4)
-  → mapped Problem Situations become problem_situations (pods adopt them)
-  → the Hackathon turns research into project_proposals (Owner + Frame)
-  → pod members stake seats (instance_members)
-  → at 3 commits a project_instance auto-provisions
+  → mapped situations become problem_situations (read-only history after the vote)
+  → the Hackathon turns research into solution_proposals (+frame/intervention/metrics/evidence)
+  → members budget-vote (existing project_votes; ballots lock on cast)
+  → tally names winners (existing LLM naming, lib/llm/names.ts) and creates projects
+  → members self-register for exactly one project (existing registration)
+  → a project is "real" at project_min members — the prototype's ignition interstitial
 ```
 
-- **`problem_situations`** — `id, cycle_id FK, pod_id FK NULL, sensemaking_session_id FK NULL,
-  problem_owner_id FK, title, messy_context text,
-  status enum('open','adopted','archived'), created_at`. `pod_id` fills when a pod adopts the
-  inquiry (the vision's Month-1 formation moment). Problem Owners are *identified through
-  stakeholder mapping*, not pre-assigned clients — the column names the discovered owner.
-- **`project_proposals`** — `id, problem_situation_id FK, title, frame text,
-  intervention text, success_metrics text, evidence text,
-  status enum('open','matched','archived'), created_at`. Born at the Hackathon; the staking
-  target. `pod_id` scopes the frame to the pod
-  that produced it; `sensemaking_session_id` records provenance — which Triangulator session's
-  mapped Problem Situation the frame came from (the prototype renders this as the card's
-  "Mapped in the Triangulator · Pod 4 sensemaking" origin line). Frames render only inside the
-  cycle view for enrolled pod members (the prototype's Cycles panel) — never on public
-  surfaces, never in Discover.
-- **`project_instances`** — `id, project_proposal_id FK,
-  status enum('scoping','executing','delivered'), qa_verified boolean default false, created_at`.
-- **`instance_members`** — compound PK `(project_instance_id, participant_id)`, plus
-  `intent enum('builder','dri','mentor'), joined_at`. Inserts require the participant to be an
-  **active member of the frame's pod** — enforced in the commit route handler (§2) and by RLS.
-- **`narrative_revisions`** — `id, project_instance_id FK, author_id FK, proposed_text text,
-  status enum('pending','approved','rejected'), created_at`. Backs peer-approved case-study
-  edits.
-- **`citations`** — `id, participant_id FK, project_instance_id FK, narrative_claim text,
-  source_url, domain_verified boolean, created_at`. Backs the profile citation chips.
-
-**Situation creation:** `POST /api/pods/[pod_id]/situations`, drawing title/context from a
-`sensemaking_sessions` state's mapped Problem Situation. **Proposal creation:**
-`POST /api/situations/[id]/proposals` (Hackathon output; requires frame + intervention +
-metrics + evidence). *Open question: who may create — any pod member from their own session,
-or moderator/facilitator-curated?*
-
-**Remaining overlap question (narrowed, still needs one decision).** With frames pod-scoped
-and downstream of sensemaking, they no longer touch pod formation
-(`problem_statements → pods` stays exactly as-is). The remaining overlap is with the
-**Project Layer only**: staking-to-ignition is an alternative *project-formation* mechanism to
-the live `solution_proposals → project_votes → projects` voting flow, at the same tier and the
-same team sizes. Decide before migrating: **(a)** keep `project_instances`/`instance_members`
-as separate tables for cycles that use staking, or **(b)** fold them into the existing
-`projects`/`project_memberships` tables with a `formed_via enum('voting','staking')` column
-and a nullable `problem_frame_id` FK. **Recommend (b)** — it avoids two parallel project
-tables feeding the same downstream surfaces (showcase, portfolios, case studies); keep (a)
-only if staking-formed teams genuinely diverge in behavior. Whether a cycle uses voting,
-staking, or both belongs in `cycle_config`.
+**Eligibility choice (deliberate, easily flipped — confirm before shipping):** the prototype
+lets *everyone in the pod* vote, with submitters getting the larger budget (5 votes vs. 3) —
+mirroring how OLOS's problem-statement vote treats submitters. If production wants
+submitters-only ballots or different budgets, it's one config change; see §2 for the knobs.
 
 ---
 
-## 2. Confirmed sizing bands & ignition logic
+## 2. Confirmed sizing bands & formation logic
 
 Two distinct tiers — **do not conflate them**:
 
-| Tier | Min | Max | Override |
+| Tier | Min | Max | Notes |
 |---|---|---|---|
-| **Pods** (existing `pods`/`pod_memberships`) | **12** | **30** | — |
-| **Projects** (`project_instances`/`instance_members`) | **3** | **5** | **+2 admin-override seats (hard ceiling 7)** |
+| **Pods** (existing `pods`/`pod_memberships`) | **12** | **30** | unchanged |
+| **Projects** (existing `projects`/`project_memberships`) | **3** | **5** | flat cap — the earlier "+2 facilitator-override seats" concept is deleted along with staking |
 
-Before adding config columns, verify whether size bounds already exist in `cycle_config` under
-other names — roadmap W2-006 notes reference `project_min`/`max_projects` and "Pod full" copy,
-so at least the Project side may already be configured. Check `cycle_config`'s actual columns
-in `SCHEMA.md`/migrations first.
+Configuration knobs (the prototype's `CYCLE_CONFIG`, editable live in admin.html's Cycle
+control): `submitter_votes` (5), `non_submitter_votes` (3), `vote_threshold` (5),
+`project_min` (3), `project_max` (5), `max_projects` (4 — also bounded by
+`floor(pod_size / project_min)` at tally time). Before adding columns, verify which already
+exist in `cycle_config` under other names — roadmap W2-006 references `project_min`/
+`max_projects`, so at least some are live. Check `SCHEMA.md`/migrations first.
 
-- **Ignition trigger:** `POST /api/proposals/[id]/commit` — caller must be an **active member of
-  the frame's pod** (and enrolled in its cycle); reject otherwise. On success it inserts an
-  `instance_members` row, then counts members for that frame. At `count == 3` (Project minimum)
-  the handler auto-provisions the `project_instances` row (`status='scoping'`). The prototype's
-  ignition interstitial (`view-team-ignition`) is the frontend for this moment.
-- **Capacity limits:** reject inserts at `count >= 5` unless the request carries a Delivery
-  Facilitator override, which permits growth to 7 (5 + 2 override seats); reject unconditionally
-  beyond 7. Implement in the route handler (the override needs a role check the DB can't express
-  alone), backed by a defensive DB constraint at 7.
-- **Peer-approval route:** `POST /api/projects/[id]/revisions/[rev_id]/approve` — caller must be
-  an `instance_members` row for the project and must not be `narrative_revisions.author_id`.
-  At 2 approvals (1 for a 3-person instance) set `status='approved'` and merge into the public
-  case study. *Open question: confirm the threshold scales sensibly toward 7-member teams.*
+- **Ballot semantics:** one ballot per member per cycle; allocations are +/− integer votes
+  against open proposals, capped at the member's budget; the ballot **locks on cast** (the
+  prototype confirms through a modal stating exactly that). Aggregate tallies are visible;
+  **no per-voter attribution is ever exposed** (admin and Poderator views show totals only).
+- **Tally:** proposals at/above `vote_threshold`, ranked by votes, capped at `max_projects`,
+  become projects; the existing LLM naming (lib/llm/names.ts) fires here — the prototype fakes
+  the moment with a deterministic generator and a "✨ Naming projects…" beat in admin.
+- **Registration:** `POST /api/projects/[id]/register` (existing route family) — one active
+  project per member per cycle (unique constraint), reject at `project_max`, first
+  registration past `project_min` flips the project into scoping (the prototype's ignition
+  interstitial is the frontend for that moment).
+- **Peer-approval route:** `POST /api/projects/[id]/revisions/[rev_id]/approve` — caller must
+  be a project member and must not be `narrative_revisions.author_id`. At 2 approvals (1 for
+  a 3-person team) set `status='approved'` and merge into the public case study. *Open
+  question: confirm the threshold scales sensibly across 3–5-member teams.*
 - **Citation whitelist:** a shared validation utility on `POST /api/profiles/citations`
   rejecting any `source_url` whose domain isn't in an explicit allowlist (e.g. `github.com`,
   `figma.com`, `olos.app`). Keep the allowlist in a single exported constant.
@@ -376,7 +365,7 @@ Integration).
 Mentors are not assigned and not booked cold. Participants investigate, try, document,
 reflect — *then* request, with evidence attached. New table:
 
-- **`mentor_requests`** — `id, requested_by FK participants, project_instance_id FK NULL,
+- **`mentor_requests`** — `id, requested_by FK participants, project_id FK NULL,
   pod_id FK NULL, tried text, evidence text, challenge_question text, expertise_needed text[],
   status enum('open','matched','closed'), matched_mentor_id FK NULL, created_at`.
 - Routes: `POST /api/mentor-requests` (validation **requires** `tried`, `evidence`, and
@@ -449,7 +438,7 @@ new `lib/validations/survey-responses.ts`; accepts session participant **or** an
 `PUT /api/onboarding/checklist`, `POST /api/profile-updates`,
 `GET /api/pods/[pod_id]/situations`, `POST /api/pods/[pod_id]/situations`, and
 `POST /api/situations/[id]/proposals` (pod members — situations and proposals are pod-scoped,
-never public), `POST /api/proposals/[id]/commit` (the proposal's pod members only),
+never public), the existing proposal-submit/vote/register routes (§2; pod members only),
 `POST /api/mentor-requests` + `GET /api/mentor-requests` (see §6a),
 `POST /api/journal-entries` + pod/moderator journal reads (see §6),
 `POST /api/projects/[id]/revisions/[rev_id]/approve`,
@@ -458,11 +447,11 @@ mentor-profiles.
 
 **New roles:**
 
-- **Delivery Facilitator** — exclusive permission to set `qa_verified` on `project_instances`
+- **Delivery Facilitator** — exclusive permission to set `qa_verified` on `projects`
   and authorize the 6th/7th seat. *Open question: new role, or a new permission grant on the
   existing pod-scoped `moderator_assignments` concept? OLOS already has pod moderators; prefer
   hanging the permission there over inventing a parallel role.*
-- **Client Sponsor** — limited-access external stakeholder, scoped only to `project_instances`
+- **Client Sponsor** — limited-access external stakeholder, scoped only to `projects`
   whose `problem_frame.client_sponsor_id` matches: read + final signature/acceptance, nothing
   else. Genuinely new; nothing in today's role model covers an external non-participant.
 
@@ -484,9 +473,10 @@ Confirm the head number first (see §1 preamble), then land in this order:
 5. `events` (Luma cache)
 6. `resources` (CMS)
 7. `profile_updates` + `journal_entries` + RLS
-8. `problem_situations` + `project_proposals` + project-formation tables + RLS — **only after §1.10's remaining
-   decision (separate tables vs. `formed_via` column on the existing `projects` tables)**
-9. `narrative_revisions` + `citations` + RLS — same gate as (8)
+8. `problem_situations` + the four `solution_proposals` columns (`frame`, `intervention`,
+   `success_metrics`, `evidence`) + `solution_proposals.problem_situation_id` + RLS — no new
+   formation tables (§1.10 resolved: the existing voting pipeline is the formation mechanism)
+9. `narrative_revisions` + `citations` + RLS
 10. `mentor_requests` + `event_rsvps` + `events.kind`/`cycle_week` + `participants.referral_source`/`referred_by`
 11. `follows` + `mentor_testimonials` + `mentor_profiles.verified_by_labs`/`verified_at`
 
@@ -494,11 +484,11 @@ Confirm the head number first (see §1 preamble), then land in this order:
 
 ## 10. Open questions (product decisions needed before implementation)
 
-1. **Project-formation storage (§1.10)** — pod scoping and Triangulator provenance are now
-   settled; the remaining decision is separate `project_instances` tables vs. a `formed_via`
-   column on the existing `projects`/`project_memberships` (recommended). Gates migrations 8–9.
-   Related: who creates a frame from a sensemaking session — any pod member, or
-   moderator-curated?
+1. ~~Project-formation storage~~ **Resolved (§1.10):** the existing
+   `solution_proposals → project_votes → projects` pipeline is the formation mechanism;
+   staking tables are deleted from this plan. Remaining sub-question: ballot eligibility —
+   the prototype lets every pod member vote with submitters on the larger budget (5 vs. 3);
+   confirm, or flip to submitters-only, before the Hackathon window ships.
 2. Raw survey response → Triangulator `title+summary` card mapping: direct 1:1, manual
    curation, or AI-assisted? Affects whether `survey_responses` needs a "promoted to pool"
    workflow state.
@@ -513,8 +503,9 @@ Confirm the head number first (see §1 preamble), then land in this order:
 8. Directory default: opt-out vs. opt-in listing.
 9. Social updates moderation posture (none / post-hoc / pre-publish) before free-text public
    content ships at scale.
-10. Delivery Facilitator: new role vs. permission on existing pod moderators.
-11. Peer-approval threshold scaling beyond 3-person teams.
+10. Nominations + feedback intake (prototype §7 surfaces): where do `nominations` and
+    member feedback land — ops tables + notification, or an external tool first?
+11. Peer-approval threshold scaling across 3–5-member teams.
 
 ---
 

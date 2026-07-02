@@ -449,6 +449,11 @@ button,input,select,textarea { font-family:inherit; }
   .pubnav .pub-cta { display:flex; }
 }
 
+/* feedback launcher — a genuine circle (allowed exception, like avatars) */
+#fb-launcher { position:fixed; right:18px; bottom:calc(18px + env(safe-area-inset-bottom)); width:52px; height:52px; border-radius:50%; background:var(--ink); color:#fff; border:none; cursor:pointer; box-shadow:var(--shadow-lg); display:flex; align-items:center; justify-content:center; z-index:190; }
+#fb-launcher:hover { background:var(--navy); }
+#fb-launcher:focus-visible { outline:2px solid var(--teal); outline-offset:2px; }
+@media (max-width:1023px) { #fb-launcher.above-tabbar { bottom:calc(88px + env(safe-area-inset-bottom)); } } /* clear the mobile tabbar */
 /* avatar menu (View as) */
 .avatar-wrap { position:relative; }
 #avatar-menu { position:absolute; top:calc(100% + 10px); right:0; min-width:230px; background:var(--white); border:1px solid var(--rule); border-radius:var(--r); box-shadow:var(--shadow-lg); padding:8px; z-index:210; color:var(--ink); }
@@ -1209,6 +1214,7 @@ button,input,select,textarea { font-family:inherit; }
                   <button class="btn btn-teal btn-sm" onclick="saveJournalEntry()">Save entry</button>
                 </div>
                 <div id="journal-recent" style="margin-top:14px;"></div>
+                <a class="see" style="display:inline-block;margin-top:12px;" onclick="startNominate(null,event)">Recognize someone this week →</a>
               </div>
 
               <!-- Public update composer — optional social exhaust, secondary to the journal. -->
@@ -1646,6 +1652,30 @@ button,input,select,textarea { font-family:inherit; }
   </div>
 </div>
 
+<!-- Feedback — present on every screen, signed in or out. Logs to FEEDBACK_LOG. -->
+<button id="fb-launcher" class="above-tabbar" aria-label="Send feedback" title="Send feedback" onclick="openFeedback()">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+</button>
+<div class="gate-modal" id="fb-modal" onclick="if(event.target===this)closeFeedback()">
+  <div class="gate-sheet s-paper">
+    <button class="gate-close" onclick="closeFeedback()" aria-label="Close">
+      <svg width="20" height="20" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 5L17 17M17 5L5 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <div id="fb-form">
+      <h3 class="t-h3" style="margin-bottom:6px;padding-right:32px;">Send feedback</h3>
+      <p class="t-small" style="margin-bottom:16px;">Straight to the Labs team — every screen carries this button.</p>
+      <div id="fb-cats" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;"></div>
+      <textarea id="fb-body" rows="4" placeholder="What happened? What would make it better?" style="width:100%;border:1px solid var(--rule);border-radius:var(--r);padding:12px 14px;font:inherit;font-size:15px;resize:vertical;background:var(--white);margin-bottom:16px;"></textarea>
+      <button class="btn btn-teal btn-block" onclick="submitFeedback()">Send feedback</button>
+    </div>
+    <div id="fb-done" style="display:none;text-align:center;padding:8px 0;">
+      <h3 class="t-h3" style="margin-bottom:8px;">Thank you ✓</h3>
+      <p class="t-small" style="margin-bottom:18px;">Logged with the screen you were on. The Labs team reads everything.</p>
+      <button class="btn btn-ghost-teal btn-block" onclick="closeFeedback()">Done</button>
+    </div>
+  </div>
+</div>
+
 <!-- Save gate — shown when a public visitor tries to bookmark a workshop/cycle/lab -->
 <div class="gate-modal" id="save-gate" onclick="if(event.target===this)closeSaveGate()">
   <div class="gate-sheet s-paper">
@@ -1684,7 +1714,7 @@ button,input,select,textarea { font-family:inherit; }
 
 <script src="shared.js"></script>
 <script>
-const userState = {name:'Alex', initials:'AR', roles:[], isMentor:false, signedIn:false, completed:{}, profileAnswers:{}, mentorAnswers:{}, volunteerAnswers:{}, saved:[], lab:{name:'',status:''}, updates:[], journal:[], mentorRequests:[], testimonials:[], testimonialRequests:[], following:[], ballot:null, projectId:null};
+const userState = {name:'Alex', initials:'AR', roles:[], isMentor:false, signedIn:false, completed:{}, profileAnswers:{}, mentorAnswers:{}, volunteerAnswers:{}, saved:[], lab:{name:'',status:''}, updates:[], journal:[], mentorRequests:[], testimonials:[], testimonialRequests:[], following:[], ballot:null, projectId:null, nominations:[]};
 const FLOW_ROLES=['mentor','volunteer','cycle']; // roles with a deferrable setup flow ('events' is passive)
 const ROLE_ITEMS={
   mentor:{title:'Complete the mentor section of your profile', sub:'Tell pods what you bring and how to reach you.'},
@@ -1806,6 +1836,16 @@ function isFollowing(id){ return userState.following.includes(id); }
 function followBtnHTML(m){ const on=isFollowing(m.id); return '<button class="btn '+(on?'btn-ghost-teal':'btn-teal')+' btn-sm" onclick="toggleFollow(\''+m.id+'\',event)">'+(on?'Following ✓':'Follow')+'</button>'; }
 function memberMetaText(m){ return m.metro+' · Joined Spring 2026 · '+((m.followers||0)+(isFollowing(m.id)?1:0))+' followers'; }
 function verifiedPill(m){ return m.verified?'<span class="status active" title="Vouched for by The Labs — added by the Labs team, not self-serve">✓ Vouched by The Labs</span>':''; }
+/* ── Nominations — members surface talent; the Labs team follows up (concierge,
+   never gate). Production: nominations table (nominator_id, nominee_name, as_role, reason). ── */
+let nominateTarget=null;
+function nominateBtnHTML(m){ return '<button class="btn btn-ghost-teal btn-sm" onclick="startNominate(\''+m.id+'\',event)">Nominate</button>'; }
+function startNominate(id,e){
+  if(e) e.stopPropagation();
+  if(!userState.signedIn){ gateCreateAccount('nominations', e); return; }
+  const m=id?memberById(id):null; nominateTarget=m||null;
+  startFlow('nominate', ()=>goApp(m?'discover':'dashboard'), m?{nominee:m.name}:undefined);
+}
 function toggleFollow(id,e){
   if(e) e.stopPropagation();
   const i=userState.following.indexOf(id);
@@ -1857,7 +1897,7 @@ function renderDiscPeople(){
   if(chips) chips.innerHTML=cats.map(([v,l])=>'<button class="chip'+(peopleFilter===v?' active':'')+'" onclick="peopleFilter=\''+v+'\';renderDiscPeople()">'+l+'</button>').join('');
   const list=MEMBERS.filter(m=>peopleFilter==='all'||m.roles.includes(peopleFilter)).slice().sort((a,b)=>peopleFilter==='mentor'?((b.verified?1:0)-(a.verified?1:0)):0);
   const jitNote=peopleFilter==='mentor'?'<div class="lcard" style="padding:14px 18px;margin-bottom:16px;background:var(--tint);"><span class="t-small"><b>Working on a project?</b> Mentors respond to evidence-backed requests, not cold asks — <a class="see" onclick="startFlow(\'mentorRequest\', ()=>goApp(\'discover\'))">request a mentor →</a></span></div>':'';
-  c.innerHTML=jitNote+list.map(m=>'<div class="card tappable" onclick="showMemberProfile(\''+m.id+'\')"><div class="card-body"><div style="display:flex;align-items:center;gap:14px;margin-bottom:12px;"><span class="avatar-lg" style="width:52px;height:52px;font-size:18px;flex-shrink:0;">'+m.initials+'</span><div style="min-width:0;flex:1;"><div class="t-h4">'+escHTML(m.name)+(m.verified?' <span title="Vouched for by The Labs" style="color:var(--teal-deep);">✓</span>':'')+'</div><p class="t-small" style="color:var(--teal-deep);font-weight:600;">'+escHTML(m.headline)+'</p></div>'+followBtnHTML(m)+'</div><p class="t-small" style="margin-bottom:12px;">'+escHTML(m.metro)+' · '+((m.followers||0)+(isFollowing(m.id)?1:0))+' followers</p><div class="tag-wrap">'+m.roles.map(r=>'<span class="tag-btn active" style="pointer-events:none;">'+(r==='upskiller'?'Builder':r[0].toUpperCase()+r.slice(1))+'</span>').join('')+'</div></div></div>').join('');
+  c.innerHTML=jitNote+list.map(m=>'<div class="card tappable" onclick="showMemberProfile(\''+m.id+'\')"><div class="card-body"><div style="display:flex;align-items:center;gap:14px;margin-bottom:12px;"><span class="avatar-lg" style="width:52px;height:52px;font-size:18px;flex-shrink:0;">'+m.initials+'</span><div style="min-width:0;flex:1;"><div class="t-h4">'+escHTML(m.name)+(m.verified?' <span title="Vouched for by The Labs" style="color:var(--teal-deep);">✓</span>':'')+'</div><p class="t-small" style="color:var(--teal-deep);font-weight:600;">'+escHTML(m.headline)+'</p></div><div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;">'+followBtnHTML(m)+nominateBtnHTML(m)+'</div></div><p class="t-small" style="margin-bottom:12px;">'+escHTML(m.metro)+' · '+((m.followers||0)+(isFollowing(m.id)?1:0))+' followers</p><div class="tag-wrap">'+m.roles.map(r=>'<span class="tag-btn active" style="pointer-events:none;">'+(r==='upskiller'?'Builder':r[0].toUpperCase()+r.slice(1))+'</span>').join('')+'</div></div></div>').join('');
   enhanceTappables();
 }
 function allUpdates(){
@@ -2434,6 +2474,11 @@ function FLOWS(name){
       {id:'intervention',type:'textarea',q:'What would you build?',help:'The intervention — concrete enough to register a team around.',ph:'e.g. A plain-language guide piloted at library help desks...',required:true},
       {id:'metrics',type:'text',q:'How would you know it\u2019s working?',help:'One or two measurable signals.',ph:'e.g. Completion rate at 3 pilot branches',required:true},
       {id:'evidence',type:'textarea',q:'What evidence backs the frame?',help:'Interviews, observations, data — from the Problem Sprint.',ph:'e.g. 12 resident interviews · journey map',required:true} ]};
+  if(name==='nominate') return { eyebrow:'Recognize a member', finalLabel:'Send nomination', finalClass:'btn-teal',
+    onComplete:()=>{ userState.nominations.push({...fans, at:Date.now()}); nominateTarget=null; showView('stub'); },
+    steps:[ {id:'nominee',type:'text',q:'Who are you recognizing?',help:'Their name as it appears in the directory.',ph:'e.g. Priya Shah',required:true,when:f=>!f.nominee},
+      {id:'as',type:'choice',q:'Recognize them as\u2026',options:[{v:'upskiller',label:'Standout Upskiller',sub:'Consistently shows up and ships'},{v:'mentor',label:'Mentor material',sub:'Generous with evidence-backed help'},{v:'advisor',label:'Advisor',sub:'Strategic judgment The Labs should tap'}],required:true},
+      {id:'reason',type:'textarea',q:'What did they do?',help:'A sentence is plenty — nominations go to the Labs team, who follow up with the member.',ph:'e.g. Debugged three pods\u2019 scoping questions in one office hour...',required:true} ]};
   if(name==='cycle') return { eyebrow:'Spring 2026', finalLabel:'Submit registration', finalClass:'btn-teal', onComplete:()=>finishRoleFlow('cycle'),
     steps:[ {id:'problem',type:'textarea',q:'What problem area excites you most?',help:'A sentence or two is plenty.',ph:'e.g. how AI can help DC residents navigate benefits eligibility...',required:true},
       {id:'level',type:'choice',q:'Where are you at in your primary area?',options:LEVELS.map(l=>({v:l[0],label:l[0],sub:l[1]}))},
@@ -2457,7 +2502,7 @@ function FLOWS(name){
       {id:'linkedin',type:'text',q:'LinkedIn profile',help:'Optional — makes it easy for pods and mentors to find you.',ph:'linkedin.com/in/yourname',required:false},
       {id:'website',type:'text',q:'Personal website or portfolio',help:'Optional — anywhere you share your work.',ph:'yoursite.com',required:false} ]};
 }
-function startFlow(name, backFn, preload, returnTo){ flow=FLOWS(name); flow.name=name; flow.backTo=backFn||(()=>showView('landing')); flow.returnTo=returnTo||null; fstep=0; fans=preload?{...preload}:{}; renderFlowStep(); showView('flow'); }
+function startFlow(name, backFn, preload, returnTo){ flow=FLOWS(name); flow.name=name; flow.backTo=backFn||(()=>showView('landing')); flow.returnTo=returnTo||null; fans=preload?{...preload}:{}; fstep=fVisible()[0]||0; renderFlowStep(); showView('flow'); } // start at the first VISIBLE step — preloads can hide step 0 via step.when
 function startRoleFlow(role, backFn){ if(role==='mentor'){ mentorBack=backFn||(()=>showView('dashboard')); mentorStep=1; renderMentor(); showView('mentor-explainer'); } else { startFlow(role, backFn||(()=>showView('dashboard'))); } }
 function finishRoleFlow(role){ if(role==='mentor')userState.mentorAnswers={...fans}; else if(role==='volunteer')userState.volunteerAnswers={...fans}; userState.completed[role]=true; renderProfileChecklist(); renderDashCycle(); renderProfileView(); if(flow&&flow.returnTo)flow.returnTo(); else showView('dashboard'); }
 function pad2(n){ return n<10?'0'+n:''+n; }
@@ -2897,6 +2942,16 @@ function initHeroScroll(){
   update();
 }
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeSaveGate(); });
+/* ── Feedback — every screen carries the launcher; entries log to FEEDBACK_LOG
+   (production: a feedback table + ops notification). ── */
+const FEEDBACK_LOG=[];
+let fbCategory='Idea';
+function fbScreen(){ const v=document.querySelector('#screens > .view.active'); const p=document.querySelector('.panel.active'); return (v?v.id:'?')+(p?'/'+p.id:''); }
+function renderFbCats(){ document.getElementById('fb-cats').innerHTML=['Bug','Idea','Confusing','Love it'].map(c=>'<button class="chip'+(fbCategory===c?' active':'')+'" onclick="fbCategory=\''+c+'\';renderFbCats()">'+c+'</button>').join(''); }
+function openFeedback(){ fbCategory='Idea'; renderFbCats(); document.getElementById('fb-body').value=''; document.getElementById('fb-form').style.display='block'; document.getElementById('fb-done').style.display='none'; document.getElementById('fb-modal').classList.add('open'); document.getElementById('fb-body').focus(); }
+function closeFeedback(){ document.getElementById('fb-modal').classList.remove('open'); }
+function submitFeedback(){ const body=document.getElementById('fb-body').value.trim(); if(!body){ document.getElementById('fb-body').focus(); return; } FEEDBACK_LOG.push({category:fbCategory, body:body, at:Date.now(), screen:fbScreen()}); document.getElementById('fb-form').style.display='none'; document.getElementById('fb-done').style.display='block'; }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeFeedback(); });
 document.addEventListener('DOMContentLoaded',()=>{ initEventCats(); applyCycleState(); buildWeekRail(); renderActivity(); renderJournal(); initHeroScroll(); enhanceTappables();
   // Shared survey links (?survey=...) deep-link straight into the fill flow — no account needed.
   if(new URLSearchParams(location.search).get('survey')){ startFlow('survey', ()=>showView('landing')); }

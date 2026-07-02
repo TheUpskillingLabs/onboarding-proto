@@ -44,6 +44,8 @@ CSS/JS files, and `?survey=` links behave like production.)
 ```
 index.html                     — the member app (landing, onboarding, Discover · Dashboard · Profile)
 triangulator.html              — the Triangulator, reskinned to the design system, iframe-embedded
+moderator.html                 — the Poderator persona: pod health, nudges, journal themes, tallies
+admin.html                     — the Admin persona: Testing Controls (phase stepper), invites, participants
 font.css                       — the embedded Geologica font (base64) — fetched once, shared by all pages
 tokens.css                     — brand primitives (palette, radius, shadows) — the single source of truth
 shared.js                      — stateless helpers shared by all pages

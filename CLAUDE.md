@@ -4,7 +4,8 @@
 
 A responsive, click-through HTML prototype for **The Upskilling Labs** — a public, browse-first
 member experience, the participant onboarding flow, the signed-in app (Discover · Dashboard ·
-Profile), and the embedded **Triangulator** sensemaking tool. No framework, no Tailwind, no build
+Profile), the embedded **Triangulator** sensemaking tool, and the **Poderator** (`moderator.html`)
+and **Admin** (`admin.html`) persona surfaces reached through the avatar "View as" menu. No framework, no Tailwind, no build
 step, no backend. This prototype is the design source of truth for the production implementation
 (see `docs/OLOS_BACKEND_CHANGES.md` for the backend plan it implies).
 
@@ -113,6 +114,28 @@ arrays (`EVENTS`, `RESOURCES`, `MEMBERS`, `LABS`) so production swaps the data s
 markup. Legacy panels (`panel-cycles/events/event/labs/resources/bookmarks`) are retained as
 "View all →" drill-ins only — no nav entries.
 
+### Personas: one account, three lenses
+
+Poderators and Admins register through the same path as everyone else. The avatar in the top
+nav opens **`#avatar-menu`** (markup mirrored in all three pages; wiring in shared.js —
+Esc/outside-click close, ArrowUp/Down cycle, `menuitemradio` semantics): Your profile · View
+as **Upskiller / Poderator / Admin** (selected-dot on the current lens) · Sign out.
+`viewAs(role)` persists `olos.viewAsRole.v1` and navigates; `moderator.html`/`admin.html`
+boot-guards soft-redirect a stored `'upskiller'` lens back to `index.html` (click-through
+convenience — real gating is server-side in OLOS). Both persona pages carry a dark nav,
+persona pill, and "Exit to member view".
+
+- **`admin.html`**: Testing Controls (the phase stepper — advancing into *tallied* runs the
+  tally with the "✨ Naming projects…" beat and writes `olos.cycleState.v1`), cycle
+  status/windows/threshold knobs (live — the tally reads them), aggregate vote progress
+  (never per-voter), invitations (role presets incl. Poderator, copyable links,
+  Resend/Revoke), participants table + permissions modal, Entity Explorer disabled stub.
+- **`moderator.html`** (rendered copy says **Poderator**, never "moderator"): pod switcher
+  (+ All-pods rollup), phase/countdown/journal-health band (`.status.watch`/`.status.risk`) +
+  trend, at-risk nudge cards (mailto + session Dismiss; empty state), journal-themes card
+  (pod-visible entries only), copy-to-clipboard AI bundle (no in-app LLM — matches OLOS),
+  vote tallies, filterable/sortable roster.
+
 **Formation (mirrors OLOS's real pipeline) — never Discover content.** All on `panel-cycles`,
 cycle-scoped, phase-driven from `olos.cycleState.v1` (`CYCLE.formationPhase`, read at boot +
 via the `storage` event; admin.html's Testing Controls step it):
@@ -208,6 +231,14 @@ Journal**, then the demoted public composer, then dismissible "Up next" cards.
 - **Directory:** Discover → member card → `showMemberProfile(id)` renders that member into
   `view-profile` in visitor mode ("Back to Discover" bar). Owner state is fully restored by
   `renderProfileView()` on next open.
+- **Nominations (members surface talent; staff concierge, never gate):** "Nominate" ghost
+  button on directory cards + "Recognize someone this week →" under the journal card →
+  `FLOWS('nominate')` (nominee preloaded from the card; a name step appears via `step.when`
+  when entered from the journal) → `userState.nominations[]` → stub confirmation.
+- **Feedback (every screen, signed in or out):** the fixed circular launcher (`#fb-launcher`,
+  a genuine-circle exception; offset above the mobile tabbar in index.html) opens `#fb-modal` —
+  Bug/Idea/Confusing/Love-it chips + textarea → `FEEDBACK_LOG` entries carry
+  `{category, body, at, screen}`. Mirrored on both persona pages.
 
 ---
 
@@ -255,13 +286,23 @@ postUpdate() / renderProfUpdates(list)             // social updates
 seedTriangulatorPool() / appendSurveyObservation() // shared survey pool
 openTriangulator()        // seeds pool, lazy-sets iframe src, shows view
 showSurveyShare() / copySurveyLink(btn)
-renderTodos() / dismissTodo(id)                    // dismissible "Up next"
+renderTodos() / dismissTodo(id)                    // dismissible "Up next" (phase-aware formation card)
+startNominate(id,e) / nominateBtnHTML(m)           // nominations (FLOWS('nominate'))
+openFeedback() / submitFeedback() / FEEDBACK_LOG   // feedback widget (mirrored in persona pages)
+toggleAvatarMenu() / viewAs(role) / getViewAsRole()  // View-as menu (shared.js)
 ```
 
 The prototype is otherwise no-persistence by design; `olos.surveyPool.v1` is the **only**
-localStorage key `index.html` writes (it exists to hand data to the iframe); it also *reads*
-`olos.cycleState.v1` (`{formationPhase, projects?}`, written by admin.html) at boot and via
-the `storage` event. `triangulator.html` keeps its own `olos.sensemaking.v2` state key.
+localStorage key `index.html` writes for data (it exists to hand data to the iframe).
+
+**Full localStorage inventory (the only cross-file contracts):**
+
+| Key | Written by | Read by | Shape / purpose |
+|---|---|---|---|
+| `olos.surveyPool.v1` | `index.html` (survey flow) | `triangulator.html` (boot + `storage` event) | array of survey observations |
+| `olos.cycleState.v1` | `admin.html` (Testing Controls, Cycle control) | `index.html` (boot + `storage` event), `admin.html` | `{formationPhase, projects?, config?}` |
+| `olos.viewAsRole.v1` | all three (via shared.js `setViewAsRole`) | `moderator.html` / `admin.html` boot guards | `'upskiller'│'poderator'│'admin'` |
+| `olos.sensemaking.v2` | `triangulator.html` | `triangulator.html` | the Triangulator's own canvas state |
 
 ---
 

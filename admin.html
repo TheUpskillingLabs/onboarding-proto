@@ -55,6 +55,10 @@ button,input,select,textarea { font-family:inherit; }
 .status.risk::before { background:var(--red); box-shadow:0 0 0 3px rgba(225,29,42,.14); }
 .avatar { width:38px; height:38px; border-radius:50%; background:var(--teal); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:600; font-size:13px; cursor:pointer; flex-shrink:0; }
 
+/* feedback launcher — a genuine circle (allowed exception, like avatars) */
+#fb-launcher { position:fixed; right:18px; bottom:calc(18px + env(safe-area-inset-bottom)); width:52px; height:52px; border-radius:50%; background:var(--ink); color:#fff; border:none; cursor:pointer; box-shadow:var(--shadow-lg); display:flex; align-items:center; justify-content:center; z-index:190; }
+#fb-launcher:hover { background:var(--navy); }
+#fb-launcher:focus-visible { outline:2px solid var(--teal); outline-offset:2px; }
 /* avatar menu (View as) */
 .avatar-wrap { position:relative; }
 #avatar-menu { position:absolute; top:calc(100% + 10px); right:0; min-width:230px; background:var(--white); border:1px solid var(--rule); border-radius:var(--r); box-shadow:var(--shadow-lg); padding:8px; z-index:210; color:var(--ink); }
@@ -236,6 +240,31 @@ button,input,select,textarea { font-family:inherit; }
     </div>
   </div>
 </main>
+
+
+<!-- Feedback — mirrored on every persona surface. -->
+<button id="fb-launcher" aria-label="Send feedback" title="Send feedback" onclick="openFeedback()">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+</button>
+<div class="gate-modal" id="fb-modal" onclick="if(event.target===this)closeFeedback()">
+  <div class="gate-sheet">
+    <button class="gate-close" onclick="closeFeedback()" aria-label="Close">
+      <svg width="20" height="20" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 5L17 17M17 5L5 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <div id="fb-form">
+      <h3 class="t-h3" style="margin-bottom:6px;padding-right:32px;">Send feedback</h3>
+      <p class="t-small" style="margin-bottom:16px;">Straight to the Labs team — every screen carries this button.</p>
+      <div id="fb-cats" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;"></div>
+      <textarea id="fb-body" rows="4" placeholder="What happened? What would make it better?" style="width:100%;border:1px solid var(--rule);border-radius:var(--r);padding:12px 14px;font:inherit;font-size:15px;resize:vertical;background:var(--white);margin-bottom:16px;"></textarea>
+      <button class="btn btn-teal btn-block" onclick="submitFeedback()">Send feedback</button>
+    </div>
+    <div id="fb-done" style="display:none;text-align:center;padding:8px 0;">
+      <h3 class="t-h3" style="margin-bottom:8px;">Thank you ✓</h3>
+      <p class="t-small" style="margin-bottom:18px;">Logged with the screen you were on. The Labs team reads everything.</p>
+      <button class="btn btn-ghost-teal btn-block" onclick="closeFeedback()">Done</button>
+    </div>
+  </div>
+</div>
 
 <!-- Permissions editor — stub; Save mutates in-memory only -->
 <div class="gate-modal" id="perm-modal" onclick="if(event.target===this)closePermModal()">
@@ -439,6 +468,15 @@ function showAdminPanel(id){
 }
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closePermModal(); });
 
+/* ── Feedback — mirrored from index.html's widget. ── */
+const FEEDBACK_LOG=[];
+let fbCategory='Idea';
+function fbScreen(){ return 'admin/'+(document.querySelector('.apanel.active')||{id:'?'}).id.replace('apanel-',''); }
+function renderFbCats(){ document.getElementById('fb-cats').innerHTML=['Bug','Idea','Confusing','Love it'].map(c=>'<button class="chip'+(fbCategory===c?' active':'')+'" onclick="fbCategory=\''+c+'\';renderFbCats()">'+c+'</button>').join(''); }
+function openFeedback(){ fbCategory='Idea'; renderFbCats(); document.getElementById('fb-body').value=''; document.getElementById('fb-form').style.display='block'; document.getElementById('fb-done').style.display='none'; document.getElementById('fb-modal').classList.add('open'); document.getElementById('fb-body').focus(); }
+function closeFeedback(){ document.getElementById('fb-modal').classList.remove('open'); }
+function submitFeedback(){ const body=document.getElementById('fb-body').value.trim(); if(!body){ document.getElementById('fb-body').focus(); return; } FEEDBACK_LOG.push({category:fbCategory, body:body, at:Date.now(), screen:fbScreen()}); document.getElementById('fb-form').style.display='none'; document.getElementById('fb-done').style.display='block'; }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeFeedback(); });
 /* boot — adopt whatever phase the suite is already in */
 (function(){
   const st=readCycleState();
