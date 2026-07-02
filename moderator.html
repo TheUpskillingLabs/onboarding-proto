@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>The Upskilling Labs — Poderator</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="font.css">
+<link rel="stylesheet" href="tokens.css">
+<style>
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+:root { --pad:24px; --maxw:1180px; }
+html { -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+body { font-family:"Geologica",system-ui,sans-serif; font-weight:400; font-size:16px; line-height:24px; color:var(--ink); background:var(--paper); min-height:100svh; }
+a { color:inherit; text-decoration:none; }
+button,input,select,textarea { font-family:inherit; }
+
+/* type */
+.t-h1 { font-weight:700; font-size:32px; line-height:36px; letter-spacing:-.026em; }
+.t-h2 { font-weight:700; font-size:26px; line-height:32px; letter-spacing:-.02em; }
+.t-h3 { font-weight:600; font-size:20px; line-height:28px; letter-spacing:-.016em; }
+.t-h4 { font-weight:600; font-size:17px; line-height:24px; letter-spacing:-.01em; }
+.t-lede { font-weight:400; font-size:18px; line-height:28px; letter-spacing:-.01em; color:var(--slate); }
+.t-body { font-weight:400; font-size:16px; line-height:24px; color:var(--charcoal); }
+.t-small { font-weight:400; font-size:13px; line-height:20px; color:var(--meta); }
+.lbl { font-weight:500; font-size:12px; line-height:16px; letter-spacing:.10em; text-transform:uppercase; color:var(--meta); }
+.lbl-teal { color:var(--teal-deep); }
+
+/* buttons */
+.btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; border:none; border-radius:var(--r); font-weight:600; font-size:15px; letter-spacing:.01em; cursor:pointer; transition:opacity .15s, transform .1s, box-shadow .15s, background .15s; white-space:nowrap; padding:15px 24px; text-decoration:none; }
+.btn:active { transform:scale(.98); }
+.btn-teal { background:var(--teal); color:#fff; }
+.btn-ghost { background:transparent; color:var(--ink); border:1px solid var(--rule-ink); }
+.btn-ghost-teal { background:transparent; color:var(--teal-deep); border:1px solid rgba(0,148,160,.45); }
+.btn-sm { font-size:13px; padding:11px 16px; }
+.btn:disabled { opacity:.34; cursor:not-allowed; pointer-events:none; }
+@media (hover:hover) { .btn:hover { opacity:.9; } .btn-teal:hover { box-shadow:var(--shadow); opacity:1; } }
+
+/* surfaces */
+.container { max-width:var(--maxw); margin:0 auto; padding:0 var(--pad); }
+.lcard { background:var(--white); border:1px solid var(--rule); border-radius:var(--r); }
+.section-head { display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom:24px; padding-bottom:14px; border-bottom:2px solid var(--ink); }
+.cards { display:grid; grid-template-columns:1fr; gap:16px; }
+.chip { flex-shrink:0; padding:9px 16px; border-radius:var(--r); border:1px solid var(--rule); background:var(--white); font-size:13px; font-weight:600; color:var(--charcoal); cursor:pointer; white-space:nowrap; transition:all .14s; }
+.chip.active { background:var(--ink); color:#fff; border-color:var(--ink); }
+.chip:active { transform:scale(.97); }
+.chip:focus-visible, .btn:focus-visible { outline:2px solid var(--teal); outline-offset:2px; }
+.status { display:inline-flex; align-items:center; gap:7px; font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--meta); }
+.status::before { content:""; width:7px; height:7px; border-radius:50%; background:var(--meta-soft); }
+.status.active { color:var(--teal-deep); }
+.status.active::before { background:var(--teal); box-shadow:0 0 0 3px rgba(0,148,160,.18); }
+.status.watch { color:#B07B00; }
+.status.watch::before { background:#F4B400; box-shadow:0 0 0 3px rgba(244,180,0,.16); }
+.status.risk { color:var(--red); }
+.status.risk::before { background:var(--red); box-shadow:0 0 0 3px rgba(225,29,42,.14); }
+.avatar { width:38px; height:38px; border-radius:50%; background:var(--teal); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:600; font-size:13px; cursor:pointer; flex-shrink:0; }
+
+/* dark nav — the logo only ever sits on dark navy */
+.topnav { position:sticky; top:0; z-index:50; background:var(--ink); border-bottom:1px solid rgba(255,255,255,.08); flex-shrink:0; }
+.topnav-inner { max-width:var(--maxw); margin:0 auto; padding:12px var(--pad); display:flex; align-items:center; gap:16px; color:var(--od1); }
+.topnav .btn-ghost { color:var(--od1); border-color:rgba(255,255,255,.42); }
+.persona-lbl { font-size:12px; font-weight:600; letter-spacing:.10em; text-transform:uppercase; color:var(--teal); border:1px solid rgba(0,148,160,.5); border-radius:var(--r); padding:5px 10px; }
+
+/* vote progress */
+.vbar { height:8px; background:var(--rule-soft); overflow:hidden; flex:1; }
+.vbar > div { height:100%; background:var(--teal); }
+
+/* roster table */
+.tbl-wrap { overflow-x:auto; }
+.tbl { width:100%; border-collapse:collapse; min-width:560px; }
+.tbl th { text-align:left; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--meta); font-weight:600; padding:10px 12px; border-bottom:2px solid var(--ink); white-space:nowrap; cursor:pointer; user-select:none; }
+.tbl th:hover { color:var(--ink); }
+.tbl td { padding:12px; border-bottom:1px solid var(--rule); font-size:14px; vertical-align:middle; }
+
+.mpanel { animation:panelIn .3s cubic-bezier(.2,.7,.1,1); }
+@keyframes panelIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+@media (prefers-reduced-motion: reduce) { .mpanel { animation:none; } }
+
+@media (min-width:1024px) {
+  :root { --pad:40px; }
+  .t-h1 { font-size:48px; line-height:52px; letter-spacing:-.034em; }
+  .t-h2 { font-size:34px; line-height:40px; }
+  .t-h3 { font-size:24px; line-height:32px; }
+  .cards.two { grid-template-columns:1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header class="topnav">
+  <div class="topnav-inner">
+    <a href="index.html" style="display:flex;align-items:center;gap:10px;"><img src="assets/logo-lockup-light.png" alt="The Upskilling Labs" style="height:60px;width:auto;display:block;"></a>
+    <span class="persona-lbl">Poderator</span>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:14px;">
+      <a class="btn btn-ghost btn-sm" href="index.html" id="exit-member">Exit to member view</a>
+      <div class="avatar" id="header-avatar" title="Your profile">AR</div>
+    </div>
+  </div>
+</header>
+
+<main class="container mpanel" style="padding-top:32px;padding-bottom:64px;">
+  <div class="lbl lbl-teal" style="margin-bottom:8px;">Pod facilitation</div>
+  <h1 class="t-h1" style="margin-bottom:8px;">Your pods</h1>
+  <p class="t-lede" style="margin-bottom:24px;">Summer 2026 · Civic &amp; Elections Cycle. Health first, nudges second — never grades.</p>
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;" id="pod-chips"></div>
+
+  <div id="pod-status"></div>
+
+  <div class="cards two" style="margin-top:24px;">
+    <div>
+      <div class="section-head" style="margin-bottom:16px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Needs you</div><h2 class="t-h3">Members going quiet</h2></div></div>
+      <div id="nudge-cards"></div>
+
+      <div class="section-head" style="margin-bottom:16px;margin-top:36px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Journal themes</div><h2 class="t-h3">What the pod is wrestling with</h2></div></div>
+      <div id="themes-card"></div>
+    </div>
+    <div>
+      <div class="section-head" style="margin-bottom:16px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">AI-assisted summary</div><h2 class="t-h3">Take the entries to your own tools</h2></div></div>
+      <div id="summary-card"></div>
+
+      <div class="section-head" style="margin-bottom:16px;margin-top:36px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Formation</div><h2 class="t-h3">Vote progress</h2></div></div>
+      <div id="vote-rows"></div>
+    </div>
+  </div>
+
+  <div class="section-head" style="margin-top:44px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Roster</div><h2 class="t-h2">Everyone in the pod</h2></div></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;" id="roster-chips"></div>
+  <div class="lcard tbl-wrap" style="padding:6px 12px 2px;">
+    <table class="tbl" aria-label="Pod roster">
+      <thead><tr><th onclick="setRosterSort('name')">Name</th><th onclick="setRosterSort('active')">Status</th><th onclick="setRosterSort('journals')">Journal entries</th><th>Last entry</th></tr></thead>
+      <tbody id="roster-rows"></tbody>
+    </table>
+  </div>
+</main>
+
+<script src="shared.js"></script>
+<script>
+/* ── Poderator mock data — this file's own copy (established pattern).
+   Journal-sourced, never Pulse. Bands are qualitative, never grades. ── */
+const PODS=[
+  { id:'pod4', name:'Pod 4 · Civic AI', phase:'Frame Sprint', closesInDays:5, band:'watch', trend:'down',
+    members:[
+      {id:'m3', name:'Jordan Okafor', initials:'JO', email:'jordan@example.org', active:true, journals:6, lastEntryDays:1},
+      {id:'m5', name:'Sam Whitfield', initials:'SW', email:'sam@example.org', active:true, journals:5, lastEntryDays:2},
+      {id:'you', name:'Alex Rivera', initials:'AR', email:'alex@example.org', active:true, journals:4, lastEntryDays:0},
+      {id:'m2', name:'Marcus Bell', initials:'MB', email:'marcus@example.org', active:true, journals:1, lastEntryDays:9},
+      {id:'m7', name:'Dana Whitehall', initials:'DW', email:'dana@example.org', active:true, journals:2, lastEntryDays:8},
+      {id:'m8', name:'Chris Yuen', initials:'CY', email:'chris@example.org', active:false, journals:0, lastEntryDays:21}
+    ],
+    themes:[
+      'Scoping anxiety — three entries this week circle "our frame feels too big to build"',
+      'Interview fatigue: members are hearing the same three answers and losing steam',
+      'Energy spike around the BenefitsBot pairing sessions — pairing works for this pod'
+    ],
+    themeSources:9,
+    votes:[ {title:'BenefitsBot', total:7}, {title:'Ballot Basics', total:5}, {title:'Knowledge Keeper', total:2} ],
+    ballotsIn:5, ballotsTotal:7 },
+  { id:'pod2', name:'Pod 2 · Voting Access', phase:'Frame Sprint', closesInDays:5, band:'healthy', trend:'up',
+    members:[
+      {id:'m4', name:'Elena Ruiz', initials:'ER', email:'elena@example.org', active:true, journals:7, lastEntryDays:0},
+      {id:'m9', name:'Ben Osei', initials:'BO', email:'ben@example.org', active:true, journals:6, lastEntryDays:1},
+      {id:'m10', name:'Rosa Nguyen', initials:'RN', email:'rosa@example.org', active:true, journals:5, lastEntryDays:1},
+      {id:'m11', name:'Kai Tanaka', initials:'KT', email:'kai@example.org', active:true, journals:4, lastEntryDays:3}
+    ],
+    themes:[
+      'Confidence climbing — entries moved from "where do we start" to "which precinct first"',
+      'The peer-distribution frame keeps resurfacing across four different members'
+    ],
+    themeSources:11,
+    votes:[ {title:'Ballot Basics', total:6}, {title:'Poll-worker Pipeline', total:3} ],
+    ballotsIn:4, ballotsTotal:4 }
+];
+const VOTE_THRESHOLD=5;
+const BAND_LABEL={healthy:'Journaling healthy', watch:'Journaling softening', at_risk:'Journaling at risk'};
+const BAND_CLASS={healthy:'active', watch:'watch', at_risk:'risk'};
+const AT_RISK_DAYS=7;
+let currentPod='pod4';
+const dismissedNudges=new Set();
+
+function pods(){ return currentPod==='all'?PODS:PODS.filter(p=>p.id===currentPod); }
+
+function renderPodChips(){
+  const chips=PODS.map(p=>'<button class="chip'+(currentPod===p.id?' active':'')+'" onclick="setPod(\''+p.id+'\')">'+escHTML(p.name)+'</button>').join('');
+  document.getElementById('pod-chips').innerHTML=chips+'<button class="chip'+(currentPod==='all'?' active':'')+'" onclick="setPod(\'all\')">All pods</button>';
+}
+function setPod(id){ currentPod=id; renderAll(); }
+
+function renderPodStatus(){
+  const el=document.getElementById('pod-status');
+  el.innerHTML=pods().map(p=>{
+    const arrow=p.trend==='up'?'↗':'↘'; const arrowTip=p.trend==='up'?'More pod-visible entries this week than last':'Fewer pod-visible entries this week than last';
+    return '<div class="lcard" style="padding:20px 24px;margin-bottom:12px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;">'
+      +'<div style="flex:1;min-width:220px;"><div class="t-h4">'+escHTML(p.name)+'</div><p class="t-small">'+p.members.length+' members · closes in '+p.closesInDays+' days</p></div>'
+      +'<span class="status active" title="Cycle phase">'+p.phase+'</span>'
+      +'<span class="status '+BAND_CLASS[p.band]+'" title="Derived from pod-visible journal cadence — a health band, not a grade">'+BAND_LABEL[p.band]+' <span aria-hidden="true" title="'+arrowTip+'">'+arrow+'</span></span>'
+      +'</div>';
+  }).join('');
+}
+
+/* At-risk = no pod-visible journal entry in AT_RISK_DAYS. Dismissals last the
+   session — the signal re-derives from data, so nothing is ever lost. */
+function atRiskMembers(){
+  return pods().flatMap(p=>p.members.filter(m=>m.lastEntryDays>=AT_RISK_DAYS&&!dismissedNudges.has(m.id)).map(m=>({...m, pod:p.name})));
+}
+function renderNudges(){
+  const list=atRiskMembers();
+  const c=document.getElementById('nudge-cards');
+  if(!list.length){ c.innerHTML='<div class="lcard" style="padding:18px 22px;"><p class="t-small">Everyone’s journaling — nothing needs you right now.</p></div>'; return; }
+  c.innerHTML=list.map(m=>'<div class="lcard" style="padding:18px 22px;margin-bottom:12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">'
+    +avatarSm(m.initials,m.name)
+    +'<div style="flex:1;min-width:170px;"><div class="t-h4" style="font-size:15px;">'+escHTML(m.name)+'</div><p class="t-small">'+escHTML(m.pod)+' · last journal entry '+(m.lastEntryDays>=21?'3+ weeks':m.lastEntryDays+'d')+' ago</p></div>'
+    +'<a class="btn btn-ghost-teal btn-sm" href="mailto:'+escHTML(m.email)+'?subject='+encodeURIComponent('Checking in — The Labs')+'">Contact</a>'
+    +'<button class="btn btn-ghost-teal btn-sm" onclick="dismissNudge(\''+m.id+'\')">Dismiss</button>'
+    +'</div>').join('');
+}
+function dismissNudge(id){ dismissedNudges.add(id); renderNudges(); }
+
+function renderThemes(){
+  const c=document.getElementById('themes-card');
+  const ps=pods();
+  c.innerHTML=ps.map(p=>'<div class="lcard" style="padding:20px 24px;margin-bottom:12px;">'
+    +(currentPod==='all'?'<div class="lbl lbl-teal" style="margin-bottom:10px;">'+escHTML(p.name)+'</div>':'')
+    +p.themes.map(t=>'<div style="display:flex;gap:10px;padding:7px 0;"><span style="color:var(--teal);flex-shrink:0;">·</span><span class="t-small" style="color:var(--charcoal);">'+escHTML(t)+'</span></div>').join('')
+    +'<p class="t-small" style="margin-top:10px;color:var(--meta);">From '+p.themeSources+' pod-visible journal entries this week — private entries are never read.</p>'
+    +'</div>').join('');
+}
+
+/* No in-app LLM (mirrors OLOS) — bundle the prompt + pod-visible entries for
+   the Poderator to paste into their own tools. */
+function summaryBundle(){
+  const ps=pods();
+  return 'You are helping a pod facilitator ("Poderator") at The Upskilling Labs.\n'
+    +'Summarize the themes, risks, and wins in these pod-visible Practice Journal entries.\n'
+    +'Be concrete; quote sparingly; never name-and-shame.\n\n'
+    +ps.map(p=>'== '+p.name+' ('+p.phase+') ==\n'
+      +p.members.filter(m=>m.journals>0).map(m=>'- ['+m.initials+', '+m.lastEntryDays+'d ago] '+(m.journals>3?'Steady reflection cadence; latest entry engages the current frame.':'Sparse entries; last one predates the current sprint.')).join('\n')).join('\n\n');
+}
+function renderSummary(){
+  document.getElementById('summary-card').innerHTML='<div class="lcard" style="padding:20px 24px;">'
+    +'<textarea id="summary-text" readonly rows="9" style="width:100%;border:1px solid var(--rule);border-radius:var(--r);padding:12px 14px;font-size:12px;line-height:18px;color:var(--slate);background:var(--paper);resize:vertical;" aria-label="Prompt bundle for external AI tools"></textarea>'
+    +'<div style="display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap;"><button class="btn btn-teal btn-sm" onclick="copySummary(this)">Copy to clipboard</button><span class="t-small" style="flex:1;min-width:200px;">The Labs runs no in-app LLM — paste this into your own tools. Only pod-visible entries are included.</span></div>'
+    +'</div>';
+  document.getElementById('summary-text').value=summaryBundle();
+}
+function copySummary(btn){
+  const t=document.getElementById('summary-text').value;
+  const done=()=>{ const l=btn.textContent; btn.textContent='Copied ✓'; setTimeout(()=>{ btn.textContent=l; }, 1400); };
+  if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, done); else done();
+}
+
+function renderVotes(){
+  const c=document.getElementById('vote-rows');
+  c.innerHTML=pods().map(p=>{
+    const max=Math.max(VOTE_THRESHOLD, ...p.votes.map(v=>v.total));
+    return '<div class="lcard" style="padding:18px 22px;margin-bottom:12px;">'
+      +(currentPod==='all'?'<div class="lbl lbl-teal" style="margin-bottom:10px;">'+escHTML(p.name)+'</div>':'')
+      +'<div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:12px;"><span class="lbl">Proposals</span><span class="status'+(p.ballotsIn>=p.ballotsTotal?' active':'')+'">'+p.ballotsIn+' of '+p.ballotsTotal+' ballots in</span></div>'
+      +p.votes.map(v=>{ const pct=Math.round(v.total/max*100); const forms=v.total>=VOTE_THRESHOLD;
+        return '<div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:4px;"><span class="t-small" style="color:var(--ink);font-weight:600;">'+escHTML(v.title)+'</span><span class="t-small">'+v.total+' votes'+(forms?' · forms':'')+'</span></div><div class="vbar"><div style="width:'+pct+'%;"></div></div></div>'; }).join('')
+      +'</div>';
+  }).join('');
+}
+
+/* roster */
+let rosterFilter='all', rosterSort='name', rosterDir=1;
+function setRosterSort(k){ if(rosterSort===k) rosterDir*=-1; else { rosterSort=k; rosterDir=1; } renderRoster(); }
+function renderRoster(){
+  const cats=[['all','All'],['active','Active'],['at_risk','At risk']];
+  document.getElementById('roster-chips').innerHTML=cats.map(([v,l])=>'<button class="chip'+(rosterFilter===v?' active':'')+'" onclick="rosterFilter=\''+v+'\';renderRoster()">'+l+'</button>').join('');
+  let list=pods().flatMap(p=>p.members.map(m=>({...m, pod:p.name})));
+  if(rosterFilter==='active') list=list.filter(m=>m.active);
+  if(rosterFilter==='at_risk') list=list.filter(m=>m.lastEntryDays>=AT_RISK_DAYS);
+  list.sort((a,b)=>{ const va=rosterSort==='name'?a.name:rosterSort==='active'?(a.active?1:0):a.journals; const vb=rosterSort==='name'?b.name:rosterSort==='active'?(b.active?1:0):b.journals; return (va<vb?-1:va>vb?1:0)*rosterDir; });
+  document.getElementById('roster-rows').innerHTML=list.map(m=>'<tr><td><div style="display:flex;align-items:center;gap:10px;">'+avatarSm(m.initials,m.name)+'<div><b>'+escHTML(m.name)+'</b>'+(currentPod==='all'?'<div class="t-small">'+escHTML(m.pod)+'</div>':'')+'</div></div></td><td><span class="status'+(m.active?' active':'')+'">'+(m.active?'Active':'Inactive')+'</span></td><td>'+m.journals+'</td><td class="t-small">'+(m.lastEntryDays===0?'Today':m.lastEntryDays+'d ago')+(m.lastEntryDays>=AT_RISK_DAYS?' <span class="status risk" style="margin-left:6px;">quiet</span>':'')+'</td></tr>').join('');
+}
+
+function renderAll(){ renderPodChips(); renderPodStatus(); renderNudges(); renderThemes(); renderSummary(); renderVotes(); renderRoster(); }
+renderAll();
+</script>
+</body>
+</html>

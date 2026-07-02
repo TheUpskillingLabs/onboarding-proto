@@ -29,6 +29,7 @@ It is **mobile-first and fully responsive**: a phone-shaped experience on small 
 | `font.css` | The single embedded Geologica `@font-face` (base64) — every HTML file links it; **no inline `@font-face` anywhere** |
 | `tokens.css` | Brand primitives (palette, `--r`, shadows, `--grain`) — the single source of truth; per-file `:root`s hold only file-specific vocabulary |
 | `shared.js` | Stateless helpers (`escHTML relDate avatarSm enhanceTappables ORB GRAD`, view-as persona contract) loaded before each file's inline script — no routing, no per-file state |
+| `moderator.html` | The Poderator persona (never "moderator" in rendered copy) — pod switcher, journal-health bands + trend, at-risk nudges (mailto + dismiss), journal themes, copy-to-clipboard AI bundle (no in-app LLM), vote tallies, roster |
 | `admin.html` | The Admin persona — Testing Controls (phase stepper that writes `olos.cycleState.v1`), cycle control, vote progress, invitations, participants + permissions stub, Entity Explorer stub |
 | `docs/OLOS_BACKEND_CHANGES.md` | The backend planning doc — every schema/API change OLOS needs to serve this frontend |
 | `assets/` | Used images (logos, sample photography, orb marks) |
