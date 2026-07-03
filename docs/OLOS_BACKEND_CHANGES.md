@@ -337,8 +337,8 @@ than overloading `Role`. **Flag in the PR that this closes roadmap row D3.**
 
 **Product decision (July 2026, supersedes the Practice Journal design below this doc used to
 carry):** the weekly reflection is a **Learning Log** — one low-friction flow in three parts,
-surfaced on the dashboard by the weekly reminder cron (the prototype allows unlimited logs;
-the cadence is a nudge, not a lockout):
+surfaced on the dashboard by the weekly reminder cron. Members may log as often as they like
+(no weekly cap), but the weekly cadence **is a hard gate** — see *The weekly gate* below:
 
 1. **Health check (the robust Pulse):** two 1–5 sliders (*Clarity on next steps*, *Alignment
    with pod*) + an *"Are you currently blocked?"* toggle revealing a *"What do you need?"*
@@ -377,6 +377,22 @@ the cadence is a nudge, not a lockout):
   composer is retired in the prototype; Learning Log shares become the primary source of
   member updates.
 
+**The weekly gate (owner decision, July 2026):** a cycle member whose weekly log is late is
+**locked out of the rest of the app** until they complete a Learning Log — the log is the key
+back in, not a reminder they can dismiss.
+
+- A weekly cron stamps the due window (e.g. Friday close) per active cycle; a member is
+  *overdue* when no `learning_logs` row exists for the current window.
+- **Middleware gates all member routes** for overdue cycle members except the dashboard's
+  Learning Log (and public pages / sign-out). Saving a log for the current window clears the
+  gate instantly — no review, no approval.
+- Poderator + admin surfaces show who is currently gated (this is the compliance visibility
+  the Pod Squad memo asked for — derived from the gate, not from chasing people).
+- Admin knob: per-cycle enforcement toggle (grace for week 1, pausable for holiday weeks).
+- Prototype expression: admin.html's Testing Controls arm the gate by writing `logDueAt`
+  into `olos.cycleState.v1`; index.html locks every app panel to the dashboard's Learning
+  Log until a log with `at >= logDueAt` is saved.
+
 ## 6a. Just-in-time mentorship — evidence precedes assistance
 
 Mentors are not assigned and not booked cold. Participants investigate, try, document,
@@ -411,6 +427,25 @@ and the signup flow's "How did you hear about us? / Who referred you?" step land
 recruited mentors to their recruiter. Any member can also raise their hand later via the
 profile's "I have experience to offer" path (the same mentor-profile flow). Leadership grows
 from within; the door is the same door.
+
+## 6b. Process signals — team faltering is R&D data, not a management case
+
+**Owner decision (July 2026):** the Poderator is a **shepherd, not a manager** — members have
+wide latitude as long as they make forward progress. The Labs is an R&D lab developing
+processes that help teams form and create value *self-serve*; where teams falter, the
+faltering itself is the finding. The Poderator page therefore carries no management tooling —
+it captures **process signals** for the design of upstream interventions.
+
+- **`process_signals`** — `id, cycle_id FK, pod_id FK NULL, project_id FK NULL,
+  process_step text` (e.g. `'Team registration'`, `'Frame Sprint · proposals'`),
+  `body text, created_by FK participants, created_at`.
+- Written by Poderators + admins (RLS: `is_moderator` or admin); **never member-facing** and
+  never attached to a member record — the subject is the process step, not the person.
+- Read path: `GET /api/cycles/[cycle_id]/process-signals` (admin + Poderators) — reviewed at
+  the cycle retro; feeds the intervention-design backlog.
+- Prototype expression: moderator.html's "Process signals" card (composer + seeded log), with
+  a "→ Process signal" prefill on each needs-attention card — a blocked member is often the
+  visible edge of a process gap.
 
 ## 7. Directory + member profiles
 

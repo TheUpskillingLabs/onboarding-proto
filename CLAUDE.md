@@ -31,7 +31,7 @@ It is **mobile-first and fully responsive**: a phone-shaped experience on small 
 | `font.css` | The single embedded Geologica `@font-face` (base64) — every HTML file links it; **no inline `@font-face` anywhere** |
 | `tokens.css` | Brand primitives (palette, `--r`, shadows, `--grain`) — the single source of truth; per-file `:root`s hold only file-specific vocabulary |
 | `shared.js` | Stateless helpers (`escHTML relDate avatarSm enhanceTappables ORB GRAD`, view-as persona contract) loaded before each file's inline script — no routing, no per-file state |
-| `moderator.html` | The Poderator persona (never "moderator" in rendered copy) — pod switcher, Learning-Log health bands (clarity/alignment averages) + trend, needs-attention list (blockers first, then quiet loggers; mailto + dismiss), log themes, copy-to-clipboard AI bundle (no in-app LLM), vote tallies, roster |
+| `moderator.html` | The Poderator persona (never "moderator" in rendered copy; shepherd, not manager) — pod switcher, Learning-Log health bands (clarity/alignment averages) + trend, needs-attention list (blockers first, then quiet loggers; mailto + process-signal prefill + dismiss), log themes, copy-to-clipboard AI bundle (no in-app LLM), vote tallies, process signals (R&D intervention-design log), roster |
 | `admin.html` | The Admin persona — Testing Controls (phase stepper that writes `olos.cycleState.v1`), cycle control, vote progress, invitations, participants + permissions stub, Entity Explorer stub |
 | `docs/OLOS_BACKEND_CHANGES.md` | The backend planning doc — every schema/API change OLOS needs to serve this frontend |
 | `assets/` | Used images (logos, sample photography, orb marks) |
@@ -136,16 +136,22 @@ convenience — real gating is server-side in OLOS). Both persona pages carry a 
 persona pill, and "Exit to member view".
 
 - **`admin.html`**: Testing Controls (the phase stepper — advancing into *tallied* runs the
-  tally with the "✨ Naming projects…" beat and writes `olos.cycleState.v1`), cycle
+  tally with the "✨ Naming projects…" beat and writes `olos.cycleState.v1` — plus the
+  **Learning Log gate** toggle: arms/clears `logDueAt`, simulating the weekly cron), cycle
   status/windows/threshold knobs (live — the tally reads them), aggregate vote progress
   (never per-voter), invitations (role presets incl. Poderator, copyable links,
   Resend/Revoke), participants table + permissions modal, Entity Explorer disabled stub.
-- **`moderator.html`** (rendered copy says **Poderator**, never "moderator"): pod switcher
+- **`moderator.html`** (rendered copy says **Poderator**, never "moderator"): framed as a
+  **shepherd, not a manager** (owner decision) — members have wide latitude while making
+  forward progress; the page unblocks and observes, never grades or assigns. Pod switcher
   (+ All-pods rollup), phase/countdown/Learning-Log health band (`.status.watch`/
   `.status.risk`) + clarity/alignment averages + trend, needs-attention cards (blocked
   members first with their own "what do you need" text, then quiet loggers; mailto +
-  session Dismiss; empty state), log-themes card (shared entries only), copy-to-clipboard
-  AI bundle (no in-app LLM — matches OLOS), vote tallies, filterable/sortable roster.
+  "→ Process signal" prefill + session Dismiss; empty state), log-themes card (shared
+  entries only), copy-to-clipboard AI bundle (no in-app LLM — matches OLOS), vote tallies,
+  **Process signals** (`PROCESS_SIGNALS` + composer — where teams falter, the faltering is
+  R&D data for upstream intervention design, never a member record; docs §6b),
+  filterable/sortable roster.
 
 **Formation (mirrors OLOS's real pipeline) — never Discover content.** All on `panel-cycles`,
 cycle-scoped, phase-driven from `olos.cycleState.v1` (`CYCLE.formationPhase`, read at boot +
@@ -227,10 +233,16 @@ Learning Log shares are the primary source of member updates.
   you need?"; explicitly private to the member's Poderator + admins. (2) *Scaffolded
   reflection*: three mad-libs prompts (figured out / exploring / next focus). (3) *Share
   preview*: live concatenated paragraph + a "Share to the Discover feed" toggle (writes
-  `userState.updates`). Entries append to `userState.learningLogs` — **unlimited logs, no
-  weekly lockout**; the form resets after save and recent logs list below with a count.
-  Payload shape mirrors the backend `learning_logs` row (metrics / log_content /
-  share_publicly — see docs §6).
+  `userState.updates`). Entries append to `userState.learningLogs` — unlimited logs; the
+  form resets after save and recent logs list below with a count. Payload shape mirrors the
+  backend `learning_logs` row (metrics / log_content / share_publicly — see docs §6).
+  **The weekly cadence is a hard gate (owner decision):** admin.html's Testing Controls arm
+  it by writing `logDueAt` into `olos.cycleState.v1` (the simulated weekly cron); while a
+  cycle member has no log with `at >= logDueAt`, `logGateActive()` locks the app —
+  `showView` routes every panel (and the Triangulator/canvas views) to the dashboard,
+  `.gate-dim` dims everything but the Learning Log section, `#log-gate-banner` explains,
+  and nav links dim via `#app-shell.log-locked`. Saving a log unlocks instantly (the
+  "You're back in ✓" beat via `gateJustCleared`). Docs §6 *The weekly gate*.
 - **Evidence precedes assistance:** `FLOWS('mentorRequest')` — required tried/evidence/
   challenge steps; entry points on the project canvas and the directory's mentor filter.
   Public event RSVPs are email-only (`#rsvp-modal`, `openRsvp()`) — never account-gated.
@@ -300,6 +312,7 @@ tallyAndFormProjects() / generateProjectName()     // tally + the deterministic 
 renderProjectRegistration() / registerForProject(id) / openProjectCanvas(id)  // self-serve teams + ignition at min
 inCycle() / inProject() / applyCycleState()        // gates + olos.cycleState.v1 (boot + storage event)
 renderLearningLog() / saveLearningLog() / llPreviewText()  // Learning Log (unlimited; resets on save)
+logGateActive() / applyLogGate() / focusLearningLog()      // weekly-log lockout gate (cycleState.logDueAt)
 openPodChooser() / choosePod(id) / PODS_OPEN       // Join-a-pod chooser (register-first if needed)
 openPhaseInfo(key) / PHASE_INFO                    // per-phase ⓘ modals on the cycle page
 openRsvp(ctx,e) / submitRsvp()                     // email-only public event RSVP
@@ -331,7 +344,7 @@ localStorage key `index.html` writes for data (it exists to hand data to the ifr
 | Key | Written by | Read by | Shape / purpose |
 |---|---|---|---|
 | `olos.surveyPool.v1` | `index.html` (survey flow) | `triangulator.html` (boot + `storage` event) | array of survey observations |
-| `olos.cycleState.v1` | `admin.html` (Testing Controls, Cycle control) | `index.html` (boot + `storage` event), `admin.html` | `{formationPhase, projects?, config?}` |
+| `olos.cycleState.v1` | `admin.html` (Testing Controls, Cycle control) | `index.html` (boot + `storage` event), `admin.html` | `{formationPhase, projects?, config?, logDueAt?}` |
 | `olos.viewAsRole.v1` | all three (via shared.js `setViewAsRole`) | `moderator.html` / `admin.html` boot guards | `'upskiller'│'poderator'│'admin'` |
 | `olos.sensemaking.v2` | `triangulator.html` | `triangulator.html` | the Triangulator's own canvas state |
 

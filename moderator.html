@@ -82,6 +82,10 @@ button,input,select,textarea { font-family:inherit; }
 .vbar { height:8px; background:var(--rule-soft); overflow:hidden; flex:1; }
 .vbar > div { height:100%; background:var(--teal); }
 
+/* process signals — 16px inputs (mobile keyboard rule) */
+.ps-input { width:100%; border:1px solid var(--rule); border-radius:var(--r); padding:10px 12px; font:inherit; font-size:16px; background:var(--white); color:var(--ink); }
+textarea.ps-input { resize:vertical; }
+
 /* roster table */
 .tbl-wrap { overflow-x:auto; }
 .tbl { width:100%; border-collapse:collapse; min-width:560px; }
@@ -131,7 +135,7 @@ button,input,select,textarea { font-family:inherit; }
 <main class="container mpanel" style="padding-top:32px;padding-bottom:64px;">
   <div class="lbl lbl-teal" style="margin-bottom:8px;">Pod facilitation</div>
   <h1 class="t-h1" style="margin-bottom:8px;">Your pods</h1>
-  <p class="t-lede" style="margin-bottom:24px;">Summer 2026 · Civic &amp; Elections Cycle. Health first, nudges second — never grades.</p>
+  <p class="t-lede" style="margin-bottom:24px;">Summer 2026 · Civic &amp; Elections Cycle. You shepherd the pod through the cycle — members have wide latitude as long as they're moving. Unblock, don't grade; where the process falters, log it as a signal.</p>
 
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;" id="pod-chips"></div>
 
@@ -152,6 +156,21 @@ button,input,select,textarea { font-family:inherit; }
       <div class="section-head" style="margin-bottom:16px;margin-top:36px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Formation</div><h2 class="t-h3">Vote progress</h2></div></div>
       <div id="vote-rows"></div>
     </div>
+  </div>
+
+  <!-- Process signals — the R&D loop. A faltering team is never a management
+       problem; it's evidence for designing the next upstream intervention. -->
+  <div class="section-head" style="margin-top:44px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">R&amp;D · upstream design</div><h2 class="t-h2">Process signals</h2></div></div>
+  <div class="cards two">
+    <div class="lcard" style="padding:20px 24px;align-self:start;">
+      <p class="t-small" style="margin-bottom:14px;">When a team falters, that's data, not a discipline problem. Log where the process broke and what would have helped — The Labs designs the next upstream intervention from these. Signals go to the design backlog, never to member records.</p>
+      <label class="t-small" for="ps-step" style="display:block;margin-bottom:6px;font-weight:600;color:var(--ink);">Where in the process?</label>
+      <select id="ps-step" class="ps-input" style="margin-bottom:12px;"></select>
+      <label class="t-small" for="ps-body" style="display:block;margin-bottom:6px;font-weight:600;color:var(--ink);">What faltered — and what would have helped?</label>
+      <textarea id="ps-body" rows="3" class="ps-input" placeholder="e.g. Registration stalled at 2 of 3 — nobody wanted to be the third without knowing the meeting cadence."></textarea>
+      <button class="btn btn-teal btn-sm" style="margin-top:12px;" onclick="saveProcessSignal()">Log the signal</button>
+    </div>
+    <div id="ps-list"></div>
   </div>
 
   <div class="section-head" style="margin-top:44px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Roster</div><h2 class="t-h2">Everyone in the pod</h2></div></div>
@@ -277,6 +296,7 @@ function renderNudges(){
       :'<p class="t-small">'+escHTML(m.pod)+' · last Learning Log '+(m.lastLogDays>=21?'3+ weeks':m.lastLogDays+'d')+' ago</p>')
     +'</div>'
     +'<a class="btn btn-ghost-teal btn-sm" href="mailto:'+escHTML(m.email)+'?subject='+encodeURIComponent('Checking in — The Labs')+'">Contact</a>'
+    +'<button class="btn btn-ghost-teal btn-sm" onclick="signalFromNudge(\''+m.id+'\')" title="A blocked member is often the visible edge of a process gap — log it for upstream design">→ Process signal</button>'
     +'<button class="btn btn-ghost-teal btn-sm" onclick="dismissNudge(\''+m.id+'\')">Dismiss</button>'
     +'</div>').join('');
 }
@@ -328,6 +348,52 @@ function renderVotes(){
   }).join('');
 }
 
+/* ── Process signals — the R&D loop (owner decision): the Poderator is a
+   shepherd, not a manager. Members have wide latitude while making forward
+   progress; where a team falters, the faltering itself is the finding — logged
+   here as input to the design of the next upstream intervention. Signals go to
+   The Labs' design backlog, never to member records. Production: process_signals
+   table (docs/OLOS_BACKEND_CHANGES.md). ── */
+const PS_STEPS=['Problem Sprint · sensemaking','Frame Sprint · proposals','Voting','Team registration','Building · early weeks','Building · pre-Showcase'];
+const PROCESS_SIGNALS=[
+  {step:'Team registration', pod:'Pod 4 · Civic AI', at:Date.now()-2*864e5,
+   body:'Registration stalled at 2 of 3 twice this week — members hesitate to be the third without knowing the meeting cadence up front. An expected-cadence field on the project card would likely unstick it.'},
+  {step:'Frame Sprint · proposals', pod:'Pod 2 · Voting Access', at:Date.now()-6*864e5,
+   body:'Two members drafted proposals against the same situation and only discovered each other at the ballot. A mid-sprint draft-visibility beat would surface collisions earlier.'}
+];
+function podLabel(){ const p=PODS.find(x=>x.id===currentPod); return p?p.name:'All pods'; }
+function renderSignalForm(){
+  const sel=document.getElementById('ps-step');
+  if(sel&&!sel.options.length) sel.innerHTML=PS_STEPS.map(s=>'<option>'+s+'</option>').join('');
+}
+function saveProcessSignal(){
+  const body=document.getElementById('ps-body').value.trim();
+  if(!body){ document.getElementById('ps-body').focus(); return; }
+  PROCESS_SIGNALS.unshift({step:document.getElementById('ps-step').value, pod:podLabel(), at:Date.now(), body:body});
+  document.getElementById('ps-body').value='';
+  renderSignals();
+}
+/* Prefill from a needs-attention card — a blocked member is often the visible
+   edge of a process gap worth designing against. */
+function signalFromNudge(id){
+  const m=pods().flatMap(p=>p.members).find(x=>x.id===id); if(!m) return;
+  renderSignalForm();
+  document.getElementById('ps-body').value=m.blocked
+    ? 'Member blocked at this step — their own words: “'+m.blocked+'”. What upstream change would have prevented the block?'
+    : 'Member went quiet ('+m.lastLogDays+'d without a log). What about this stretch of the cycle loses people?';
+  const card=document.getElementById('ps-body');
+  card.scrollIntoView({block:'center'}); card.focus({preventScroll:true});
+}
+function renderSignals(){
+  renderSignalForm();
+  const c=document.getElementById('ps-list'); if(!c) return;
+  c.innerHTML=PROCESS_SIGNALS.map(s=>'<div class="lcard" style="padding:16px 20px;margin-bottom:12px;">'
+    +'<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:6px;"><span class="lbl lbl-teal">'+escHTML(s.step)+'</span><span class="t-small">'+escHTML(s.pod)+' · '+relDate(s.at)+'</span></div>'
+    +'<p class="t-small" style="color:var(--charcoal);">'+escHTML(s.body)+'</p>'
+    +'</div>').join('')
+    +'<p class="t-small" style="color:var(--meta);">Feeds The Labs’ intervention-design backlog — reviewed at the cycle retro.</p>';
+}
+
 /* roster */
 let rosterFilter='all', rosterSort='name', rosterDir=1;
 function setRosterSort(k){ if(rosterSort===k) rosterDir*=-1; else { rosterSort=k; rosterDir=1; } renderRoster(); }
@@ -350,7 +416,7 @@ function openFeedback(){ fbCategory='Idea'; renderFbCats(); document.getElementB
 function closeFeedback(){ document.getElementById('fb-modal').classList.remove('open'); }
 function submitFeedback(){ const body=document.getElementById('fb-body').value.trim(); if(!body){ document.getElementById('fb-body').focus(); return; } FEEDBACK_LOG.push({category:fbCategory, body:body, at:Date.now(), screen:fbScreen()}); document.getElementById('fb-form').style.display='none'; document.getElementById('fb-done').style.display='block'; }
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeFeedback(); });
-function renderAll(){ renderPodChips(); renderPodStatus(); renderNudges(); renderThemes(); renderSummary(); renderVotes(); renderRoster(); }
+function renderAll(){ renderPodChips(); renderPodStatus(); renderNudges(); renderThemes(); renderSummary(); renderVotes(); renderSignals(); renderRoster(); }
 renderAll();
 </script>
 </body>

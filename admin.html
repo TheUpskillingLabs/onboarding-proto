@@ -164,6 +164,14 @@ button,input,select,textarea { font-family:inherit; }
         <button class="btn btn-teal btn-sm" id="phase-fwd" onclick="stepPhase(1)">Advance phase →</button>
       </div>
     </div>
+    <div class="lcard" style="padding:24px;margin-bottom:20px;">
+      <div class="lbl" style="margin-bottom:6px;">Learning Log gate</div>
+      <p class="t-small" style="margin-bottom:14px;">The weekly rhythm has teeth: arm the gate and the member app locks to the Learning Log until they save one. Simulates the weekly cron — writes <code style="font-size:13px;background:var(--tint);padding:2px 6px;border-radius:4px;">logDueAt</code> into the same cycle state.</p>
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+        <button class="btn btn-teal btn-sm" id="log-gate-btn" onclick="toggleLogGate()">Mark the log overdue</button>
+        <span class="status" id="log-gate-status">Not due — member app open</span>
+      </div>
+    </div>
     <div id="tally-out"></div>
   </div>
 
@@ -309,13 +317,26 @@ let INVITATIONS=[
 ];
 
 /* ── Cycle state (cross-file contract) ── */
-let phaseIdx=0, projects=[];
+let phaseIdx=0, projects=[], logDueAt=null;
 function readCycleState(){ try{ return JSON.parse(localStorage.getItem(CYCLE_STATE_KEY)||'{}')||{}; }catch(e){ return {}; } }
 function writeCycleState(){
   const phase=PHASES[phaseIdx];
   const st={ formationPhase:phase, config:{...CONFIG} };
   if(['tallied','registration','closed'].includes(phase)&&projects.length) st.projects=projects;
+  if(logDueAt) st.logDueAt=logDueAt;
   localStorage.setItem(CYCLE_STATE_KEY, JSON.stringify(st));
+}
+/* ── Learning Log gate — simulates the weekly cron marking the member's log
+   overdue. index.html locks to the Learning Log until a log is saved with
+   at >= logDueAt (that clearing is member-side; this flag stays until unarmed). ── */
+function toggleLogGate(){ logDueAt=logDueAt?null:Date.now(); writeCycleState(); renderLogGate(); }
+function renderLogGate(){
+  const btn=document.getElementById('log-gate-btn'), s=document.getElementById('log-gate-status');
+  if(!btn) return;
+  btn.textContent=logDueAt?'Clear the gate':'Mark the log overdue';
+  btn.className='btn btn-sm '+(logDueAt?'btn-ghost-teal':'btn-teal');
+  s.className='status'+(logDueAt?' risk':'');
+  s.textContent=logDueAt?'Gate armed — locked until the member logs':'Not due — member app open';
 }
 /* Deterministic naming beat — OLOS does this with an LLM (lib/llm/names.ts). */
 const TEAM_WORDS=['Wayfinder','Beacon','Relay','Lantern','Compass','Cairn','Meridian','Prism'];
@@ -477,10 +498,11 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeFeedback(); }
   const i=PHASES.indexOf(st.formationPhase||'submission'); phaseIdx=i<0?0:i;
   if(Array.isArray(st.projects)) projects=st.projects;
   if(st.config) CONFIG={...CONFIG, ...st.config};
+  if(st.logDueAt) logDueAt=st.logDueAt;
   if(['tallied','registration','closed'].includes(PHASES[phaseIdx])&&!projects.length) runTally();
-  renderPhaseRail(); renderTallyOut(); renderCycleControl(); renderVotes(); renderInviteChips(); renderInvites(); renderPeople();
+  renderPhaseRail(); renderTallyOut(); renderLogGate(); renderCycleControl(); renderVotes(); renderInviteChips(); renderInvites(); renderPeople();
 })();
-window.addEventListener('storage', e=>{ if(e.key===CYCLE_STATE_KEY){ const st=readCycleState(); const i=PHASES.indexOf(st.formationPhase||'submission'); phaseIdx=i<0?0:i; if(Array.isArray(st.projects)) projects=st.projects; renderPhaseRail(); renderTallyOut(); } });
+window.addEventListener('storage', e=>{ if(e.key===CYCLE_STATE_KEY){ const st=readCycleState(); const i=PHASES.indexOf(st.formationPhase||'submission'); phaseIdx=i<0?0:i; if(Array.isArray(st.projects)) projects=st.projects; logDueAt=st.logDueAt||null; renderPhaseRail(); renderTallyOut(); renderLogGate(); } });
 </script>
 </body>
 </html>

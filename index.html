@@ -402,6 +402,16 @@ button,input,select,textarea { font-family:inherit; }
 .status.forming { color:var(--slate); }
 .status.forming::before { background:var(--teal-deep); }
 .status.soon::before { background:var(--meta-soft); }
+.status.risk { color:var(--red); }
+.status.risk::before { background:var(--red); box-shadow:0 0 0 3px rgba(225,29,42,.14); }
+
+/* Learning Log gate — the weekly rhythm has teeth. When a member's log is
+   overdue (olos.cycleState.v1.logDueAt) the app locks to the dashboard's
+   Learning Log until they save one; everything else dims and dead-ends there. */
+#app-shell.log-locked .gate-dim { opacity:.35; pointer-events:none; filter:saturate(.4); }
+#app-shell.log-locked .nav-link:not(#nav-dashboard), #app-shell.log-locked .tab:not(#tab-dashboard) { opacity:.35; }
+.gate-banner { background:var(--white); border:1px solid var(--rule); border-left:4px solid var(--red); border-radius:var(--r); padding:20px 22px; margin-bottom:24px; }
+.gate-banner.unlocked { border-left-color:var(--teal); }
 
 /* open-source footer */
 .osfooter { background:var(--ink); color:var(--od1); position:relative; }
@@ -1195,10 +1205,14 @@ button,input,select,textarea { font-family:inherit; }
         <div class="container" style="padding-top:40px;padding-bottom:48px;">
           <div class="dash">
             <div>
-              <div id="dash-cycle" style="display:none;margin-bottom:40px;"></div>
+              <!-- Learning Log gate banner — rendered by applyLogGate() when the
+                   weekly log is overdue; everything below except the Learning Log
+                   section carries .gate-dim and locks until the member saves one. -->
+              <div id="log-gate-banner" style="display:none;"></div>
+              <div id="dash-cycle" class="gate-dim" style="display:none;margin-bottom:40px;"></div>
               <!-- Setup leads for new members; it collapses to a strip once complete
                    so the journal takes the top slot for established members. -->
-              <div id="setup-section" style="margin-bottom:40px;">
+              <div id="setup-section" class="gate-dim" style="margin-bottom:40px;">
                 <div id="setup-full">
               <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Your profile</div><h2 class="t-h2">Complete your profile</h2></div><span id="checklist-count" class="lbl">2 left</span></div>
               <div id="checklist-items">
@@ -1217,7 +1231,7 @@ button,input,select,textarea { font-family:inherit; }
                    Discover feed. Replaces the Practice Journal + the public composer
                    (docs/OLOS_BACKEND_CHANGES.md §6). Log as often as you like. -->
               <div style="margin-bottom:40px;">
-                <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Weekly practice</div><h2 class="t-h2">Your Learning Log</h2></div><span class="t-small" id="ll-count"></span></div>
+                <div class="section-head"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Weekly practice</div><h2 class="t-h2">Your Learning Log</h2></div><div style="text-align:right;"><div id="ll-due"></div><span class="t-small" id="ll-count"></span></div></div>
                 <div class="lcard" id="learning-log-card" style="padding:20px 22px;">
                   <div class="lbl" style="margin-bottom:4px;">Health check</div>
                   <p class="t-small" style="margin-bottom:12px;">Only your Poderator and The Labs team see this — never your pod or the feed.</p>
@@ -1245,11 +1259,11 @@ button,input,select,textarea { font-family:inherit; }
               </div>
 
               </div>
-              <div class="section-head" style="margin-top:40px;"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Up next</div><h2 class="t-h2">Up next for you</h2></div><span class="see" onclick="goApp('events')">See all →</span></div>
-              <div class="cards two" id="todos-container"></div>
-              <div id="dash-saved" style="display:none;margin-top:40px;"></div>
+              <div class="section-head gate-dim" style="margin-top:40px;"><div><div class="lbl lbl-teal" style="margin-bottom:8px;">Up next</div><h2 class="t-h2">Up next for you</h2></div><span class="see" onclick="goApp('events')">See all →</span></div>
+              <div class="cards two gate-dim" id="todos-container"></div>
+              <div id="dash-saved" class="gate-dim" style="display:none;margin-top:40px;"></div>
             </div>
-            <aside style="display:flex;flex-direction:column;gap:16px;">
+            <aside class="gate-dim" style="display:flex;flex-direction:column;gap:16px;">
               <div class="card" style="overflow:hidden;"><div class="media m-teal" style="aspect-ratio:16/9;"><div class="m-orb"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:block;width:100%;height:100%">
   <defs>
     <radialGradient id="oc" cx="38%" cy="35%" r="58%"><stop offset="0%" stop-color="#0094A0"/><stop offset="62%" stop-color="rgba(0,148,160,0)"/></radialGradient>
@@ -1888,11 +1902,13 @@ function readCycleState(){ try{ return JSON.parse(localStorage.getItem(CYCLE_STA
 function applyCycleState(){
   const st=readCycleState();
   CYCLE.formationPhase=st.formationPhase||'submission';
+  CYCLE.logDueAt=st.logDueAt||null;
   if(Array.isArray(st.projects)&&st.projects.length) CYCLE_PROJECTS=st.projects;
   else if(['tallied','registration','closed'].includes(CYCLE.formationPhase)&&!CYCLE_PROJECTS.length) tallyAndFormProjects();
   const panel=document.getElementById('panel-cycles');
   if(panel&&panel.classList.contains('active')) renderCycleFormation();
   renderTodos();
+  applyLogGate();
 }
 window.addEventListener('storage', e=>{ if(e.key===CYCLE_STATE_KEY) applyCycleState(); });
 function situationById(id){ return SITUATIONS.find(s=>s.id===id); }
@@ -2341,9 +2357,51 @@ function llPreviewText(){
 }
 function llSyncPreview(){ const p=document.getElementById('ll-preview'); if(!p) return; const t=llPreviewText(); p.textContent=t||'Your log reads back here as you type.'; p.style.color=t?'var(--charcoal)':'var(--meta)'; }
 function toggleBlocked(){ const on=document.getElementById('ll-blocked').checked; const w=document.getElementById('ll-blocked-wrap'); w.style.display=on?'block':'none'; if(on) document.getElementById('ll-blocker').focus(); }
+/* ── Learning Log gate — the weekly rhythm has teeth (owner decision): when a
+   cycle member's log is overdue, the app locks to the dashboard's Learning Log
+   until they save one. The prototype arms the gate from admin.html's Testing
+   Controls (olos.cycleState.v1.logDueAt — the simulated weekly cron); saving a
+   log with at >= logDueAt clears it member-side. Production: a weekly cron
+   stamps the due window; middleware gates member routes until a learning_logs
+   row exists for the current week (docs/OLOS_BACKEND_CHANGES.md §6). ── */
+function logGateActive(){
+  return !!(userState.signedIn && inCycle() && CYCLE.logDueAt
+    && !userState.learningLogs.some(l=>l.at>=CYCLE.logDueAt));
+}
+let gateJustCleared=false;
+function applyLogGate(){
+  const active=logGateActive();
+  if(active) gateJustCleared=false;
+  const shell=document.getElementById('app-shell');
+  shell.classList.toggle('log-locked', active);
+  const b=document.getElementById('log-gate-banner');
+  if(b){
+    if(active){
+      b.style.display='block';
+      b.innerHTML='<div class="gate-banner"><div class="lbl" style="color:var(--red);margin-bottom:6px;">Weekly practice · overdue</div>'
+        +'<div class="t-h4" style="margin-bottom:4px;">Complete your Learning Log to get back in</div>'
+        +'<p class="t-small" style="margin-bottom:12px;">The Labs runs on a weekly rhythm — one log, five minutes. Everything else unlocks the moment you save it.</p>'
+        +'<button class="btn btn-red btn-sm" onclick="focusLearningLog()">Go to your Learning Log ↓</button></div>';
+    } else if(gateJustCleared){
+      b.style.display='block';
+      b.innerHTML='<div class="gate-banner unlocked"><div class="t-h4" style="color:var(--teal-deep);margin-bottom:4px;">You’re back in ✓</div><p class="t-small">Logged for the week — the whole app is open again. See you next Friday.</p></div>';
+    } else b.style.display='none';
+  }
+  // Keep the due chip in step when the gate flips while the dashboard is open.
+  const due=document.getElementById('ll-due');
+  if(due) due.innerHTML=active?'<span class="status risk">Overdue</span>':(inCycle()?'<span class="status">Due Fridays</span>':'');
+  // If the member is elsewhere in the app when the week turns over (live via the
+  // storage event), pull them to the gate. Views outside the shell (e.g. the
+  // Triangulator mid-session) are left alone — the guard catches the next exit.
+  if(active && shell.classList.contains('active')
+     && !document.getElementById('panel-dashboard').classList.contains('active')) showAppView('dashboard');
+}
+function focusLearningLog(){ const t=document.getElementById('ll-accomplished'); if(t){ t.scrollIntoView({block:'center'}); t.focus({preventScroll:true}); } }
 function renderLearningLog(){
   const n=userState.learningLogs.length;
   const ct=document.getElementById('ll-count'); if(ct) ct.textContent=(n||'No')+' log'+(n===1?'':'s')+' this cycle';
+  const due=document.getElementById('ll-due');
+  if(due) due.innerHTML=logGateActive()?'<span class="status risk">Overdue</span>':(inCycle()?'<span class="status">Due Fridays</span>':'');
   const rec=document.getElementById('ll-recent'); if(!rec) return;
   const items=userState.learningLogs.slice(-2).reverse();
   rec.innerHTML=items.length?items.map(l=>{
@@ -2357,6 +2415,7 @@ function renderLearningLog(){
 function saveLearningLog(){
   const content={accomplished:llVal('ll-accomplished'), exploring:llVal('ll-exploring'), next:llVal('ll-next')};
   if(!content.accomplished&&!content.exploring&&!content.next){ document.getElementById('ll-accomplished').focus(); return; }
+  const wasGated=logGateActive();
   const blocked=document.getElementById('ll-blocked').checked;
   const share=document.getElementById('ll-share').checked;
   userState.learningLogs.push({ at:Date.now(), phase:CYCLE.phase,
@@ -2369,6 +2428,8 @@ function saveLearningLog(){
   document.getElementById('ll-blocked').checked=false; document.getElementById('ll-share').checked=false;
   document.getElementById('ll-blocked-wrap').style.display='none';
   llSyncPreview();
+  if(wasGated&&!logGateActive()) gateJustCleared=true; // the unlock moment
+  applyLogGate();
   renderLearningLog(); renderTodos();
 }
 
@@ -2406,6 +2467,10 @@ function showView(id){
   // Auth guard: the app shell is members-only. Signed-out visitors (e.g. arriving
   // from a shared survey link) route back to the public landing instead.
   if(APP_PANELS.includes(id) && !userState.signedIn) id='landing';
+  // Learning Log gate: an overdue member reaches only the dashboard (and the
+  // public pages) until they save a log — the weekly rhythm is a hard gate.
+  if(userState.signedIn && logGateActive() && id!=='dashboard'
+     && (APP_PANELS.includes(id)||['triangulator','project-canvas','team-ignition'].includes(id))) id='dashboard';
   document.querySelectorAll('#screens > .view').forEach(v=>v.classList.remove('active'));
   if(APP_PANELS.includes(id)){ document.getElementById('app-shell').classList.add('active'); showAppView(id); }
   else { const el=document.getElementById('view-'+id); if(el) el.classList.add('active'); }
@@ -2435,7 +2500,7 @@ function showAppView(id){
   const panel=document.getElementById('panel-'+id); if(panel) panel.classList.add('active');
   if(id==='bookmarks') renderBookmarks();
   if(id==='discover') renderDiscover();
-  if(id==='dashboard'){ renderLearningLog(); renderTodos(); } // todos are phase-aware — refresh on every visit
+  if(id==='dashboard'){ renderLearningLog(); renderTodos(); applyLogGate(); } // todos are phase-aware — refresh on every visit
   if(id==='cycles'){ renderCycleSituations(); renderCycleFormation(); }
   // Drill-in panels (cycles/events/labs/resources/bookmarks) are browse content —
   // keep Discover highlighted so the user stays oriented in the 3-item nav. Your own
