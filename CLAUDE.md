@@ -144,7 +144,13 @@ persona pill, and "Exit to member view".
 - **`moderator.html`** (rendered copy says **Poderator**, never "moderator"): framed as a
   **shepherd, not a manager** (owner decision) — members have wide latitude while making
   forward progress; the page unblocks and observes, never grades or assigns. Pod switcher
-  (+ All-pods rollup), phase/countdown/Learning-Log health band (`.status.watch`/
+  (+ All-pods rollup), **frame-journey spine** (`renderJourney()` — five stages per pod,
+  observations → situation → proposals → ballots → teams, each carrying its real artifact;
+  phase-driven from `olos.cycleState.v1` via `applyFormationState()` at boot + `storage`
+  event, so admin.html's Testing Controls light it up live), **Teams drill-down**
+  (`renderTeams()` from `cycleState.projects`, attributed to pods via proposal titles —
+  name, seats, frame, shepherd line, per-team "→ Process signal" prefill; empty state
+  before the tally), phase/countdown/Learning-Log health band (`.status.watch`/
   `.status.risk`) + clarity/alignment averages + trend, needs-attention cards (blocked
   members first with their own "what do you need" text, then quiet loggers; mailto +
   "→ Process signal" prefill + session Dismiss; empty state), log-themes card (shared
@@ -344,7 +350,7 @@ localStorage key `index.html` writes for data (it exists to hand data to the ifr
 | Key | Written by | Read by | Shape / purpose |
 |---|---|---|---|
 | `olos.surveyPool.v1` | `index.html` (survey flow) | `triangulator.html` (boot + `storage` event) | array of survey observations |
-| `olos.cycleState.v1` | `admin.html` (Testing Controls, Cycle control) | `index.html` (boot + `storage` event), `admin.html` | `{formationPhase, projects?, config?, logDueAt?}` |
+| `olos.cycleState.v1` | `admin.html` (Testing Controls, Cycle control) | `index.html`, `moderator.html` (both boot + `storage` event), `admin.html` | `{formationPhase, projects?, config?, logDueAt?}` |
 | `olos.viewAsRole.v1` | all three (via shared.js `setViewAsRole`) | `moderator.html` / `admin.html` boot guards | `'upskiller'│'poderator'│'admin'` |
 | `olos.sensemaking.v2` | `triangulator.html` | `triangulator.html` | the Triangulator's own canvas state |
 

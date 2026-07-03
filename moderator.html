@@ -86,6 +86,19 @@ button,input,select,textarea { font-family:inherit; }
 .ps-input { width:100%; border:1px solid var(--rule); border-radius:var(--r); padding:10px 12px; font:inherit; font-size:16px; background:var(--white); color:var(--ink); }
 textarea.ps-input { resize:vertical; }
 
+/* frame journey — the pod's path through the cycle, artifacts at each stage */
+.jrow { display:flex; overflow-x:auto; }
+.jstep { flex:1; min-width:150px; padding:14px 16px 16px; border-left:1px solid var(--rule); }
+.jstep:first-child { border-left:none; }
+.jlbl { display:flex; align-items:center; gap:7px; font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--meta); margin-bottom:6px; }
+.jdot { width:8px; height:8px; border-radius:50%; background:var(--meta-soft); flex-shrink:0; }
+.jstep.done .jdot { background:var(--teal); }
+.jstep.done .jlbl { color:var(--teal-deep); }
+.jstep.now { background:var(--tint); }
+.jstep.now .jdot { background:var(--teal); box-shadow:0 0 0 3px rgba(0,148,160,.18); }
+.jstep.now .jlbl { color:var(--ink); }
+.jstep.wait { opacity:.55; }
+
 /* roster table */
 .tbl-wrap { overflow-x:auto; }
 .tbl { width:100%; border-collapse:collapse; min-width:560px; }
@@ -140,6 +153,16 @@ textarea.ps-input { resize:vertical; }
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;" id="pod-chips"></div>
 
   <div id="pod-status"></div>
+
+  <!-- The frame journey — the spine of the page: each pod's path through the
+       cycle with the real artifact of every stage. Phase-driven from
+       olos.cycleState.v1 (same contract as the member app); the Teams stage
+       lights up live when the admin's tally writes projects. -->
+  <div class="section-head" style="margin-top:32px;margin-bottom:16px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">The frame journey</div><h2 class="t-h3">Where each pod is in the cycle</h2></div></div>
+  <div id="journey-rows"></div>
+
+  <div class="section-head" style="margin-top:36px;margin-bottom:16px;"><div><div class="lbl lbl-teal" style="margin-bottom:6px;">Teams · Building phase</div><h2 class="t-h3">Formed from the pod's proposals</h2></div></div>
+  <div id="team-rows"></div>
 
   <div class="cards two" style="margin-top:24px;">
     <div>
@@ -215,6 +238,7 @@ if(getViewAsRole()==='upskiller') location.replace('index.html');
    and shared log entries. Bands are qualitative, never grades. ── */
 const PODS=[
   { id:'pod4', name:'Pod 4 · Civic AI', phase:'Frame Sprint', closesInDays:5, band:'watch', trend:'down',
+    observations:23, situation:{title:'Benefits navigation dead-ends', owner:'DC Public Library'},
     members:[
       {id:'m3', name:'Jordan Okafor', initials:'JO', email:'jordan@example.org', active:true, logs:6, lastLogDays:1, clarity:4, alignment:5},
       {id:'m5', name:'Sam Whitfield', initials:'SW', email:'sam@example.org', active:true, logs:5, lastLogDays:2, clarity:4, alignment:4},
@@ -232,6 +256,7 @@ const PODS=[
     votes:[ {title:'BenefitsBot', total:7}, {title:'Ballot Basics', total:5}, {title:'Knowledge Keeper', total:2} ],
     ballotsIn:5, ballotsTotal:7 },
   { id:'pod2', name:'Pod 2 · Voting Access', phase:'Frame Sprint', closesInDays:5, band:'healthy', trend:'up',
+    observations:18, situation:{title:'First-time voter information gap', owner:'League of Women Voters DC'},
     members:[
       {id:'m4', name:'Elena Ruiz', initials:'ER', email:'elena@example.org', active:true, logs:7, lastLogDays:0, clarity:5, alignment:5},
       {id:'m9', name:'Ben Osei', initials:'BO', email:'ben@example.org', active:true, logs:6, lastLogDays:1, clarity:4, alignment:5},
@@ -247,6 +272,67 @@ const PODS=[
     ballotsIn:4, ballotsTotal:4 }
 ];
 const VOTE_THRESHOLD=5;
+/* ── Frame journey — phase-driven from olos.cycleState.v1 (the same cross-file
+   contract the member app reads; admin.html's Testing Controls step it).
+   The Poderator shepherds this journey — the spine shows where each pod is
+   and what artifact each stage produced, never member-level progress. ── */
+const CYCLE_STATE_KEY='olos.cycleState.v1';
+function readCycleState(){ try{ return JSON.parse(localStorage.getItem(CYCLE_STATE_KEY)||'{}')||{}; }catch(e){ return {}; } }
+let FORMATION='submission', CYCLE_TEAMS=[];
+const FORMATION_ORDER=['submission','voting','tallied','registration','closed'];
+const PHASE_LABEL={submission:'Frame Sprint', voting:'Frame Sprint · voting', tallied:'Building · teams forming', registration:'Building · teams forming', closed:'Building'};
+function applyFormationState(){
+  const st=readCycleState();
+  FORMATION=st.formationPhase||'submission';
+  CYCLE_TEAMS=Array.isArray(st.projects)?st.projects:[];
+  renderPodStatus(); renderJourney(); renderTeams();
+}
+window.addEventListener('storage', e=>{ if(e.key===CYCLE_STATE_KEY) applyFormationState(); });
+/* Teams attribute to a pod through its proposal titles (prototype heuristic —
+   production joins projects → proposals → pods). */
+function podTeams(p){ return CYCLE_TEAMS.filter(t=>p.votes.some(v=>v.title===t.title)); }
+function journeyStages(p){
+  const f=FORMATION_ORDER.indexOf(FORMATION);
+  const teams=podTeams(p).length;
+  return [
+    {lbl:'Observations', state:'done', art:p.observations+' field observations pooled — mapped in the Triangulator'},
+    {lbl:'Situation', state:'done', art:'“'+p.situation.title+'” · brought by '+p.situation.owner},
+    {lbl:'Proposals', state:f===0?'now':'done', art:p.votes.length+' frames proposed'+(f===0?' · submission open':'')},
+    {lbl:'Ballots', state:f<1?'wait':f===1?'now':'done', art:f<1?'Open after submission':p.ballotsIn+' of '+p.ballotsTotal+' ballots in'},
+    {lbl:'Teams', state:f<2?'wait':f<4?'now':'done', art:teams?teams+' team'+(teams>1?'s':'')+' formed — see below':'Form at the tally'}
+  ];
+}
+function renderJourney(){
+  const c=document.getElementById('journey-rows'); if(!c) return;
+  c.innerHTML=pods().map(p=>'<div class="lcard" style="margin-bottom:12px;overflow:hidden;">'
+    +(currentPod==='all'?'<div class="lbl lbl-teal" style="padding:14px 16px 0;">'+escHTML(p.name)+'</div>':'')
+    +'<div class="jrow">'+journeyStages(p).map(s=>'<div class="jstep '+s.state+'"><div class="jlbl"><span class="jdot"></span>'+s.lbl+'</div><p class="t-small" style="color:var(--charcoal);">'+escHTML(s.art)+'</p></div>').join('')+'</div>'
+    +'</div>').join('');
+}
+function renderTeams(){
+  const c=document.getElementById('team-rows'); if(!c) return;
+  const rows=pods().map(p=>({p, teams:podTeams(p)}));
+  if(!rows.some(r=>r.teams.length)){
+    c.innerHTML='<div class="lcard" style="padding:18px 22px;"><p class="t-small">No teams yet — they form at the tally. Keep admin.html open in another tab and watch this light up when the phase advances.</p></div>';
+    return;
+  }
+  c.innerHTML=rows.flatMap(r=>r.teams.map(t=>{
+    const filled=(t.members||[]).length;
+    return '<div class="lcard" style="padding:18px 22px;margin-bottom:12px;">'
+      +'<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px;"><span class="status active">'+escHTML(t.name)+'</span><div class="t-h4" style="flex:1;min-width:160px;">'+escHTML(t.title)+'</div><span class="t-small">'+filled+' of '+(t.max||5)+' seats · real at '+(t.min||3)+'</span></div>'
+      +'<p class="t-small" style="color:var(--charcoal);margin-bottom:10px;">'+escHTML(t.frame||'')+'</p>'
+      +'<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">'
+      +'<span class="t-small" style="color:var(--meta);flex:1;min-width:200px;">'+escHTML(r.p.name)+' · forward progress is theirs to define — you unblock and observe.</span>'
+      +'<button class="btn btn-ghost-teal btn-sm" onclick="signalFromTeam(\''+escHTML(t.title)+'\')">→ Process signal</button>'
+      +'</div></div>';
+  })).join('');
+}
+function signalFromTeam(title){
+  renderSignalForm();
+  document.getElementById('ps-step').value='Building · early weeks';
+  document.getElementById('ps-body').value='Team “'+title+'” — where did the process leave them without what they needed?';
+  const el=document.getElementById('ps-body'); el.scrollIntoView({block:'center'}); el.focus({preventScroll:true});
+}
 const BAND_LABEL={healthy:'Logs healthy', watch:'Logs softening', at_risk:'Logs at risk'};
 const BAND_CLASS={healthy:'active', watch:'watch', at_risk:'risk'};
 const AT_RISK_DAYS=7;
@@ -269,7 +355,7 @@ function renderPodStatus(){
     const avg=k=>withLogs.length?(withLogs.reduce((a,m)=>a+(m[k]||0),0)/withLogs.length).toFixed(1):'—';
     return '<div class="lcard" style="padding:20px 24px;margin-bottom:12px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;">'
       +'<div style="flex:1;min-width:220px;"><div class="t-h4">'+escHTML(p.name)+'</div><p class="t-small">'+p.members.length+' members · closes in '+p.closesInDays+' days</p></div>'
-      +'<span class="status active" title="Cycle phase">'+p.phase+'</span>'
+      +'<span class="status active" title="Cycle phase">'+PHASE_LABEL[FORMATION]+'</span>'
       +'<span class="status" title="This week\'s Learning Log health checks — visible to Poderators and admins only">Clarity '+avg('clarity')+' · Alignment '+avg('alignment')+'</span>'
       +'<span class="status '+BAND_CLASS[p.band]+'" title="Derived from Learning Log cadence — a health band, not a grade">'+BAND_LABEL[p.band]+' <span aria-hidden="true" title="'+arrowTip+'">'+arrow+'</span></span>'
       +'</div>';
@@ -416,7 +502,9 @@ function openFeedback(){ fbCategory='Idea'; renderFbCats(); document.getElementB
 function closeFeedback(){ document.getElementById('fb-modal').classList.remove('open'); }
 function submitFeedback(){ const body=document.getElementById('fb-body').value.trim(); if(!body){ document.getElementById('fb-body').focus(); return; } FEEDBACK_LOG.push({category:fbCategory, body:body, at:Date.now(), screen:fbScreen()}); document.getElementById('fb-form').style.display='none'; document.getElementById('fb-done').style.display='block'; }
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeFeedback(); });
-function renderAll(){ renderPodChips(); renderPodStatus(); renderNudges(); renderThemes(); renderSummary(); renderVotes(); renderSignals(); renderRoster(); }
+function renderAll(){ renderPodChips(); renderPodStatus(); renderJourney(); renderTeams(); renderNudges(); renderThemes(); renderSummary(); renderVotes(); renderSignals(); renderRoster(); }
+/* boot — adopt whatever phase the suite is already in, then render */
+(function(){ const st=readCycleState(); FORMATION=st.formationPhase||'submission'; CYCLE_TEAMS=Array.isArray(st.projects)?st.projects:[]; })();
 renderAll();
 </script>
 </body>

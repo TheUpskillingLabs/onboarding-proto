@@ -367,6 +367,11 @@ surfaced on the dashboard by the weekly reminder cron. Members may log as often 
   blockers-first with the member's own "what do you need" text), and logging cadence. This
   replaces the pulse-review surfaces; keep the no-in-app-LLM precedent — the AI-summary
   bundle now packages *shared* log entries only.
+- **Frame-journey spine (no new tables):** the poderator dashboard's pipeline view
+  (observations → situation → proposals → ballots → teams, with each stage's artifact) is a
+  pod-scoped read across existing tables — `survey_responses` count, the pod's adopted
+  problem statement, `solution_proposals`, vote aggregates, `projects`. One composed route:
+  `GET /api/pods/[pod_id]/journey`.
 - **Migration path from `pulse_checks`:** keep the table and its history; new cycles write
   `learning_logs`. The reminder cron points at the Learning Log.
 - Routes: `POST /api/learning-logs` (self-only), `GET /api/learning-logs/me`,
